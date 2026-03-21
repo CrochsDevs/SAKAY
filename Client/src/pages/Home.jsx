@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { motion } from 'framer-motion'
 import TopBar from '../layout/TopBar'
 import Footer from '../layout/Footer'
 import { Button } from "@/components/ui/button"
@@ -20,7 +21,8 @@ import {
   Coins,
   Globe,
   Building2,
-  CheckCircle2
+  CheckCircle2,
+  PhoneCall
 } from 'lucide-react'
 
 import jeepneyImage from '../assets/images/image.png'
@@ -51,12 +53,47 @@ const Home = () => {
     setTimeout(() => setDownloading(false), 2000)
   }
 
+  // Animation Variants
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 60 },
+    visible: { opacity: 1, y: 0 }
+  }
+
+  const fadeInLeft = {
+    hidden: { opacity: 0, x: -60 },
+    visible: { opacity: 1, x: 0 }
+  }
+
+  const fadeInRight = {
+    hidden: { opacity: 0, x: 60 },
+    visible: { opacity: 1, x: 0 }
+  }
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2
+      }
+    }
+  }
+
+  const scaleIn = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { opacity: 1, scale: 1 }
+  }
+
   return (
     <div className="min-h-screen bg-white overflow-x-hidden font-sans">
       <TopBar />
 
       {/* Hero Section */}
-      <main className="relative pt-20 sm:pt-24 lg:pt-28 pb-16 sm:pb-20 lg:pb-24">
+      <motion.main
+        initial="hidden"
+        animate="visible"
+        className="relative pt-20 sm:pt-24 lg:pt-28 pb-16 sm:pb-20 lg:pb-24"
+      >
 
         {/* Background Elements */}
         <div className="absolute inset-0 -z-10">
@@ -70,7 +107,11 @@ const Home = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-24 lg:mb-32">
 
             {/* Left Column */}
-            <div className="space-y-8 animate-fade-in-left">
+            <motion.div
+              variants={fadeInLeft}
+              transition={{ duration: 0.6 }}
+              className="space-y-8"
+            >
 
               {/* Main Heading */}
               <h1 className="font-black text-gray-900 leading-[1.1]">
@@ -87,27 +128,10 @@ const Home = () => {
 
               {/* Description */}
               <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 max-w-xl leading-relaxed">
-                The Philippines' first all-in-one transportation app. Book jeepneys, monitor real-time arrivals, and travel seamlessly across the nation.
+                A transportation app designed for Filipino commuters. Book jeepneys, track arrivals in real-time, and plan your routes efficiently.
               </p>
 
-              {/* Stats Bar */}
-              <div className="flex flex-wrap items-center gap-4 sm:gap-8 pt-4">
-                {[
-                  { value: '15+', label: 'Cities' },
-                  { value: '50k+', label: 'Active Users' },
-                  { value: '4.8★', label: 'App Rating' }
-                ].map((stat, index) => (
-                  <React.Fragment key={index}>
-                    {index > 0 && <div className="w-px h-8 sm:h-12 bg-gray-200" />}
-                    <div className="text-center">
-                      <div className="text-2xl sm:text-3xl font-bold text-gray-900">{stat.value}</div>
-                      <div className="text-xs sm:text-sm text-gray-500">{stat.label}</div>
-                    </div>
-                  </React.Fragment>
-                ))}
-              </div>
-
-              {/* Download Buttons - UPDATED */}
+              {/* Download Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Button
                   onClick={handleiOSDownload}
@@ -115,8 +139,8 @@ const Home = () => {
                 >
                   <Apple className="w-6 h-6 sm:w-7 sm:h-7" />
                   <div className="text-left">
-                    <p className="text-[8px] sm:text-[10px] uppercase font-bold leading-none opacity-80">Download</p>
-                    <p className="text-base sm:text-lg font-black leading-tight">iOS App</p>
+                    <p className="text-[8px] sm:text-[10px] uppercase font-bold leading-none opacity-80">Download for</p>
+                    <p className="text-base sm:text-lg font-black leading-tight">iOS</p>
                   </div>
                   <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 ml-auto sm:ml-2 opacity-60" />
                 </Button>
@@ -129,37 +153,61 @@ const Home = () => {
                   <Smartphone className="w-6 h-6 sm:w-7 sm:h-7" />
                   <div className="text-left">
                     <p className="text-[8px] sm:text-[10px] uppercase font-bold leading-none opacity-80">
-                      {downloading ? 'Downloading...' : 'Download'}
+                      {downloading ? 'Downloading...' : 'Download for'}
                     </p>
                     <p className="text-base sm:text-lg font-black leading-tight">
-                      {downloading ? 'Please wait' : 'Android APK'}
+                      {downloading ? 'Please wait' : 'Android'}
                     </p>
                   </div>
                   {!downloading && <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 ml-auto sm:ml-2 opacity-60" />}
                 </Button>
               </div>
-            </div>
+
+              {/* Contact Info */}
+              <div className="flex items-center gap-4 pt-2 text-sm text-gray-500">
+                <div className="flex items-center gap-1">
+                  <PhoneCall className="w-4 h-4" />
+                  <span>(02) 1234 5678</span>
+                </div>
+                <span>•</span>
+                <span>support@sakay.ph</span>
+              </div>
+            </motion.div>
 
             {/* Right Column */}
-            <div className="relative flex items-center justify-center perspective-1200">
+            <motion.div
+              variants={fadeInRight}
+              transition={{ duration: 0.6 }}
+              className="relative flex items-center justify-center perspective-1200"
+            >
 
               {/* Floating Stats Cards */}
               <div className="absolute inset-0 z-30 pointer-events-none">
-                <div className="absolute -top-5 left-0 animate-float hidden sm:block">
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8, duration: 0.5 }}
+                  className="absolute -top-5 left-0 hidden sm:block"
+                >
                   <Card className="px-3 py-2 sm:px-4 sm:py-3 shadow-xl border-0">
                     <CardContent className="p-0 flex items-center gap-2 sm:gap-3">
                       <div className="w-8 h-8 sm:w-10 sm:h-10 bg-grab-green/10 rounded-xl flex items-center justify-center">
                         <Users className="w-4 h-4 sm:w-5 sm:h-5 text-grab-green" />
                       </div>
                       <div>
-                        <p className="text-[10px] sm:text-xs text-gray-500">Daily Rides</p>
-                        <p className="text-sm sm:text-lg font-bold text-gray-900">10k+</p>
+                        <p className="text-[10px] sm:text-xs text-gray-500">Active Users</p>
+                        <p className="text-sm sm:text-lg font-bold text-gray-900">50k+</p>
                       </div>
                     </CardContent>
                   </Card>
-                </div>
+                </motion.div>
 
-                <div className="absolute top-20 -right-5 animate-float-delayed hidden md:block">
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 1, duration: 0.5 }}
+                  className="absolute top-20 -right-5 hidden md:block"
+                >
                   <Card className="px-3 py-2 sm:px-4 sm:py-3 shadow-xl border-0">
                     <CardContent className="p-0 flex items-center gap-2 sm:gap-3">
                       <div className="w-8 h-8 sm:w-10 sm:h-10 bg-orange-500/10 rounded-xl flex items-center justify-center">
@@ -167,25 +215,11 @@ const Home = () => {
                       </div>
                       <div>
                         <p className="text-[10px] sm:text-xs text-gray-500">Avg. Wait Time</p>
-                        <p className="text-sm sm:text-lg font-bold text-gray-900">3 mins</p>
+                        <p className="text-sm sm:text-lg font-bold text-gray-900">3-5 mins</p>
                       </div>
                     </CardContent>
                   </Card>
-                </div>
-
-                <div className="absolute bottom-20 -left-5 animate-float hidden lg:block">
-                  <Card className="px-3 py-2 sm:px-4 sm:py-3 shadow-xl border-0">
-                    <CardContent className="p-0 flex items-center gap-2 sm:gap-3">
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500/10 rounded-xl flex items-center justify-center">
-                        <Coins className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] sm:text-xs text-gray-500">Avg. Fare</p>
-                        <p className="text-sm sm:text-lg font-bold text-gray-900">₱13-25</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
+                </motion.div>
               </div>
 
               {/* Jeepney Image */}
@@ -197,246 +231,339 @@ const Home = () => {
                   className="w-full max-w-[350px] xs:max-w-[400px] sm:max-w-[450px] md:max-w-[500px] lg:max-w-[550px] xl:max-w-[600px] drop-shadow-2xl relative z-10"
                 />
               </div>
-            </div>
+            </motion.div>
           </div>
 
-          {/* Stats Banner */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 p-4 sm:p-6 md:p-8 bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100">
+          {/* Quick Stats */}
+          <motion.div
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6 }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 bg-gray-50 rounded-2xl"
+          >
             {[
-              { value: '₱0', label: 'Booking Fee' },
-              { value: '100%', label: 'Cashless Option' },
-              { value: '24/7', label: 'Customer Support' },
-              { value: '15+', label: 'Cities Nationwide' }
+              { label: 'Cities', value: '15' },
+              { label: 'Routes', value: '120+' },
+              { label: 'Drivers', value: '2k+' },
+              { label: 'Daily Trips', value: '8k+' }
             ].map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-grab-green">{stat.value}</div>
-                <div className="text-xs sm:text-sm text-gray-600">{stat.label}</div>
+                <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
+                <div className="text-sm text-gray-600">{stat.label}</div>
               </div>
             ))}
-          </div>
+          </motion.div>
 
-          {/* Problem Section */}
-          <div className="mt-24 sm:mt-28 lg:mt-32 text-center">
-            <Badge className="bg-grab-green/10 border-grab-green/20 text-grab-green px-4 py-2 rounded-full mb-4 sm:mb-6">
-              <Award className="w-4 h-4 mr-2" />
-              THE PROBLEM WE SOLVE
-            </Badge>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight px-4">
-              Why every Filipino needs <span className="text-grab-green">SAKAY</span>
-            </h2>
-          </div>
+          {/* How It Works Section */}
+          <motion.div
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6 }}
+            className="mt-24 sm:mt-28 lg:mt-32"
+          >
+            <div className="text-center mb-12">
+              <Badge className="bg-grab-green/10 border-grab-green/20 text-grab-green px-4 py-2 rounded-full mb-4">
+                <Star className="w-4 h-4 mr-2" />
+                HOW IT WORKS
+              </Badge>
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 max-w-2xl mx-auto">
+                Book a jeepney in three simple steps
+              </h2>
+            </div>
 
-          {/* Problem Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-12">
-            {[
-              {
-                icon: Clock,
-                title: 'Long Waiting Times',
-                desc: 'Filipino commuters waste an average of 2 hours daily waiting for public transport.'
-              },
-              {
-                icon: TrendingUp,
-                title: 'Uncertain Schedules',
-                desc: 'No more guessing when the next jeepney arrives. Live GPS tracking shows exact locations.'
-              },
-              {
-                icon: Shield,
-                title: 'Safety Concerns',
-                desc: 'Ride with confidence. All drivers are verified, routes are tracked.'
-              }
-            ].map((problem, index) => {
-              const IconComponent = problem.icon
-              return (
-                <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-white to-gray-50">
-                  <CardContent className="p-6 sm:p-8">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 bg-grab-green/10 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform">
-                      <IconComponent className="w-6 h-6 sm:w-7 sm:h-7 text-grab-green" />
-                    </div>
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">{problem.title}</h3>
-                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed">{problem.desc}</p>
-                  </CardContent>
-                </Card>
-              )
-            })}
-          </div>
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+              className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            >
+              {[
+                {
+                  step: '01',
+                  title: 'Set your location',
+                  desc: 'Enter your pickup point and destination. Choose from available jeepney routes.'
+                },
+                {
+                  step: '02',
+                  title: 'Book your seat',
+                  desc: 'Select your preferred time and secure your seat in advance.'
+                },
+                {
+                  step: '03',
+                  title: 'Track and ride',
+                  desc: 'Monitor your jeepney in real-time and get notified when it arrives.'
+                }
+              ].map((item, index) => (
+                <motion.div key={index} variants={scaleIn}>
+                  <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+                    <CardContent className="p-6">
+                      <div className="text-4xl font-bold text-grab-green/20 mb-4">{item.step}</div>
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
+                      <p className="text-gray-600">{item.desc}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
 
-          {/* Solution Section */}
-          <div className="mt-24 sm:mt-28 lg:mt-32">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
+          {/* Features Section */}
+          <motion.div
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6 }}
+            className="mt-24 sm:mt-28 lg:mt-32"
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
               {/* Left - Features List */}
-              <div className="space-y-6 sm:space-y-8 px-4 sm:px-0">
+              <div className="space-y-6">
                 <div>
                   <Badge className="bg-grab-green/10 border-grab-green/20 text-grab-green px-4 py-2 rounded-full mb-4">
-                    <Star className="w-4 h-4 mr-2" />
-                    HOW IT WORKS
+                    <Award className="w-4 h-4 mr-2" />
+                    KEY FEATURES
                   </Badge>
-                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
-                    Your complete <span className="text-grab-green">transportation</span> companion
+                  <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight">
+                    Everything you need for a <span className="text-grab-green">smooth</span> commute
                   </h2>
                 </div>
 
-                <div className="space-y-4 sm:space-y-6">
+                <motion.div
+                  variants={staggerContainer}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.3 }}
+                  className="space-y-4"
+                >
                   {[
-                    { icon: Navigation, title: 'Real-time Jeepney Tracking', desc: 'See exactly where your jeepney is and when it will arrive.' },
-                    { icon: Clock, title: 'Advance Booking', desc: 'Reserve your seat hours or even days ahead.' },
-                    { icon: Coins, title: 'Cashless Payments', desc: 'Pay via GCash, Maya, or credit card.' },
-                    { icon: Building2, title: 'Nationwide Coverage', desc: 'From Metro Manila to provinces.' }
+                    {
+                      icon: Navigation,
+                      title: 'Real-time Vehicle Tracking',
+                      desc: 'Track the exact location of your jeepney and know exactly when it will arrive at your location. No more uncertain waiting times.'
+                    },
+                    {
+                      icon: Clock,
+                      title: 'Ride Booking System',
+                      desc: 'Reserve your seat in advance. Avoid long queues and ensure you have a ride, especially during peak hours.'
+                    },
+                    {
+                      icon: MapPin,
+                      title: 'Route Information',
+                      desc: 'View detailed route maps, designated stops, and estimated travel times before you ride. Plan your trip efficiently.'
+                    },
+                    {
+                      icon: Building2,
+                      title: 'Multiple Routes',
+                      desc: 'Access jeepney routes across Metro Manila and nearby provinces. Know which jeepney to take and where to get off.'
+                    }
                   ].map((feature, index) => {
                     const IconComponent = feature.icon
                     return (
-                      <div key={index} className="flex gap-3 sm:gap-4 group">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-grab-green/10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                          <IconComponent className="w-5 h-5 sm:w-6 sm:h-6 text-grab-green" />
+                      <motion.div key={index} variants={fadeInLeft} className="flex gap-4 group">
+                        <div className="w-12 h-12 bg-grab-green/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <IconComponent className="w-6 h-6 text-grab-green" />
                         </div>
                         <div>
-                          <h4 className="text-base sm:text-lg font-bold text-gray-900 mb-1">{feature.title}</h4>
-                          <p className="text-sm sm:text-base text-gray-600">{feature.desc}</p>
+                          <h4 className="text-lg font-bold text-gray-900 mb-1">{feature.title}</h4>
+                          <p className="text-gray-600">{feature.desc}</p>
                         </div>
-                      </div>
+                      </motion.div>
                     )
                   })}
-                </div>
-
-                {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                  <Button className="bg-grab-green hover:bg-grab-green/90 text-white h-11 sm:h-12 px-5 sm:px-6 rounded-xl text-sm sm:text-base">
-                    Learn More
-                  </Button>
-                  <Button variant="outline" className="h-11 sm:h-12 px-5 sm:px-6 rounded-xl border-gray-300 text-sm sm:text-base">
-                    Watch Demo
-                  </Button>
-                </div>
+                </motion.div>
               </div>
 
-              {/* Right - Live Tracking Preview */}
-              <div className="relative px-4 sm:px-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-grab-green/20 to-blue-500/20 rounded-3xl blur-3xl" />
-                <Card className="relative bg-white p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl shadow-2xl border-0">
+              {/* Right - App Preview */}
+              <motion.div
+                variants={scaleIn}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.6 }}
+                className="relative"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-grab-green/10 to-blue-500/10 rounded-3xl blur-3xl" />
+                <Card className="relative bg-white p-6 rounded-2xl shadow-2xl border-0">
                   <CardContent className="p-0">
-                    <div className="space-y-3 sm:space-y-4">
+                    <div className="space-y-3">
                       {[
-                        { location: 'Central Luzon State University', time: '2 mins' },
-                        { location: 'SM City Cabanatuan', time: '5 mins' },
-                        { location: 'Robinsons Malolos', time: '8 mins' },
-                        { location: 'San Jose City Terminal', time: '12 mins' }
+                        { location: 'Central Luzon State University', time: '2 mins', eta: '2:45 PM' },
+                        { location: 'SM City Cabanatuan', time: '5 mins', eta: '2:48 PM' },
+                        { location: 'Robinsons Malolos', time: '8 mins', eta: '2:51 PM' }
                       ].map((item, index) => (
-                        <div key={index} className="flex items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-                          <div className="flex items-center gap-2 sm:gap-3">
-                            <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-grab-green" />
-                            <span className="text-xs sm:text-sm font-medium">{item.location}</span>
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, x: -20 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          viewport={{ once: true }}
+                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                        >
+                          <div className="flex items-center gap-3">
+                            <MapPin className="w-4 h-4 text-grab-green" />
+                            <span className="text-sm font-medium">{item.location}</span>
                           </div>
-                          <Badge variant="secondary" className="bg-grab-green/10 text-grab-green text-xs sm:text-sm">
-                            {item.time}
-                          </Badge>
-                        </div>
+                          <div className="text-right">
+                            <div className="text-sm font-bold text-grab-green">{item.time}</div>
+                            <div className="text-xs text-gray-500">ETA {item.eta}</div>
+                          </div>
+                        </motion.div>
                       ))}
                     </div>
-                    <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-100">
-                      <p className="text-xs sm:text-sm text-gray-500 text-center">
-                        <CheckCircle2 className="w-4 h-4 inline-block text-grab-green mr-1" />
-                        Live tracking available in 15+ cities nationwide
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <p className="text-xs text-gray-500 text-center">
+                        <CheckCircle2 className="w-3 h-3 inline-block text-grab-green mr-1" />
+                        Live tracking available in 15 cities
                       </p>
                     </div>
                   </CardContent>
                 </Card>
-              </div>
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
 
           {/* For Drivers Section */}
-          <div className="mt-24 sm:mt-28 lg:mt-32">
+          <motion.div
+            variants={scaleIn}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6 }}
+            className="mt-24 sm:mt-28 lg:mt-32"
+          >
             <Card className="bg-gradient-to-br from-gray-900 to-gray-800 border-0 overflow-hidden">
-              <CardContent className="p-6 sm:p-8 md:p-12">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                  <div className="space-y-4 sm:space-y-6">
-                    <Badge className="bg-white/10 border-white/20 text-white px-4 py-2 rounded-full">
-                      <Car className="w-4 h-4 mr-2" />
-                      FOR JEEPNEY DRIVERS
-                    </Badge>
-                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-tight">
-                      More passengers, <span className="text-grab-green">less waiting</span>
-                    </h2>
-                    <p className="text-sm sm:text-base text-gray-300 leading-relaxed">
-                      Join thousands of drivers who increased their daily earnings by up to 40% with SAKAY.
-                    </p>
+              <CardContent className="p-8 md:p-12">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                  <motion.div
+                    variants={staggerContainer}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    className="space-y-6"
+                  >
+                    <motion.div variants={fadeInLeft}>
+                      <Badge className="bg-white/10 border-white/20 text-white px-4 py-2 rounded-full">
+                        <Car className="w-4 h-4 mr-2" />
+                        FOR DRIVERS
+                      </Badge>
+                    </motion.div>
+                    <motion.h2 variants={fadeInLeft} className="text-3xl md:text-4xl font-bold text-white leading-tight">
+                      Join our growing network of jeepney drivers
+                    </motion.h2>
+                    <motion.p variants={fadeInLeft} className="text-gray-300 leading-relaxed">
+                      Partner with SAKAY to reach more passengers, optimize your routes, and reduce idle time.
+                    </motion.p>
 
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-2 gap-4 sm:gap-6 pt-4">
+                    <motion.div
+                      variants={staggerContainer}
+                      className="grid grid-cols-2 gap-6 pt-4"
+                    >
                       {[
-                        { value: '40%', label: 'Higher earnings' },
-                        { value: '0', label: 'Dead time' },
-                        { value: '100%', label: 'Free registration' },
+                        { value: '2,000+', label: 'Active Drivers' },
+                        { value: '30%', label: 'Less Idle Time' },
+                        { value: 'Free', label: 'Registration' },
                         { value: '24/7', label: 'Support' }
                       ].map((stat, index) => (
-                        <div key={index}>
-                          <div className="text-xl sm:text-2xl font-bold text-grab-green">{stat.value}</div>
-                          <p className="text-xs sm:text-sm text-gray-400">{stat.label}</p>
-                        </div>
+                        <motion.div key={index} variants={scaleIn}>
+                          <div className="text-2xl font-bold text-grab-green">{stat.value}</div>
+                          <p className="text-sm text-gray-400">{stat.label}</p>
+                        </motion.div>
                       ))}
-                    </div>
+                    </motion.div>
 
-                    <Button className="mt-4 bg-grab-green hover:bg-grab-green/90 text-white h-12 sm:h-14 px-6 sm:px-8 rounded-xl text-sm sm:text-base">
-                      Register as Driver
-                    </Button>
-                  </div>
+                    <motion.div variants={fadeInUp}>
+                      <Button className="mt-4 bg-grab-green hover:bg-grab-green/90 text-white h-12 px-6 rounded-xl">
+                        How to Apply as Driver?
+                      </Button>
+                    </motion.div>
+                  </motion.div>
 
-                  {/* Earnings Comparison */}
-                  <div className="relative mt-6 lg:mt-0">
-                    <div className="absolute inset-0 bg-grab-green/20 blur-3xl rounded-full" />
-                    <Card className="relative bg-white/10 backdrop-blur-sm border-white/20">
-                      <CardContent className="p-4 sm:p-6">
-                        <div className="space-y-3 sm:space-y-4">
-                          <div className="flex justify-between items-center">
-                            <span className="text-xs sm:text-sm text-gray-300">Daily earnings before SAKAY</span>
-                            <span className="text-sm sm:text-base font-bold text-white">₱800</span>
-                          </div>
-                          <div className="flex justify-between items-center">
-                            <span className="text-xs sm:text-sm text-gray-300">Daily earnings with SAKAY</span>
-                            <span className="text-base sm:text-lg font-bold text-grab-green">₱1,120</span>
-                          </div>
-                          <div className="w-full h-2 bg-white/10 rounded-full mt-2">
-                            <div className="w-[40%] h-full bg-grab-green rounded-full" />
-                          </div>
-                          <p className="text-xs sm:text-sm text-gray-300 text-center mt-2">
-                            Average 40% increase in earnings
+                  <motion.div
+                    variants={fadeInRight}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="relative"
+                  >
+                    <div className="absolute inset-0 bg-grab-green/10 blur-3xl rounded-full" />
+                    <Card className="relative bg-white/5 backdrop-blur-sm border-white/10">
+                      <CardContent className="p-6">
+                        <h3 className="text-white font-bold mb-4">Driver Requirements</h3>
+                        <ul className="space-y-3 text-gray-300 text-sm">
+                          <li className="flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-grab-green" />
+                            Valid driver's license (Professional)
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-grab-green" />
+                            LTFRB franchise / permit
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-grab-green" />
+                            Government-issued ID
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-grab-green" />
+                            Smartphone with data plan
+                          </li>
+                        </ul>
+
+                        {/* Additional Info */}
+                        <div className="mt-6 pt-4 border-t border-white/10">
+                          <p className="text-xs text-gray-400">
+                            For inquiries: drivers@sakay.ph | (02) 1234 5679
                           </p>
                         </div>
                       </CardContent>
                     </Card>
-                  </div>
+                  </motion.div>
                 </div>
               </CardContent>
             </Card>
-          </div>
+          </motion.div>
 
-          {/* Final CTA - UPDATED */}
-          <div className="mt-24 sm:mt-28 lg:mt-32 text-center px-4">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight mb-4 sm:mb-6">
-              Ready to experience the <span className="text-grab-green">swabe</span> way to commute?
+          {/* CTA Section */}
+          <motion.div
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6 }}
+            className="mt-24 sm:mt-28 lg:mt-32 text-center"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight mb-6">
+              Ready to try SAKAY?
             </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-6 sm:mb-8 lg:mb-10">
-              Join 50,000+ Filipinos who already switched to SAKAY. Download now and get <span className="font-bold text-grab-green">₱50 free credits!</span>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+              Download the app and experience a more convenient way to commute.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 onClick={handleiOSDownload}
-                className="bg-black hover:bg-gray-800 text-white h-14 sm:h-16 px-6 sm:px-8 md:px-10 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg"
+                className="bg-black hover:bg-gray-800 text-white h-14 px-8 rounded-xl flex items-center gap-3 text-lg"
               >
-                <Apple className="w-5 h-5 sm:w-6 sm:h-6" />
-                <span>Download iOS</span>
+                <Apple className="w-6 h-6" />
+                <span>Download for iOS</span>
               </Button>
               <Button
                 onClick={handleAndroidDownload}
-                className="bg-grab-green hover:bg-grab-green/90 text-white h-14 sm:h-16 px-6 sm:px-8 md:px-10 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg"
+                className="bg-grab-green hover:bg-grab-green/90 text-white h-14 px-8 rounded-xl flex items-center gap-3 text-lg"
               >
-                <Smartphone className="w-5 h-5 sm:w-6 sm:h-6" />
-                <span>Download Android APK</span>
+                <Smartphone className="w-6 h-6" />
+                <span>Download for Android</span>
               </Button>
             </div>
-          </div>
+          </motion.div>
         </div>
-      </main>
+      </motion.main>
 
       <Footer />
 
@@ -453,14 +580,9 @@ const Home = () => {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-8px); }
         }
-        @keyframes fade-in-left {
-          from { transform: translateX(-20px); opacity: 0; }
-          to { transform: translateX(0); opacity: 1; }
-        }
         .animate-jeepney-arrival { animation: jeepney-arrival 1.5s ease-out forwards; }
         .animate-float { animation: float 4s ease-in-out infinite; }
         .animate-float-delayed { animation: float-delayed 5s ease-in-out infinite; }
-        .animate-fade-in-left { animation: fade-in-left 1s ease-out forwards; }
         .perspective-1200 { perspective: 1200px; }
         @media (max-width: 640px) {
           @keyframes float {
