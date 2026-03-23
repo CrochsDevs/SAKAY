@@ -234,27 +234,6 @@ const Home = () => {
             </motion.div>
           </div>
 
-          {/* Quick Stats */}
-          <motion.div
-            variants={fadeInUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 bg-gray-50 rounded-2xl"
-          >
-            {[
-              { label: 'Cities', value: '15' },
-              { label: 'Routes', value: '120+' },
-              { label: 'Drivers', value: '2k+' },
-              { label: 'Daily Trips', value: '8k+' }
-            ].map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
-                <div className="text-sm text-gray-600">{stat.label}</div>
-              </div>
-            ))}
-          </motion.div>
 
           {/* How It Works Section */}
           <motion.div
@@ -420,7 +399,7 @@ const Home = () => {
                     <div className="mt-4 pt-4 border-t border-gray-100">
                       <p className="text-xs text-gray-500 text-center">
                         <CheckCircle2 className="w-3 h-3 inline-block text-grab-green mr-1" />
-                        Live tracking available in 15 cities
+                        Live tracking available.
                       </p>
                     </div>
                   </CardContent>

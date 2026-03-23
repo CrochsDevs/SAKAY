@@ -5,6 +5,8 @@ import Footer from '../layout/Footer'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Separator } from "@/components/ui/separator"
 import {
   Smartphone,
   Apple,
@@ -17,7 +19,12 @@ import {
   Navigation,
   Award,
   Github,
-  ExternalLink
+  ExternalLink,
+  QrCode,
+  Zap,
+  Sparkles,
+  TrendingUp,
+  MapPin
 } from 'lucide-react'
 
 // Import QR codes
@@ -26,7 +33,6 @@ import iosQr from '../assets/qrCode/image.png'
 
 const DownloadPage = () => {
   const [downloading, setDownloading] = useState(false)
-  const [activeTab, setActiveTab] = useState('android')
 
   const handleAndroidDownload = () => {
     setDownloading(true)
@@ -68,389 +74,482 @@ const DownloadPage = () => {
     visible: { opacity: 1, x: 0 }
   }
 
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  }
+
+  const scaleIn = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: { opacity: 1, scale: 1 }
+  }
+
   return (
     <div className="min-h-screen bg-white overflow-x-hidden font-sans">
       <TopBar />
 
-      {/* Hero Section - MongoDB style */}
-      <section className="border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Download <span className="text-grab-green">SAKAY</span>
+      {/* Hero Section - Modern Gradient */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-grab-green/5 via-white to-blue-500/5">
+        <div className="absolute inset-0 bg-grid-gray-100 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeInUp}
+            transition={{ duration: 0.5 }}
+            className="text-center"
+          >
+            <Badge className="bg-grab-green/10 text-grab-green border-grab-green/20 mb-6 px-4 py-2 rounded-full">
+              <Sparkles className="w-4 h-4 mr-2" />
+              Latest Version 2.0.1
+            </Badge>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6">
+              Download{' '}
+              <span className="bg-gradient-to-r from-grab-green to-grab-dark bg-clip-text text-transparent">
+                SAKAY
+              </span>
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Get the latest version of SAKAY app for your device
+              Experience the future of commuting. Get the app now and transform your daily travel.
             </p>
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Platform Tabs - MongoDB style */}
-      <section className="border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center">
-            <div className="inline-flex space-x-8">
-              <button
-                onClick={() => setActiveTab('android')}
-                className={`pb-4 px-1 text-sm font-medium border-b-2 transition-colors ${
-                  activeTab === 'android'
-                    ? 'border-grab-green text-grab-green'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                Android
-              </button>
-              <button
-                onClick={() => setActiveTab('ios')}
-                className={`pb-4 px-1 text-sm font-medium border-b-2 transition-colors ${
-                  activeTab === 'ios'
-                    ? 'border-grab-green text-grab-green'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                iOS
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Download Card - MongoDB style */}
+      {/* Download Section with Tabs */}
       <section className="py-12 md:py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          {activeTab === 'android' && (
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={fadeInUp}
-              transition={{ duration: 0.5 }}
-            >
-              <Card className="border border-gray-200 shadow-sm overflow-hidden">
-                <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200">
-                  {/* Left Side - QR Code */}
-                  <CardContent className="p-8 md:p-10 bg-gray-50">
-                    <motion.div variants={fadeInLeft} className="text-center space-y-4">
-                      <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-sm border border-gray-200 mb-2">
-                        <Smartphone className="w-8 h-8 text-grab-green" />
-                      </div>
-                      <h3 className="text-xl font-semibold text-gray-900">
-                        Android APK
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        Scan QR code to download
-                      </p>
-                      <div className="inline-block p-4 bg-white rounded-2xl shadow-sm border border-gray-200">
-                        <img 
-                          src={androidQr} 
-                          alt="Android QR Code"
-                          className="w-48 h-48 mx-auto"
-                          onError={(e) => {
-                            e.target.onerror = null
-                            e.target.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://example.com/downloads/sakay-android.apk'
-                          }}
-                        />
-                      </div>
-                      <div className="pt-4">
-                        <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-                          <CheckCircle2 className="w-4 h-4 text-grab-green" />
-                          <span>Version 2.0.1</span>
-                        </div>
-                      </div>
-                    </motion.div>
-                  </CardContent>
+          <Tabs defaultValue="android" className="w-full">
+            <div className="flex justify-center mb-8">
+              <TabsList className="bg-gray-100 p-1 rounded-xl">
+                <TabsTrigger
+                  value="android"
+                  className="data-[state=active]:bg-grab-green data-[state=active]:text-white rounded-lg px-6 py-2.5"
+                >
+                  <Smartphone className="w-4 h-4 mr-2" />
+                  Android
+                </TabsTrigger>
+                <TabsTrigger
+                  value="ios"
+                  className="data-[state=active]:bg-black data-[state=active]:text-white rounded-lg px-6 py-2.5"
+                >
+                  <Apple className="w-4 h-4 mr-2" />
+                  iOS
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
-                  {/* Right Side - Download Info */}
-                  <CardContent className="p-8 md:p-10">
-                    <motion.div variants={fadeInRight} className="space-y-6">
-                      <div className="space-y-2">
-                        <h4 className="text-lg font-semibold text-gray-900">
-                          Download Options
-                        </h4>
-                        <p className="text-sm text-gray-500">
-                          Choose your preferred download method
+            <TabsContent value="android">
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={fadeInUp}
+                transition={{ duration: 0.5 }}
+              >
+                <Card className="border-0 shadow-xl overflow-hidden">
+                  <div className="grid md:grid-cols-2">
+                    {/* Left Side - QR Code with Badge */}
+                    <div className="bg-gradient-to-br from-grab-green/5 to-grab-green/10 p-8 md:p-12">
+                      <motion.div variants={fadeInLeft} className="text-center space-y-6">
+                        <div className="relative inline-block">
+                          <div className="absolute -inset-4 bg-grab-green/20 rounded-full blur-xl" />
+                          <div className="relative bg-white p-6 rounded-3xl shadow-2xl">
+                            <img
+                              src={androidQr}
+                              alt="Android QR Code"
+                              className="w-56 h-56 mx-auto"
+                              onError={(e) => {
+                                e.target.onerror = null
+                                e.target.src = 'https://api.qrserver.com/v1/create-qr-code/?size=224x224&data=https://example.com/downloads/sakay-android.apk'
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <div className="flex items-center justify-center gap-2 mb-2">
+                            <QrCode className="w-5 h-5 text-grab-green" />
+                            <span className="text-sm font-medium text-gray-600">Scan to Download</span>
+                          </div>
+                          <p className="text-xs text-gray-500">Open camera and scan QR code</p>
+                        </div>
+                        <Separator className="my-4" />
+                        <div className="flex items-center justify-center gap-4">
+                          <div className="text-center">
+                            <p className="text-2xl font-bold text-grab-green">45 MB</p>
+                            <p className="text-xs text-gray-500">File Size</p>
+                          </div>
+                          <div className="w-px h-8 bg-gray-300" />
+                          <div className="text-center">
+                            <p className="text-2xl font-bold text-grab-green">2.0.1</p>
+                            <p className="text-xs text-gray-500">Version</p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    </div>
+
+                    {/* Right Side - Download Options */}
+                    <div className="p-8 md:p-12">
+                      <motion.div variants={staggerContainer} className="space-y-8">
+                        <div>
+                          <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                            Download Android APK
+                          </h3>
+                          <p className="text-gray-500">
+                            Get the latest version of SAKAY for your Android device
+                          </p>
+                        </div>
+
+                        <div className="space-y-4">
+                          <motion.div variants={scaleIn}>
+                            <div className="group p-5 border-2 border-gray-200 rounded-2xl hover:border-grab-green/50 hover:bg-grab-green/5 transition-all duration-300">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                  <div className="w-12 h-12 bg-grab-green/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <Download className="w-6 h-6 text-grab-green" />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-gray-900">Direct Download</h4>
+                                    <p className="text-sm text-gray-500">Download APK file directly</p>
+                                  </div>
+                                </div>
+                                <Button
+                                  onClick={handleAndroidDownload}
+                                  disabled={downloading}
+                                  size="lg"
+                                  className="bg-grab-green hover:bg-grab-green/90 text-white px-6 rounded-xl"
+                                >
+                                  {downloading ? (
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                      Downloading...
+                                    </div>
+                                  ) : (
+                                    'Download Now'
+                                  )}
+                                </Button>
+                              </div>
+                            </div>
+                          </motion.div>
+
+                          <motion.div variants={scaleIn}>
+                            <div className="group p-5 border-2 border-gray-200 rounded-2xl hover:border-grab-green/50 hover:bg-grab-green/5 transition-all duration-300">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                  <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <Github className="w-6 h-6 text-gray-700" />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-gray-900">GitHub Release</h4>
+                                    <p className="text-sm text-gray-500">View source code and releases</p>
+                                  </div>
+                                </div>
+                                <Button
+                                  variant="outline"
+                                  size="lg"
+                                  className="border-gray-200 hover:border-grab-green hover:bg-grab-green/5 rounded-xl"
+                                  onClick={() => window.open('https://github.com/yourusername/sakay/releases', '_blank')}
+                                >
+                                  <ExternalLink className="w-4 h-4 mr-2" />
+                                  Visit
+                                </Button>
+                              </div>
+                            </div>
+                          </motion.div>
+                        </div>
+
+                        <Separator />
+
+                        <div>
+                          <h5 className="font-semibold text-gray-900 mb-4">System Requirements</h5>
+                          <ul className="space-y-2">
+                            {[
+                              'Android 8.0 (Oreo) and above',
+                              '100 MB free storage space',
+                              'Stable internet connection',
+                              'Location services enabled'
+                            ].map((req, i) => (
+                              <li key={i} className="flex items-center gap-2 text-sm text-gray-600">
+                                <CheckCircle2 className="w-4 h-4 text-grab-green flex-shrink-0" />
+                                {req}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <p className="text-xs text-gray-400">
+                          By downloading, you agree to our{' '}
+                          <a href="#" className="text-grab-green hover:underline">Terms of Service</a>
+                          {' '}and{' '}
+                          <a href="#" className="text-grab-green hover:underline">Privacy Policy</a>
                         </p>
-                      </div>
+                      </motion.div>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            </TabsContent>
 
-                      <div className="space-y-4">
-                        {/* Direct Download */}
-                        <div className="p-4 border border-gray-200 rounded-xl hover:border-grab-green/30 hover:bg-grab-green/5 transition-colors">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-grab-green/10 rounded-lg flex items-center justify-center">
-                                <Download className="w-5 h-5 text-grab-green" />
-                              </div>
-                              <div>
-                                <h5 className="font-medium text-gray-900">Direct Download</h5>
-                                <p className="text-xs text-gray-500">APK file • 45 MB</p>
-                              </div>
-                            </div>
-                            <Button
-                              onClick={handleAndroidDownload}
-                              disabled={downloading}
-                              size="sm"
-                              className="bg-grab-green hover:bg-grab-green/90 text-white"
-                            >
-                              {downloading ? 'Downloading...' : 'Download'}
-                            </Button>
+            <TabsContent value="ios">
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={fadeInUp}
+                transition={{ duration: 0.5 }}
+              >
+                <Card className="border-0 shadow-xl overflow-hidden">
+                  <div className="grid md:grid-cols-2">
+                    {/* Left Side - QR Code */}
+                    <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-8 md:p-12">
+                      <motion.div variants={fadeInLeft} className="text-center space-y-6">
+                        <div className="relative inline-block">
+                          <div className="absolute -inset-4 bg-black/5 rounded-full blur-xl" />
+                          <div className="relative bg-white p-6 rounded-3xl shadow-2xl">
+                            <img
+                              src={iosQr}
+                              alt="iOS QR Code"
+                              className="w-56 h-56 mx-auto"
+                              onError={(e) => {
+                                e.target.onerror = null
+                                e.target.src = 'https://api.qrserver.com/v1/create-qr-code/?size=224x224&data=https://example.com/downloads/sakay-ios.ipa'
+                              }}
+                            />
                           </div>
                         </div>
-
-                        {/* GitHub Release */}
-                        <div className="p-4 border border-gray-200 rounded-xl hover:border-grab-green/30 hover:bg-grab-green/5 transition-colors">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                                <Github className="w-5 h-5 text-gray-700" />
-                              </div>
-                              <div>
-                                <h5 className="font-medium text-gray-900">GitHub Release</h5>
-                                <p className="text-xs text-gray-500">Source code and releases</p>
-                              </div>
-                            </div>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="border-gray-200"
-                              onClick={() => window.open('https://github.com/yourusername/sakay/releases', '_blank')}
-                            >
-                              <ExternalLink className="w-4 h-4" />
-                            </Button>
+                        <div>
+                          <div className="flex items-center justify-center gap-2 mb-2">
+                            <QrCode className="w-5 h-5 text-gray-600" />
+                            <span className="text-sm font-medium text-gray-600">Scan to Download</span>
+                          </div>
+                          <p className="text-xs text-gray-500">Open camera and scan QR code</p>
+                        </div>
+                        <Separator className="my-4" />
+                        <div className="flex items-center justify-center gap-4">
+                          <div className="text-center">
+                            <p className="text-2xl font-bold text-gray-900">52 MB</p>
+                            <p className="text-xs text-gray-500">File Size</p>
+                          </div>
+                          <div className="w-px h-8 bg-gray-300" />
+                          <div className="text-center">
+                            <p className="text-2xl font-bold text-gray-900">2.0.1</p>
+                            <p className="text-xs text-gray-500">Version</p>
                           </div>
                         </div>
-                      </div>
+                      </motion.div>
+                    </div>
 
-                      <div className="pt-4 border-t border-gray-100">
-                        <h5 className="text-sm font-medium text-gray-900 mb-3">
-                          System Requirements
-                        </h5>
-                        <ul className="space-y-2">
-                          <li className="flex items-center gap-2 text-sm text-gray-600">
-                            <CheckCircle2 className="w-4 h-4 text-grab-green" />
-                            Android 8.0 (Oreo) and above
-                          </li>
-                          <li className="flex items-center gap-2 text-sm text-gray-600">
-                            <CheckCircle2 className="w-4 h-4 text-grab-green" />
-                            100 MB free storage
-                          </li>
-                          <li className="flex items-center gap-2 text-sm text-gray-600">
-                            <CheckCircle2 className="w-4 h-4 text-grab-green" />
-                            Internet connection required
-                          </li>
-                        </ul>
-                      </div>
-
-                      <div className="text-xs text-gray-400">
-                        By downloading, you agree to our{' '}
-                        <a href="#" className="text-grab-green hover:underline">Terms</a>
-                        {' '}and{' '}
-                        <a href="#" className="text-grab-green hover:underline">Privacy Policy</a>
-                      </div>
-                    </motion.div>
-                  </CardContent>
-                </div>
-              </Card>
-            </motion.div>
-          )}
-
-          {activeTab === 'ios' && (
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={fadeInUp}
-              transition={{ duration: 0.5 }}
-            >
-              <Card className="border border-gray-200 shadow-sm overflow-hidden">
-                <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200">
-                  {/* Left Side - QR Code */}
-                  <CardContent className="p-8 md:p-10 bg-gray-50">
-                    <motion.div variants={fadeInLeft} className="text-center space-y-4">
-                      <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-sm border border-gray-200 mb-2">
-                        <Apple className="w-8 h-8 text-gray-900" />
-                      </div>
-                      <h3 className="text-xl font-semibold text-gray-900">
-                        iOS App (IPA)
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        Scan QR code to download
-                      </p>
-                      <div className="inline-block p-4 bg-white rounded-2xl shadow-sm border border-gray-200">
-                        <img 
-                          src={iosQr} 
-                          alt="iOS QR Code"
-                          className="w-48 h-48 mx-auto"
-                          onError={(e) => {
-                            e.target.onerror = null
-                            e.target.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://example.com/downloads/sakay-ios.ipa'
-                          }}
-                        />
-                      </div>
-                      <div className="pt-4">
-                        <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-                          <CheckCircle2 className="w-4 h-4 text-grab-green" />
-                          <span>Version 2.0.1</span>
+                    {/* Right Side - Download Options */}
+                    <div className="p-8 md:p-12">
+                      <motion.div variants={staggerContainer} className="space-y-8">
+                        <div>
+                          <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                            Download iOS IPA
+                          </h3>
+                          <p className="text-gray-500">
+                            Get the latest version of SAKAY for your iPhone or iPad
+                          </p>
                         </div>
-                      </div>
-                    </motion.div>
-                  </CardContent>
 
-                  {/* Right Side - Download Info */}
-                  <CardContent className="p-8 md:p-10">
-                    <motion.div variants={fadeInRight} className="space-y-6">
-                      <div className="space-y-2">
-                        <h4 className="text-lg font-semibold text-gray-900">
-                          Download Options
-                        </h4>
-                        <p className="text-sm text-gray-500">
-                          Choose your preferred download method
+                        <div className="space-y-4">
+                          <motion.div variants={scaleIn}>
+                            <div className="group p-5 border-2 border-gray-200 rounded-2xl hover:border-black/50 hover:bg-gray-50 transition-all duration-300">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                  <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <Download className="w-6 h-6 text-gray-700" />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-gray-900">Direct Download</h4>
+                                    <p className="text-sm text-gray-500">Download IPA file directly</p>
+                                  </div>
+                                </div>
+                                <Button
+                                  onClick={handleiOSDownload}
+                                  disabled={downloading}
+                                  size="lg"
+                                  className="bg-black hover:bg-gray-800 text-white px-6 rounded-xl"
+                                >
+                                  {downloading ? (
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                      Downloading...
+                                    </div>
+                                  ) : (
+                                    'Download Now'
+                                  )}
+                                </Button>
+                              </div>
+                            </div>
+                          </motion.div>
+
+                          <motion.div variants={scaleIn}>
+                            <div className="group p-5 border-2 border-gray-200 rounded-2xl hover:border-black/50 hover:bg-gray-50 transition-all duration-300">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                  <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <Github className="w-6 h-6 text-gray-700" />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-gray-900">GitHub Release</h4>
+                                    <p className="text-sm text-gray-500">View source code and releases</p>
+                                  </div>
+                                </div>
+                                <Button
+                                  variant="outline"
+                                  size="lg"
+                                  className="border-gray-200 hover:border-black rounded-xl"
+                                  onClick={() => window.open('https://github.com/yourusername/sakay/releases', '_blank')}
+                                >
+                                  <ExternalLink className="w-4 h-4 mr-2" />
+                                  Visit
+                                </Button>
+                              </div>
+                            </div>
+                          </motion.div>
+                        </div>
+
+                        <Separator />
+
+                        <div>
+                          <h5 className="font-semibold text-gray-900 mb-4">System Requirements</h5>
+                          <ul className="space-y-2">
+                            {[
+                              'iOS 13.0 or later',
+                              '150 MB free storage space',
+                              'Stable internet connection',
+                              'Location services enabled'
+                            ].map((req, i) => (
+                              <li key={i} className="flex items-center gap-2 text-sm text-gray-600">
+                                <CheckCircle2 className="w-4 h-4 text-grab-green flex-shrink-0" />
+                                {req}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <p className="text-xs text-gray-400">
+                          By downloading, you agree to our{' '}
+                          <a href="#" className="text-grab-green hover:underline">Terms of Service</a>
+                          {' '}and{' '}
+                          <a href="#" className="text-grab-green hover:underline">Privacy Policy</a>
                         </p>
-                      </div>
-
-                      <div className="space-y-4">
-                        {/* Direct Download */}
-                        <div className="p-4 border border-gray-200 rounded-xl hover:border-grab-green/30 hover:bg-grab-green/5 transition-colors">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-grab-green/10 rounded-lg flex items-center justify-center">
-                                <Download className="w-5 h-5 text-grab-green" />
-                              </div>
-                              <div>
-                                <h5 className="font-medium text-gray-900">Direct Download</h5>
-                                <p className="text-xs text-gray-500">IPA file • 52 MB</p>
-                              </div>
-                            </div>
-                            <Button
-                              onClick={handleiOSDownload}
-                              disabled={downloading}
-                              size="sm"
-                              className="bg-black hover:bg-gray-800 text-white"
-                            >
-                              {downloading ? 'Downloading...' : 'Download'}
-                            </Button>
-                          </div>
-                        </div>
-
-                        {/* GitHub Release */}
-                        <div className="p-4 border border-gray-200 rounded-xl hover:border-grab-green/30 hover:bg-grab-green/5 transition-colors">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                                <Github className="w-5 h-5 text-gray-700" />
-                              </div>
-                              <div>
-                                <h5 className="font-medium text-gray-900">GitHub Release</h5>
-                                <p className="text-xs text-gray-500">Source code and releases</p>
-                              </div>
-                            </div>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="border-gray-200"
-                              onClick={() => window.open('https://github.com/yourusername/sakay/releases', '_blank')}
-                            >
-                              <ExternalLink className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="pt-4 border-t border-gray-100">
-                        <h5 className="text-sm font-medium text-gray-900 mb-3">
-                          System Requirements
-                        </h5>
-                        <ul className="space-y-2">
-                          <li className="flex items-center gap-2 text-sm text-gray-600">
-                            <CheckCircle2 className="w-4 h-4 text-grab-green" />
-                            iOS 13.0 or later
-                          </li>
-                          <li className="flex items-center gap-2 text-sm text-gray-600">
-                            <CheckCircle2 className="w-4 h-4 text-grab-green" />
-                            150 MB free storage
-                          </li>
-                          <li className="flex items-center gap-2 text-sm text-gray-600">
-                            <CheckCircle2 className="w-4 h-4 text-grab-green" />
-                            Internet connection required
-                          </li>
-                        </ul>
-                      </div>
-
-                      <div className="text-xs text-gray-400">
-                        By downloading, you agree to our{' '}
-                        <a href="#" className="text-grab-green hover:underline">Terms</a>
-                        {' '}and{' '}
-                        <a href="#" className="text-grab-green hover:underline">Privacy Policy</a>
-                      </div>
-                    </motion.div>
-                  </CardContent>
-                </div>
-              </Card>
-            </motion.div>
-          )}
+                      </motion.div>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            </TabsContent>
+          </Tabs>
         </div>
       </section>
 
-      {/* Features Grid - MongoDB style */}
-      <section className="py-12 md:py-16 border-t border-gray-200 bg-gray-50">
+      {/* Features Grid - UPDATED with new content */}
+      <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Why choose SAKAY?
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInUp}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Everything you need for a seamless commute
             </h2>
-            <p className="text-gray-600">
-              Built for Filipino commuters, designed for convenience
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              SAKAY comes packed with features designed to make your daily travel smooth and hassle-free
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          >
             {[
-              { icon: Navigation, title: 'Real-time Tracking', desc: 'Track your jeepney in real-time' },
-              { icon: Clock, title: 'Book in Advance', desc: 'Reserve your seat up to 24hrs ahead' },
-              { icon: Shield, title: 'Safe & Secure', desc: 'Verified drivers and secure rides' },
-              { icon: Users, title: 'Community', desc: 'Join thousands of happy commuters' }
+              {
+                icon: Navigation,
+                title: 'Real-time Vehicle Tracking',
+                desc: 'Track the exact location of your jeepney and know exactly when it will arrive at your location. No more uncertain waiting times.',
+                color: 'text-grab-green'
+              },
+              {
+                icon: Clock,
+                title: 'Ride Booking System',
+                desc: 'Reserve your seat in advance. Avoid long queues and ensure you have a ride, especially during peak hours.',
+                color: 'text-grab-green'
+              },
+              {
+                icon: MapPin,
+                title: 'Route Information',
+                desc: 'View detailed route maps, designated stops, and estimated travel times before you ride. Plan your trip efficiently.',
+                color: 'text-grab-green'
+              },
+              {
+                icon: TrendingUp,
+                title: 'Multiple Routes',
+                desc: 'Access jeepney routes across Metro Manila and nearby provinces. Know which jeepney to take and where to get off.',
+                color: 'text-grab-green'
+              }
             ].map((feature, index) => {
               const IconComponent = feature.icon
               return (
-                <div key={index} className="text-center">
-                  <div className="w-12 h-12 bg-grab-green/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <IconComponent className="w-6 h-6 text-grab-green" />
-                  </div>
-                  <h3 className="font-semibold text-gray-900 mb-1">{feature.title}</h3>
-                  <p className="text-sm text-gray-500">{feature.desc}</p>
-                </div>
+                <motion.div key={index} variants={scaleIn}>
+                  <Card className="border border-gray-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full">
+                    <CardContent className="p-6">
+                      <div className="w-12 h-12 bg-grab-green/10 rounded-xl flex items-center justify-center mb-4">
+                        <IconComponent className="w-6 h-6 text-grab-green" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
+                      <p className="text-sm text-gray-500">{feature.desc}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               )
             })}
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Version Info - MongoDB style */}
-      <section className="py-12 border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-grab-green/10 rounded-xl flex items-center justify-center">
-                <Award className="w-6 h-6 text-grab-green" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900">Latest Version: 2.0.1</h3>
-                <p className="text-sm text-gray-500">Released March 15, 2026</p>
-              </div>
+      {/* CTA Section */}
+      <section className="py-16 bg-gradient-to-br from-grab-green to-grab-dark text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInUp}
+            className="space-y-6"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold">
+              Ready to transform your commute?
+            </h2>
+            <p className="text-xl text-white/80">
+              Join thousands of commuters who already made the switch to SAKAY.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+              <Button
+                onClick={() => document.querySelector('[value="android"]')?.click()}
+                className="bg-white text-grab-green hover:bg-gray-100 h-14 px-8 rounded-xl text-lg font-bold"
+              >
+                <Smartphone className="w-5 h-5 mr-2" />
+                Download for Android
+              </Button>
+              <Button
+                onClick={() => document.querySelector('[value="ios"]')?.click()}
+                className="bg-black text-white hover:bg-gray-800 h-14 px-8 rounded-xl text-lg font-bold"
+              >
+                <Apple className="w-5 h-5 mr-2" />
+                Download for iOS
+              </Button>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <CheckCircle2 className="w-4 h-4 text-grab-green" />
-                <span>Bug fixes</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <CheckCircle2 className="w-4 h-4 text-grab-green" />
-                <span>Performance improvements</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <CheckCircle2 className="w-4 h-4 text-grab-green" />
-                <span>Enhanced tracking</span>
-              </div>
-            </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
