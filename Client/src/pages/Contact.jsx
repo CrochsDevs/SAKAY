@@ -5,25 +5,29 @@ import Footer from '../layout/Footer'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
+// import { Input } from "@/components/ui/input"
+// import { Textarea } from "@/components/ui/textarea"
+// import { Label } from "@/components/ui/label"
 import {
   Mail,
   Phone,
   MapPin,
   Clock,
-  Send,
-  CheckCircle2,
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
-  MessageCircle,
+  Heart,
+  Sparkles,
+  HelpCircle,
   Headphones,
   Globe,
-  Heart,
-  Sparkles
+  Building2,
+  MessageCircle
+  // Send,
+  // CheckCircle2,
+  // Facebook,
+  // Twitter,
+  // Instagram,
+  // Linkedin,
+  // MessageCircle,
+  // Globe,
 } from 'lucide-react'
 
 const Contact = () => {
@@ -98,22 +102,22 @@ const Contact = () => {
       action: 'mailto:support@sakay.ph',
       color: 'grab-green'
     },
-    {
-      icon: Phone,
-      title: 'Call Us',
-      details: '+63 (2) 1234 5678',
-      subDetails: '+63 917 123 4567',
-      action: 'tel:+63212345678',
-      color: 'grab-green'
-    },
-    {
-      icon: MapPin,
-      title: 'Visit Us',
-      details: '123 Innovation Hub',
-      subDetails: 'Quezon City, Metro Manila, Philippines 1100',
-      action: 'https://maps.google.com',
-      color: 'grab-green'
-    },
+    // {
+    //   icon: Phone,
+    //   title: 'Call Us',
+    //   details: '+63 (2) 8532 7700',
+    //   subDetails: 'Globe: +63 917 888 7629',
+    //   action: 'tel:+63285327700',
+    //   color: 'grab-green'
+    // },
+    // {
+    //   icon: Globe,
+    //   title: 'Main Office',
+    //   details: 'SAKAY Headquarters',
+    //   subDetails: '23rd Floor, One Ayala Tower, Makati City, Philippines',
+    //   action: 'https://maps.google.com',
+    //   color: 'grab-green'
+    // },
     {
       icon: Clock,
       title: 'Support Hours',
@@ -126,8 +130,8 @@ const Contact = () => {
 
   const faqs = [
     {
-      question: 'How do I book a ride?',
-      answer: 'Simply open the app, enter your pickup and drop-off location, select your preferred time, and confirm your booking. You\'ll receive a confirmation once a driver accepts your request.'
+      question: 'How do I download the SAKAY app?',
+      answer: 'You can download SAKAY directly from our website. Click the "Download App" button on the top bar or visit our Download page. Choose between Android APK or iOS IPA files.'
     },
     {
       question: 'Is SAKAY available in my city?',
@@ -138,8 +142,16 @@ const Contact = () => {
       answer: 'Download the app, select "Driver Registration" during sign-up, and submit the required documents (driver\'s license, OR/CR, franchise). Our team will review and approve your application within 3-5 business days.'
     },
     {
-      question: 'What if I encounter a problem?',
-      answer: 'Use the in-app report feature or email us at support@sakay.ph. Our support team is available 24/7 to assist you.'
+      question: 'What if I encounter a problem with the app?',
+      answer: 'Use the in-app report feature or email us at support@sakay.ph. Our support team is available 24/7 to assist you with any issues.'
+    },
+    {
+      question: 'How do I book a ride?',
+      answer: 'Simply open the app, enter your pickup and drop-off location, select your preferred time, and confirm your booking. You\'ll receive a confirmation once a driver accepts your request.'
+    },
+    {
+      question: 'Is there a booking fee?',
+      answer: 'No, SAKAY does not charge any booking fee. You only pay the standard jeepney fare directly to the driver upon boarding.'
     }
   ]
 
@@ -159,7 +171,7 @@ const Contact = () => {
             className="text-center"
           >
             <Badge className="bg-grab-green/10 text-grab-green border-grab-green/20 mb-6 px-4 py-2 rounded-full">
-              <MessageCircle className="w-4 h-4 mr-2" />
+              <HelpCircle className="w-4 h-4 mr-2" />
               GET IN TOUCH
             </Badge>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6">
@@ -215,12 +227,13 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* Contact Form & Map */}
+      {/* Contact Form & Map - COMMENTED OUT FOR NOW */}
+      {/*
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
-            <motion.div
+            {/* <motion.div
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
@@ -318,18 +331,18 @@ const Contact = () => {
                   )}
                 </CardContent>
               </Card>
-            </motion.div>
+            </motion.div> */}
 
             {/* Map & Social */}
-            <motion.div
+            {/* <motion.div
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
               variants={fadeInRight}
               className="space-y-6"
-            >
+            > */}
               {/* Map Card */}
-              <Card className="border-0 shadow-xl overflow-hidden">
+              {/* <Card className="border-0 shadow-xl overflow-hidden">
                 <CardContent className="p-0">
                   <div className="h-64 bg-gray-200 relative">
                     <iframe
@@ -350,10 +363,10 @@ const Contact = () => {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+              </Card> */}
 
               {/* Social Media Links */}
-              <Card className="border-0 shadow-xl">
+              {/* <Card className="border-0 shadow-xl">
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Connect with us</h3>
                   <div className="flex flex-wrap gap-3">
@@ -376,13 +389,14 @@ const Contact = () => {
                     ))}
                   </div>
                 </CardContent>
-              </Card>
-            </motion.div>
+              </Card> */}
+            {/* </motion.div>
           </div>
         </div>
-      </section>
+      </section> */}
+      */}
 
-      {/* FAQ Section */}
+      {/* FAQ Section - UPDATED with more questions */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div

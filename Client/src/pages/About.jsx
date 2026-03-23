@@ -14,14 +14,10 @@ import {
   Target,
   Eye,
   Lightbulb,
-  TrendingUp,
-  Building2,
   BookOpen,
   Mail,
   Quote,
   Shield,
-  Star,
-  Car
 } from 'lucide-react'
 
 const About = () => {
@@ -56,34 +52,34 @@ const About = () => {
     visible: { opacity: 1, scale: 1 }
   }
 
-  const teamMembers = [
-    {
-      name: 'Lester S. Rodriguez',
-      role: 'Project Lead & Full Stack Developer',
-      bio: 'IT student passionate about creating solutions that improve daily commuting experiences. Leads the development and oversees the entire project.',
-      image: null
-    },
-    {
-      name: 'Marycris A. Manalang',
-      role: 'Project Manager',
-      bio: 'Ensures smooth project execution, manages timelines, and coordinates between team members to deliver a quality product.',
-      image: null
-    },
-    {
-      name: 'Jian Joy C. Anin',
-      role: 'Project Developer & Designer',
-      bio: 'Responsible for UI/UX design and frontend development. Creates intuitive interfaces that make technology accessible to everyone.',
-      image: null
-    }
-  ]
+  // const teamMembers = [
+  //   {
+  //     name: 'Lester S. Rodriguez',
+  //     role: 'Project Lead & Full Stack Developer',
+  //     bio: 'IT student passionate about creating solutions that improve daily commuting experiences. Leads the development and oversees the entire project.',
+  //     image: null
+  //   },
+  //   {
+  //     name: 'Marycris A. Manalang',
+  //     role: 'Project Manager',
+  //     bio: 'Ensures smooth project execution, manages timelines, and coordinates between team members to deliver a quality product.',
+  //     image: null
+  //   },
+  //   {
+  //     name: 'Jian Joy C. Anin',
+  //     role: 'Project Developer & Designer',
+  //     bio: 'Responsible for UI/UX design and frontend development. Creates intuitive interfaces that make technology accessible to everyone.',
+  //     image: null
+  //   }
+  // ]
 
-  const milestones = [
-    { year: '2024', title: 'Project Conception', description: 'Idea was born to solve commuting challenges' },
-    { year: '2025', title: 'Research Phase', description: 'Gathered data from commuters and drivers' },
-    { year: '2025', title: 'Prototype Development', description: 'First version of the app was developed' },
-    { year: '2026', title: 'Beta Testing', description: 'Successfully tested with 100+ users' },
-    { year: '2026', title: 'Official Launch', description: 'SAKAY goes live for everyone!' }
-  ]
+  // const milestones = [
+  //   { year: '2024', title: 'Project Conception', description: 'Idea was born to solve commuting challenges' },
+  //   { year: '2025', title: 'Research Phase', description: 'Gathered data from commuters and drivers' },
+  //   { year: '2025', title: 'Prototype Development', description: 'First version of the app was developed' },
+  //   { year: '2026', title: 'Beta Testing', description: 'Successfully tested with 100+ users' },
+  //   { year: '2026', title: 'Official Launch', description: 'SAKAY goes live for everyone!' }
+  // ]
 
   return (
     <div className="min-h-screen bg-white overflow-x-hidden font-sans">
@@ -100,10 +96,6 @@ const About = () => {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <Badge className="bg-grab-green/10 text-grab-green border-grab-green/20 mb-6 px-4 py-2 rounded-full">
-              <Heart className="w-4 h-4 mr-2" />
-              OUR STORY
-            </Badge>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6">
               About{' '}
               <span className="bg-gradient-to-r from-grab-green to-grab-dark bg-clip-text text-transparent">
@@ -292,7 +284,7 @@ const About = () => {
       </section>
 
       {/* Milestones */}
-      <section className="py-16 bg-gray-50">
+      {/* <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -359,10 +351,10 @@ const About = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Stats Section */}
-      <section className="py-16">
+      {/* <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
@@ -391,10 +383,10 @@ const About = () => {
             })}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Team Section - Centered for 3 members */}
-      <section className="py-16 bg-gray-50">
+      {/* <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -438,7 +430,7 @@ const About = () => {
             ))}
           </motion.div>
         </div>
-      </section>
+      </section> */}
 
       {/* CTA Section */}
       <section className="py-16 bg-gradient-to-br from-grab-green to-grab-dark text-white">

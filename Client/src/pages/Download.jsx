@@ -104,10 +104,6 @@ const DownloadPage = () => {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <Badge className="bg-grab-green/10 text-grab-green border-grab-green/20 mb-6 px-4 py-2 rounded-full">
-              <Sparkles className="w-4 h-4 mr-2" />
-              Latest Version 2.0.1
-            </Badge>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6">
               Download{' '}
               <span className="bg-gradient-to-r from-grab-green to-grab-dark bg-clip-text text-transparent">
