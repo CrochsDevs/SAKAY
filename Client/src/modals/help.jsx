@@ -108,7 +108,7 @@ const HelpModal = ({ isOpen, onClose }) => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {[
                   { icon: MessageCircle, label: 'Contact Support', color: 'grab-green', action: 'contact' },
-                  { icon: BookOpen, label: 'FAQs', color: 'grab-green', action: 'faq' }
+                  { icon: BookOpen, label: 'FAQs', color: 'grab-green', action: 'contact' }
                 ].map((item, index) => (
                   <button
                     key={index}
