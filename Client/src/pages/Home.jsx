@@ -30,12 +30,14 @@ import jeepneyImage from '../assets/images/image.png'
 const Home = () => {
   const [downloading, setDownloading] = useState(false)
 
+  // Actual APK link from Google Drive
+  const apkUrl = 'https://drive.google.com/uc?export=download&id=1pkjCnxAA9HQLL4tsV3ptffysZijg7vTl'
+
   const handleAndroidDownload = () => {
     setDownloading(true)
-    const apkUrl = 'https://example.com/downloads/sakay-android.apk'
     const link = document.createElement('a')
     link.href = apkUrl
-    link.download = 'sakay-android.apk'
+    link.download = 'Jodally-1.2.1.apk'
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -43,14 +45,8 @@ const Home = () => {
   }
 
   const handleiOSDownload = () => {
-    const ipaUrl = 'https://example.com/downloads/sakay-ios.ipa'
-    const link = document.createElement('a')
-    link.href = ipaUrl
-    link.download = 'sakay-ios.ipa'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    setTimeout(() => setDownloading(false), 2000)
+    // Coming Soon - will be added later
+    alert('iOS app is coming soon! Stay tuned for updates.')
   }
 
   // Animation Variants
@@ -135,11 +131,11 @@ const Home = () => {
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Button
                   onClick={handleiOSDownload}
-                  className="bg-black hover:bg-gray-800 text-white h-14 sm:h-16 px-6 sm:px-8 rounded-xl sm:rounded-2xl flex items-center gap-3 w-full sm:w-auto text-base sm:text-lg transition-all hover:scale-105 hover:shadow-2xl"
+                  className="bg-gray-300 hover:bg-gray-400 text-gray-600 cursor-not-allowed h-14 sm:h-16 px-6 sm:px-8 rounded-xl sm:rounded-2xl flex items-center gap-3 w-full sm:w-auto text-base sm:text-lg"
                 >
                   <Apple className="w-6 h-6 sm:w-7 sm:h-7" />
                   <div className="text-left">
-                    <p className="text-[8px] sm:text-[10px] uppercase font-bold leading-none opacity-80">Download for</p>
+                    <p className="text-[8px] sm:text-[10px] uppercase font-bold leading-none opacity-80">Coming Soon</p>
                     <p className="text-base sm:text-lg font-black leading-tight">iOS</p>
                   </div>
                   <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 ml-auto sm:ml-2 opacity-60" />
@@ -161,16 +157,6 @@ const Home = () => {
                   </div>
                   {!downloading && <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 ml-auto sm:ml-2 opacity-60" />}
                 </Button>
-              </div>
-
-              {/* Contact Info */}
-              <div className="flex items-center gap-4 pt-2 text-sm text-gray-500">
-                <div className="flex items-center gap-1">
-                  <PhoneCall className="w-4 h-4" />
-                  <span>(02) 1234 5678</span>
-                </div>
-                <span>•</span>
-                <span>support@sakay.ph</span>
               </div>
             </motion.div>
 
@@ -527,10 +513,10 @@ const Home = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 onClick={handleiOSDownload}
-                className="bg-black hover:bg-gray-800 text-white h-14 px-8 rounded-xl flex items-center gap-3 text-lg"
+                className="bg-gray-300 hover:bg-gray-400 text-gray-600 cursor-not-allowed h-14 px-8 rounded-xl flex items-center gap-3 text-lg"
               >
                 <Apple className="w-6 h-6" />
-                <span>Download for iOS</span>
+                <span>Coming Soon</span>
               </Button>
               <Button
                 onClick={handleAndroidDownload}

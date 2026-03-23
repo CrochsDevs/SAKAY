@@ -16,6 +16,18 @@ const TopBar = () => {
     { name: 'Contact', path: '/contact' },
   ];
 
+  // Direct download link for the APK
+  const downloadApkUrl = 'https://drive.google.com/uc?export=download&id=1pkjCnxAA9HQLL4tsV3ptffysZijg7vTl';
+
+  const handleDownload = () => {
+    const link = document.createElement('a');
+    link.href = downloadApkUrl;
+    link.download = 'Jodally-1.2.1.apk';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-[100] border-b border-gray-100 bg-white/95 backdrop-blur-md">
@@ -53,11 +65,14 @@ const TopBar = () => {
               </button>
             </div>
 
-            <Link to="/download" className="hidden sm:block">
+            <button 
+              onClick={handleDownload}
+              className="hidden sm:block"
+            >
               <Button className="bg-grab-green hover:bg-grab-dark text-white text-md font-black rounded-full px-8 h-12 shadow-lg shadow-green-100 transition-transform active:scale-95">
                 Download App
               </Button>
-            </Link>
+            </button>
 
             {/* Mobile Menu Toggle */}
             <button 
@@ -96,11 +111,15 @@ const TopBar = () => {
                 <HelpCircle size={20} />
                 <span>Help Center</span>
               </button>
-              <Link to="/download" onClick={() => setIsOpen(false)}>
-                <Button className="w-full bg-grab-green text-white font-black h-14 rounded-2xl">
-                  Download App Now
-                </Button>
-              </Link>
+              <button 
+                onClick={() => {
+                  setIsOpen(false)
+                  handleDownload()
+                }}
+                className="w-full bg-grab-green text-white font-black h-14 rounded-2xl"
+              >
+                Download App Now
+              </button>
             </div>
           </div>
         </div>

@@ -34,12 +34,14 @@ import iosQr from '../assets/qrCode/image.png'
 const DownloadPage = () => {
   const [downloading, setDownloading] = useState(false)
 
+  // Actual APK link from Google Drive
+  const apkUrl = 'https://drive.google.com/uc?export=download&id=1pkjCnxAA9HQLL4tsV3ptffysZijg7vTl'
+
   const handleAndroidDownload = () => {
     setDownloading(true)
-    const apkUrl = 'https://example.com/downloads/sakay-android.apk'
     const link = document.createElement('a')
     link.href = apkUrl
-    link.download = 'sakay-android.apk'
+    link.download = 'Jodally-1.2.1.apk'
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -48,14 +50,11 @@ const DownloadPage = () => {
 
   const handleiOSDownload = () => {
     setDownloading(true)
-    const ipaUrl = 'https://example.com/downloads/sakay-ios.ipa'
-    const link = document.createElement('a')
-    link.href = ipaUrl
-    link.download = 'sakay-ios.ipa'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    setTimeout(() => setDownloading(false), 2000)
+    // iOS app is coming soon
+    setTimeout(() => {
+      setDownloading(false)
+      alert('iOS app is coming soon! Stay tuned for updates.')
+    }, 1000)
   }
 
   // Animation variants
@@ -161,7 +160,7 @@ const DownloadPage = () => {
                               className="w-56 h-56 mx-auto"
                               onError={(e) => {
                                 e.target.onerror = null
-                                e.target.src = 'https://api.qrserver.com/v1/create-qr-code/?size=224x224&data=https://example.com/downloads/sakay-android.apk'
+                                e.target.src = 'https://api.qrserver.com/v1/create-qr-code/?size=224x224&data=https://drive.google.com/uc?export=download&id=1pkjCnxAA9HQLL4tsV3ptffysZijg7vTl'
                               }}
                             />
                           </div>
@@ -181,7 +180,7 @@ const DownloadPage = () => {
                           </div>
                           <div className="w-px h-8 bg-gray-300" />
                           <div className="text-center">
-                            <p className="text-2xl font-bold text-grab-green">2.0.1</p>
+                            <p className="text-2xl font-bold text-grab-green">1.2.1</p>
                             <p className="text-xs text-gray-500">Version</p>
                           </div>
                         </div>
@@ -319,86 +318,78 @@ const DownloadPage = () => {
                         <div>
                           <div className="flex items-center justify-center gap-2 mb-2">
                             <QrCode className="w-5 h-5 text-gray-600" />
-                            <span className="text-sm font-medium text-gray-600">Scan to Download</span>
+                            <span className="text-sm font-medium text-gray-600">Coming Soon</span>
                           </div>
-                          <p className="text-xs text-gray-500">Open camera and scan QR code</p>
+                          <p className="text-xs text-gray-500">iOS app is currently in development</p>
                         </div>
                         <Separator className="my-4" />
                         <div className="flex items-center justify-center gap-4">
                           <div className="text-center">
-                            <p className="text-2xl font-bold text-gray-900">52 MB</p>
+                            <p className="text-2xl font-bold text-gray-900">—</p>
                             <p className="text-xs text-gray-500">File Size</p>
                           </div>
                           <div className="w-px h-8 bg-gray-300" />
                           <div className="text-center">
-                            <p className="text-2xl font-bold text-gray-900">2.0.1</p>
+                            <p className="text-2xl font-bold text-gray-900">Soon</p>
                             <p className="text-xs text-gray-500">Version</p>
                           </div>
                         </div>
                       </motion.div>
                     </div>
 
-                    {/* Right Side - Download Options */}
+                    {/* Right Side - Coming Soon Info */}
                     <div className="p-8 md:p-12">
                       <motion.div variants={staggerContainer} className="space-y-8">
                         <div>
                           <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                            Download iOS IPA
+                            iOS App Coming Soon
                           </h3>
                           <p className="text-gray-500">
-                            Get the latest version of SAKAY for your iPhone or iPad
+                            We're working hard to bring SAKAY to iOS devices. Stay tuned for updates!
                           </p>
                         </div>
 
                         <div className="space-y-4">
                           <motion.div variants={scaleIn}>
-                            <div className="group p-5 border-2 border-gray-200 rounded-2xl hover:border-black/50 hover:bg-gray-50 transition-all duration-300">
+                            <div className="group p-5 border-2 border-gray-200 rounded-2xl bg-gray-50 opacity-70">
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-4">
-                                  <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <Download className="w-6 h-6 text-gray-700" />
+                                  <div className="w-12 h-12 bg-gray-200 rounded-xl flex items-center justify-center">
+                                    <Download className="w-6 h-6 text-gray-400" />
                                   </div>
                                   <div>
-                                    <h4 className="font-semibold text-gray-900">Direct Download</h4>
-                                    <p className="text-sm text-gray-500">Download IPA file directly</p>
+                                    <h4 className="font-semibold text-gray-500">Direct Download</h4>
+                                    <p className="text-sm text-gray-400">Coming soon</p>
                                   </div>
                                 </div>
                                 <Button
-                                  onClick={handleiOSDownload}
-                                  disabled={downloading}
+                                  disabled
                                   size="lg"
-                                  className="bg-black hover:bg-gray-800 text-white px-6 rounded-xl"
+                                  className="bg-gray-300 text-gray-500 cursor-not-allowed px-6 rounded-xl"
                                 >
-                                  {downloading ? (
-                                    <div className="flex items-center gap-2">
-                                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                      Downloading...
-                                    </div>
-                                  ) : (
-                                    'Download Now'
-                                  )}
+                                  Coming Soon
                                 </Button>
                               </div>
                             </div>
                           </motion.div>
 
                           <motion.div variants={scaleIn}>
-                            <div className="group p-5 border-2 border-gray-200 rounded-2xl hover:border-black/50 hover:bg-gray-50 transition-all duration-300">
+                            <div className="group p-5 border-2 border-gray-200 rounded-2xl bg-gray-50 opacity-70">
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-4">
-                                  <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <Github className="w-6 h-6 text-gray-700" />
+                                  <div className="w-12 h-12 bg-gray-200 rounded-xl flex items-center justify-center">
+                                    <Github className="w-6 h-6 text-gray-400" />
                                   </div>
                                   <div>
-                                    <h4 className="font-semibold text-gray-900">GitHub Release</h4>
-                                    <p className="text-sm text-gray-500">View source code and releases</p>
+                                    <h4 className="font-semibold text-gray-500">GitHub Release</h4>
+                                    <p className="text-sm text-gray-400">Coming soon</p>
                                   </div>
                                 </div>
                                 <Button
                                   variant="outline"
                                   size="lg"
-                                  className="border-gray-200 hover:border-black rounded-xl"
-                                  onClick={() => window.open('https://github.com/yourusername/sakay/releases', '_blank')}
+                                  disabled
+                                  className="border-gray-200 text-gray-400 cursor-not-allowed rounded-xl"
                                 >
                                   <ExternalLink className="w-4 h-4 mr-2" />
                                   Visit
@@ -411,13 +402,13 @@ const DownloadPage = () => {
                         <Separator />
 
                         <div>
-                          <h5 className="font-semibold text-gray-900 mb-4">System Requirements</h5>
+                          <h5 className="font-semibold text-gray-900 mb-4">Coming Soon Features</h5>
                           <ul className="space-y-2">
                             {[
-                              'iOS 13.0 or later',
-                              '150 MB free storage space',
-                              'Stable internet connection',
-                              'Location services enabled'
+                              'iOS 13.0 or later support',
+                              'Optimized for iPhone and iPad',
+                              'Apple Sign-In integration',
+                              'Widget support for quick booking'
                             ].map((req, i) => (
                               <li key={i} className="flex items-center gap-2 text-sm text-gray-600">
                                 <CheckCircle2 className="w-4 h-4 text-grab-green flex-shrink-0" />
@@ -427,11 +418,18 @@ const DownloadPage = () => {
                           </ul>
                         </div>
 
-                        <p className="text-xs text-gray-400">
-                          By downloading, you agree to our{' '}
-                          <a href="#" className="text-grab-green hover:underline">Terms of Service</a>
-                          {' '}and{' '}
-                          <a href="#" className="text-grab-green hover:underline">Privacy Policy</a>
+                        <div className="bg-grab-green/10 rounded-xl p-4 text-center">
+                          <p className="text-sm text-grab-green font-medium">
+                            🚀 Be the first to know when iOS is ready!
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Follow us on social media for updates
+                          </p>
+                        </div>
+
+                        <p className="text-xs text-gray-400 text-center">
+                          Have questions?{" "}
+                          <a href="mailto:support.sakay@gmail.com" className="text-grab-green hover:underline">Contact us</a>
                         </p>
                       </motion.div>
                     </div>
@@ -539,10 +537,10 @@ const DownloadPage = () => {
               </Button>
               <Button
                 onClick={() => document.querySelector('[value="ios"]')?.click()}
-                className="bg-black text-white hover:bg-gray-800 h-14 px-8 rounded-xl text-lg font-bold"
+                className="bg-gray-300 text-gray-600 cursor-not-allowed h-14 px-8 rounded-xl text-lg font-bold"
               >
                 <Apple className="w-5 h-5 mr-2" />
-                Download for iOS
+                Coming Soon
               </Button>
             </div>
           </motion.div>
