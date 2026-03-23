@@ -13,16 +13,11 @@ import {
   Clock,
   ChevronRight,
   Users,
-  TrendingUp,
-  Shield,
   Navigation,
   Star,
   Award,
-  Coins,
-  Globe,
   Building2,
   CheckCircle2,
-  PhoneCall
 } from 'lucide-react'
 
 import jeepneyImage from '../assets/images/image.png'

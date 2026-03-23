@@ -12,17 +12,11 @@ import {
   Apple,
   Download,
   CheckCircle2,
-  Star,
-  Shield,
   Clock,
-  Users,
   Navigation,
-  Award,
   Github,
   ExternalLink,
   QrCode,
-  Zap,
-  Sparkles,
   TrendingUp,
   MapPin
 } from 'lucide-react'

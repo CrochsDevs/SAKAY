@@ -16,22 +16,17 @@ import {
   TrendingUp,
   Shield,
   Navigation,
-  Star,
   Award,
   Coins,
   Building2,
   CheckCircle2,
-  Sparkles,
   Ticket,
   Gift,
   Wallet,
   Bell,
   Route,
-  Bus,
   Zap,
-  Globe,
-  BarChart3,
-  HeartHandshake
+  Bus
 } from 'lucide-react'
 
 const Features = () => {

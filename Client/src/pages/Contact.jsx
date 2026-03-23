@@ -10,7 +10,6 @@ import {
   Clock,
   Heart,
   Sparkles,
-  HelpCircle,
   Headphones
 } from 'lucide-react'
 

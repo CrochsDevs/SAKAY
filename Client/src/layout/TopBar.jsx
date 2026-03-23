@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { HelpCircle, Menu, X } from 'lucide-react';
+import { HelpCircle, Menu, X, Shield } from 'lucide-react';
 import HelpModal from '../modals/help.jsx';
+import SafetyTipsModal from '../modals/safetyTips.jsx';
 
 const TopBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+  const [isSafetyTipsOpen, setIsSafetyTipsOpen] = useState(false);
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -54,14 +56,21 @@ const TopBar = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Desktop Help & Button */}
-            <div className="hidden md:flex items-center gap-6 pr-6 border-r border-gray-200">
+            {/* Desktop Help & Safety Tips */}
+            <div className="hidden md:flex items-center gap-4 pr-6 border-r border-gray-200">
               <button 
                 onClick={() => setIsHelpModalOpen(true)}
                 className="flex items-center gap-2 text-[14px] font-bold text-gray-500 hover:text-grab-green transition-colors"
               >
                 <HelpCircle size={18} strokeWidth={2.5} />
                 <span>Help</span>
+              </button>
+              <button 
+                onClick={() => setIsSafetyTipsOpen(true)}
+                className="flex items-center gap-2 text-[14px] font-bold text-gray-500 hover:text-grab-green transition-colors"
+              >
+                <Shield size={18} strokeWidth={2.5} />
+                <span>Safety</span>
               </button>
             </div>
 
@@ -100,13 +109,13 @@ const TopBar = () => {
                 {link.name}
               </Link>
             ))}
-            <div className="flex flex-col gap-4 mt-4">
+            <div className="flex flex-col gap-3 mt-4">
               <button 
                 onClick={() => {
                   setIsOpen(false)
                   setIsHelpModalOpen(true)
                 }}
-                className="flex items-center gap-2 text-lg font-bold text-gray-500"
+                className="flex items-center gap-2 text-lg font-bold text-gray-500 hover:text-grab-green transition-colors py-2"
               >
                 <HelpCircle size={20} />
                 <span>Help Center</span>
@@ -114,9 +123,19 @@ const TopBar = () => {
               <button 
                 onClick={() => {
                   setIsOpen(false)
+                  setIsSafetyTipsOpen(true)
+                }}
+                className="flex items-center gap-2 text-lg font-bold text-gray-500 hover:text-grab-green transition-colors py-2"
+              >
+                <Shield size={20} />
+                <span>Safety Tips</span>
+              </button>
+              <button 
+                onClick={() => {
+                  setIsOpen(false)
                   handleDownload()
                 }}
-                className="w-full bg-grab-green text-white font-black h-14 rounded-2xl"
+                className="w-full bg-grab-green hover:bg-grab-dark text-white font-black h-14 rounded-2xl mt-2 transition-colors"
               >
                 Download App Now
               </button>
@@ -127,6 +146,9 @@ const TopBar = () => {
 
       {/* Help Modal */}
       <HelpModal isOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
+      
+      {/* Safety Tips Modal */}
+      <SafetyTipsModal isOpen={isSafetyTipsOpen} onClose={() => setIsSafetyTipsOpen(false)} />
     </>
   );
 };
