@@ -1,0 +1,17 @@
+services:
+  sakay-client:
+    build:
+      context: ./Client
+      dockerfile: Dockerfile
+    container_name: sakay-client
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - sakay-network
+
+networks:
+  sakay-network:
+    driver: bridge
