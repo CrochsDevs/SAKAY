@@ -12,6 +12,9 @@ import SafetyTipsModal from '../modals/safetyTips'
 import HelpModal from '../modals/help'
 import HowItWorksModal from '../modals/HowItWorks'
 
+// Import logo
+import logo from '../assets/logo/logo.png'
+
 const Footer = () => {
     const navigate = useNavigate()
     const currentYear = new Date().getFullYear()
@@ -19,13 +22,13 @@ const Footer = () => {
     const [isHelpModalOpen, setIsHelpModalOpen] = useState(false)
     const [isHowItWorksOpen, setIsHowItWorksOpen] = useState(false)
 
-    // Actual APK link from Google Drive
+    // Actual APK link from Google Drive (direct payload)
     const apkUrl = 'https://drive.google.com/uc?export=download&id=1pkjCnxAA9HQLL4tsV3ptffysZijg7vTl'
 
     const handleAndroidDownload = () => {
         const link = document.createElement('a')
         link.href = apkUrl
-        link.download = 'Jodally-1.2.1.apk'
+        link.setAttribute('download', 'Jodally-1.2.1.apk')
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
@@ -49,13 +52,14 @@ const Footer = () => {
                     {/* Main Footer Content */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-12">
 
-                        {/* Column 1 - Company Info */}
+                        {/* Column 1 - Company Info with Logo Image */}
                         <div className="space-y-4">
                             <div className="flex items-center gap-2">
-                                <div className="w-10 h-10 bg-grab-green rounded-xl flex items-center justify-center shadow-lg shadow-grab-green/20">
-                                    <span className="text-white font-bold text-xl">S</span>
-                                </div>
-                                <span className="font-bold text-2xl text-white">SAKAY</span>
+                                <img 
+                                    src={logo} 
+                                    alt="SAKAY Logo" 
+                                    className="h-12 w-auto object-contain"
+                                />
                             </div>
                             <p className="text-slate-400 text-sm leading-relaxed">
                                 The Philippines' first all-in-one transportation app. Making commuting swabe para sa lahat ng Pilipino.
