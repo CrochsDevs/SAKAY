@@ -5,10 +5,37 @@ services:
       dockerfile: Dockerfile
     container_name: sakay-client
     restart: unless-stopped
-    ports:
-      - "8181:80"
     environment:
       - NODE_ENV=production
+    networks:
+      - sakay-network
+
+  # NEW: Nginx Reverse Proxy with SSL
+  nginx-proxy:
+    image: nginx:stable-alpine
+    container_name: nginx-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    depends_on:
+      - sakay-client
+    networks:
+      - sakay-network
+
+  # NEW: Certbot for SSL certificates
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     networks:
       - sakay-network
 
