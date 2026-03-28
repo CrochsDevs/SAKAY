@@ -22,3 +22,19 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Certbot files (sensitive data)
+certbot/www/
+certbot/conf/
+
+# SSL certificates
+*.pem
+*.crt
+*.key
+
+# Environment files
+.env
+.env.local
+
+# Docker volumes
+volumes/
