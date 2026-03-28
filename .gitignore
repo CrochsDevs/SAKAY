@@ -1,0 +1,32 @@
+# SSL certificates (sensitive data)
+certbot/
+*.pem
+*.crt
+*.key
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Docker volumes
+volumes/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Build artifacts
+dist/
+build/
+node_modules/
