@@ -1,16 +1,18 @@
 services:
+  # Your existing React app
   sakay-client:
     build:
       context: ./Client
       dockerfile: Dockerfile
     container_name: sakay-client
     restart: unless-stopped
+    # No port mapping - internal only
     environment:
       - NODE_ENV=production
     networks:
       - sakay-network
 
-  # NEW: Nginx Reverse Proxy with SSL
+  # Nginx Reverse Proxy with SSL
   nginx-proxy:
     image: nginx:stable-alpine
     container_name: nginx-proxy
@@ -19,8 +21,9 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/conf:/etc/nginx/conf.d
-      - ./nginx/ssl:/etc/nginx/ssl
+      # Mount your GitHub-managed nginx config
+      - ./nginx/conf:/etc/nginx/conf.d:ro
+      # Persistent storage for SSL certs (gitignored)
       - ./certbot/www:/var/www/certbot
       - ./certbot/conf:/etc/letsencrypt
     depends_on:
@@ -28,7 +31,7 @@ services:
     networks:
       - sakay-network
 
-  # NEW: Certbot for SSL certificates
+  # Certbot for SSL certificates
   certbot:
     image: certbot/certbot
     container_name: certbot
