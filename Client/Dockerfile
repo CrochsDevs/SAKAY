@@ -1,5 +1,5 @@
-# Build stage
-FROM node:18-alpine AS builder
+# Build stage - Update to Node.js 20 or 22
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
