@@ -5,12 +5,13 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
+COPY yarn.lock ./
 
-# Check if yarn.lock exists and use appropriate package manager
+# Install dependencies
 RUN if [ -f yarn.lock ]; then \
         yarn install --frozen-lockfile; \
     else \
-        npm ci || npm install; \
+        npm ci; \
     fi
 
 # Copy source code
@@ -32,14 +33,21 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 # Add nginx config
 RUN echo 'server { \
     listen 80; \
-    server_name localhost; \
+    server_name _; \
     root /usr/share/nginx/html; \
     index index.html; \
     location / { \
         try_files $uri $uri/ /index.html; \
     } \
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js)$ { \
+        expires 1y; \
+        add_header Cache-Control "public, immutable"; \
+    } \
 }' > /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost/ || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]
