@@ -30,3 +30,9 @@ logs/
 dist/
 build/
 node_modules/
+certbot/conf/live/
+certbot/conf/archive/
+certbot/conf/renewal/
+client-build/
+nginx/conf/*.temp.conf
+nginx/conf/*.backup
