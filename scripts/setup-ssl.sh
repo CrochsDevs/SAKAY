@@ -14,7 +14,7 @@ cp nginx/conf/http-only.conf nginx/conf/sakay-client.conf
 
 # Step 2: Reload nginx
 echo "🔄 Reloading nginx..."
-docker compose exec nginx-proxy nginx -s reload || docker compose restart nginx-proxy
+docker compose restart nginx-proxy
 
 # Step 3: Get SSL certificate
 echo "🔐 Obtaining SSL certificate from Let's Encrypt..."
