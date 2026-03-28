@@ -5,13 +5,12 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
-COPY yarn.lock ./
 
-# Install dependencies
+# Check if yarn.lock exists and use appropriate package manager
 RUN if [ -f yarn.lock ]; then \
         yarn install --frozen-lockfile; \
     else \
-        npm ci; \
+        npm ci || npm install; \
     fi
 
 # Copy source code
