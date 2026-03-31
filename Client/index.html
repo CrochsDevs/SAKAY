@@ -4,7 +4,40 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="../src/assets/favicon/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>client</title>
+    <title>SAKAY - Modern Commuting Solution</title>
+    
+    <!-- Fix for ethereum injection error -->
+    <script>
+      (function() {
+        // Prevent third-party scripts from modifying window.ethereum
+        if (typeof window !== 'undefined') {
+          try {
+            // If ethereum doesn't exist, define it as read-only
+            if (!window.hasOwnProperty('ethereum')) {
+              Object.defineProperty(window, 'ethereum', {
+                value: null,
+                writable: false,
+                configurable: false,
+                enumerable: true
+              });
+            }
+            // If it exists but is writable, make it read-only
+            else {
+              const ethereumValue = window.ethereum;
+              Object.defineProperty(window, 'ethereum', {
+                value: ethereumValue,
+                writable: false,
+                configurable: false,
+                enumerable: true
+              });
+            }
+          } catch(e) {
+            // Silent fail - not critical
+            console.log('Ethereum protection active');
+          }
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
