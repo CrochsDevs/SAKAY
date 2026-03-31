@@ -167,8 +167,9 @@ const TopBar = () => {
                     </div>
 
                     {/* Menu Items */}
-                    <div className="py-2">
-                      <button
+                    <div>
+                      {/* MY PROFILE BUTTON - COMMENTED OUT FOR NOW */}
+                      {/* <button
                         onClick={() => {
                           setIsDropdownOpen(false);
                           // Optional: navigate to profile page
@@ -178,9 +179,9 @@ const TopBar = () => {
                       >
                         <User size={18} className="text-gray-500" />
                         <span className="font-medium">My Profile</span>
-                      </button>
+                      </button> */}
                       
-                      <div className="border-t border-gray-100 my-1"></div>
+                      {/* <div className="border-t border-gray-100 my-1"></div> */}
                       
                       <button
                         onClick={() => {

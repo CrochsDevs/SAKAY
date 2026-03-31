@@ -23,11 +23,13 @@ const Feedback = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null); // Store pending action (submit or like)
+  const [pendingFeedbackId, setPendingFeedbackId] = useState(null); // Store feedback ID for like action
   
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Fetch all feedbacks - always visible to everyone
+  // Fetch all feedbacks - always visible to everyone (NO LOGIN REQUIRED)
   useEffect(() => {
     fetchFeedbacks();
   }, []);
@@ -52,16 +54,6 @@ const Feedback = () => {
   const handleSubmitClick = (e) => {
     e.preventDefault();
     
-    if (!user) {
-      setShowLoginModal(true);
-      return;
-    }
-    
-    // If logged in, proceed with submission
-    submitFeedback();
-  };
-
-  const submitFeedback = async () => {
     if (rating === 0) {
       setError('Please select a rating');
       return;
@@ -71,7 +63,18 @@ const Feedback = () => {
       setError('Please enter your feedback');
       return;
     }
+    
+    if (!user) {
+      setPendingAction('submit');
+      setShowLoginModal(true);
+      return;
+    }
+    
+    // If logged in, proceed with submission
+    submitFeedback();
+  };
 
+  const submitFeedback = async () => {
     setSubmitting(true);
     setError('');
     
@@ -96,6 +99,8 @@ const Feedback = () => {
 
   const handleLike = async (feedbackId) => {
     if (!user) {
+      setPendingAction('like');
+      setPendingFeedbackId(feedbackId);
       setShowLoginModal(true);
       return;
     }
@@ -106,6 +111,17 @@ const Feedback = () => {
     } catch (err) {
       console.error('Error liking feedback:', err);
     }
+  };
+
+  // Handle action after login
+  const handleLoginRedirect = () => {
+    setShowLoginModal(false);
+    
+    // Store current path para bumalik after login
+    sessionStorage.setItem('redirectAfterLogin', '/feedback');
+    
+    // Navigate to login
+    navigate('/login');
   };
 
   const fadeInUp = {
@@ -180,21 +196,24 @@ const Feedback = () => {
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-2">Login Required</h3>
             <p className="text-gray-600 mb-6">
-              Please login to share your feedback or like other feedbacks.
+              {pendingAction === 'submit' 
+                ? 'Please login to share your feedback.' 
+                : 'Please login to like this feedback.'}
             </p>
             <div className="flex gap-3">
               <Button
-                onClick={() => setShowLoginModal(false)}
+                onClick={() => {
+                  setShowLoginModal(false);
+                  setPendingAction(null);
+                  setPendingFeedbackId(null);
+                }}
                 variant="outline"
                 className="flex-1"
               >
                 Cancel
               </Button>
               <Button
-                onClick={() => {
-                  setShowLoginModal(false);
-                  navigate('/login');
-                }}
+                onClick={handleLoginRedirect}
                 className="flex-1 bg-grab-green hover:bg-grab-dark"
               >
                 Login Now
@@ -400,7 +419,7 @@ const Feedback = () => {
               </Card>
             </motion.div>
 
-            {/* RIGHT SIDE: Community Feed - Always visible */}
+            {/* RIGHT SIDE: Community Feed - Always visible (NO LOGIN REQUIRED) */}
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -472,11 +491,11 @@ const Feedback = () => {
                               </div>
                             </div>
                             <div 
-                              className="flex items-center gap-1 text-gray-400 hover:text-grab-green transition-colors cursor-pointer"
+                              className={`flex items-center gap-1 transition-colors cursor-pointer ${user ? 'hover:text-grab-green' : 'hover:text-gray-500'}`}
                               onClick={() => handleLike(fb._id || fb.id)}
                             >
-                              <ThumbsUp className="w-4 h-4" />
-                              <span className="text-xs font-medium">{fb.likes || 0}</span>
+                              <ThumbsUp className={`w-4 h-4 ${user ? 'text-gray-400' : 'text-gray-300'}`} />
+                              <span className={`text-xs font-medium ${user ? 'text-gray-600' : 'text-gray-400'}`}>{fb.likes || 0}</span>
                             </div>
                           </div>
                         </CardContent>
