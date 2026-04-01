@@ -1,43 +1,4 @@
 services:
-  # MongoDB database
-  mongodb:
-    image: mongo:7
-    container_name: sakay-mongodb
-    restart: unless-stopped
-    ports:
-      - "27017:27017"  # Expose MongoDB port to host (optional)
-    volumes:
-      - mongodb_data:/data/db
-    networks:
-      - sakay-network
-    environment:
-      MONGO_INITDB_DATABASE: SakayDB
-
-  # Backend server
-  sakay-server:
-    build:
-      context: ./Server
-      dockerfile: Dockerfile
-    container_name: sakay-server
-    restart: unless-stopped
-    environment:
-      - NODE_ENV=production
-      - PORT=3001
-      - MONGO_URI=mongodb://mongodb:27017/
-      - DB_NAME=SakayDB
-      - JWT_SECRET=${JWT_SECRET:-f47ac10b58e74ac1b6c7001438914b53ef69b6f17e2985f9e83163459c235a91}
-    depends_on:
-      mongodb:
-        condition: service_started
-    networks:
-      - sakay-network
-    healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
-
   # React application
   sakay-client:
     build:
@@ -47,12 +8,14 @@ services:
     restart: unless-stopped
     environment:
       - NODE_ENV=production
-      - VITE_API_URL=http://sakay-server:3000  # Add this for API calls
     networks:
       - sakay-network
-    depends_on:
-      sakay-server:
-        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   # Nginx reverse proxy
   nginx-proxy:
@@ -68,8 +31,6 @@ services:
       - ./certbot/conf:/etc/letsencrypt:ro
     depends_on:
       sakay-client:
-        condition: service_healthy
-      sakay-server:
         condition: service_healthy
     networks:
       - sakay-network
@@ -88,6 +49,3 @@ services:
 networks:
   sakay-network:
     driver: bridge
-
-volumes:
-  mongodb_data:
