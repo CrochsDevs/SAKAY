@@ -23,13 +23,13 @@ const Feedback = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [pendingAction, setPendingAction] = useState(null); // Store pending action (submit or like)
-  const [pendingFeedbackId, setPendingFeedbackId] = useState(null); // Store feedback ID for like action
+  const [pendingAction, setPendingAction] = useState(null);
+  const [pendingFeedbackId, setPendingFeedbackId] = useState(null);
   
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Fetch all feedbacks - always visible to everyone (NO LOGIN REQUIRED)
+  // Fetch all feedbacks - always visible to everyone
   useEffect(() => {
     fetchFeedbacks();
   }, []);
@@ -37,10 +37,12 @@ const Feedback = () => {
   const fetchFeedbacks = async () => {
     setLoading(true);
     try {
-      const response = await api.get('/feedback');
+      const response = await api.get('/feedbacks'); // CHANGED: from '/feedback' to '/feedbacks'
       setFeedbacks(response.data);
     } catch (err) {
       console.error('Error fetching feedbacks:', err);
+      // If error, show empty state
+      setFeedbacks([]);
     } finally {
       setLoading(false);
     }
@@ -79,7 +81,7 @@ const Feedback = () => {
     setError('');
     
     try {
-      await api.post('/feedback', {
+      await api.post('/feedbacks', { // CHANGED: from '/feedback' to '/feedbacks'
         rating: rating,
         comment: formData.feedback,
         userLocation: user?.location || 'Commuter'
@@ -106,21 +108,17 @@ const Feedback = () => {
     }
     
     try {
-      await api.post(`/feedback/${feedbackId}/like`);
+      await api.post(`/feedbacks/${feedbackId}/like`); // CHANGED: from '/feedback' to '/feedbacks'
       await fetchFeedbacks();
     } catch (err) {
       console.error('Error liking feedback:', err);
+      setError('Failed to like feedback. Please try again.');
     }
   };
 
-  // Handle action after login
   const handleLoginRedirect = () => {
     setShowLoginModal(false);
-    
-    // Store current path para bumalik after login
     sessionStorage.setItem('redirectAfterLogin', '/feedback');
-    
-    // Navigate to login
     navigate('/login');
   };
 
@@ -179,7 +177,6 @@ const Feedback = () => {
     return feedbackDate.toLocaleDateString();
   };
 
-  // Login Modal Component
   const LoginModal = () => {
     if (!showLoginModal) return null;
     
@@ -229,7 +226,6 @@ const Feedback = () => {
     <div className="min-h-screen bg-white overflow-x-hidden font-sans">
       <TopBar />
       
-      {/* Login Modal */}
       <LoginModal />
 
       <section className="relative overflow-hidden bg-gradient-to-br from-grab-green/5 via-white to-blue-500/5">
@@ -419,7 +415,7 @@ const Feedback = () => {
               </Card>
             </motion.div>
 
-            {/* RIGHT SIDE: Community Feed - Always visible (NO LOGIN REQUIRED) */}
+            {/* RIGHT SIDE: Community Feed */}
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -453,7 +449,7 @@ const Feedback = () => {
                 <div className="grid gap-5 max-h-[700px] overflow-y-auto pr-2 custom-scrollbar">
                   {feedbacks.map((fb, index) => (
                     <motion.div
-                      key={fb._id || fb.id}
+                      key={fb._id}
                       initial="hidden"
                       whileInView="visible"
                       viewport={{ once: true }}
@@ -470,7 +466,7 @@ const Feedback = () => {
                                 className={`${i < fb.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-200 fill-gray-100"}`}
                               />
                             ))}
-                            <span className="text-xs text-gray-400 ml-2">• {formatDate(fb.createdAt || fb.date)}</span>
+                            <span className="text-xs text-gray-400 ml-2">• {formatDate(fb.createdAt)}</span>
                           </div>
                           
                           <p className="text-gray-700 text-base leading-relaxed mb-4">
@@ -480,19 +476,19 @@ const Feedback = () => {
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-grab-green to-grab-dark flex items-center justify-center font-bold text-white shadow-md">
-                                {getInitials(fb.userName || fb.name)}
+                                {getInitials(fb.userName)}
                               </div>
                               <div>
-                                <div className="font-bold text-gray-900 text-sm">{fb.userName || fb.name}</div>
+                                <div className="font-bold text-gray-900 text-sm">{fb.userName}</div>
                                 <div className="text-xs text-gray-400 flex items-center gap-1">
                                   <Navigation className="w-3 h-3" />
-                                  {fb.userLocation || 'Commuter'}
+                                  {fb.userLocation}
                                 </div>
                               </div>
                             </div>
                             <div 
                               className={`flex items-center gap-1 transition-colors cursor-pointer ${user ? 'hover:text-grab-green' : 'hover:text-gray-500'}`}
-                              onClick={() => handleLike(fb._id || fb.id)}
+                              onClick={() => handleLike(fb._id)}
                             >
                               <ThumbsUp className={`w-4 h-4 ${user ? 'text-gray-400' : 'text-gray-300'}`} />
                               <span className={`text-xs font-medium ${user ? 'text-gray-600' : 'text-gray-400'}`}>{fb.likes || 0}</span>
