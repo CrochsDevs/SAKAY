@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6
+    container_name: sakay-mongodb
+    restart: unless-stopped
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - sakay-network
+    # Remove ports to avoid conflicts - internal access only
+
+  server:
+    build: ./Server
+    container_name: sakay-server
+    restart: unless-stopped
+    environment:
+      - PORT=3000
+      - MONGO_URI=mongodb://mongodb:27017/
+      - DB_NAME=SakayDB
+      - JWT_SECRET=${JWT_SECRET:-f47ac10b58e74ac1b6c7001438914b53ef69b6f17e2985f9e83163459c235a91}
+    depends_on:
+      - mongodb
+    networks:
+      - sakay-network
+    ports:
+      - "3000:3000"
+
+  client:
+    build: ./Client
+    container_name: sakay-client
+    restart: unless-stopped
+    depends_on:
+      - server
+    networks:
+      - sakay-network
+    ports:
+      - "80:80"
+      - "443:443"
+
+volumes:
+  mongodb_data:
+
+networks:
+  sakay-network:
+    driver: bridge
