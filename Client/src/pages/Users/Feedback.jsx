@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
-  MessageSquare, Send, Star, Navigation, Heart, ThumbsUp, Users, TrendingUp, Shield, Lock
+  MessageSquare, Send, Star, Navigation, Heart, ThumbsUp, Users, TrendingUp, Shield, Lock, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../util/axios';
@@ -25,6 +25,8 @@ const Feedback = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
   const [pendingFeedbackId, setPendingFeedbackId] = useState(null);
+  const [visibleCount, setVisibleCount] = useState(5); // Show first 5 feedbacks
+  const [isExpanded, setIsExpanded] = useState(false);
   
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -37,11 +39,10 @@ const Feedback = () => {
   const fetchFeedbacks = async () => {
     setLoading(true);
     try {
-      const response = await api.get('/feedbacks'); // CHANGED: from '/feedback' to '/feedbacks'
+      const response = await api.get('/feedbacks');
       setFeedbacks(response.data);
     } catch (err) {
       console.error('Error fetching feedbacks:', err);
-      // If error, show empty state
       setFeedbacks([]);
     } finally {
       setLoading(false);
@@ -72,7 +73,6 @@ const Feedback = () => {
       return;
     }
     
-    // If logged in, proceed with submission
     submitFeedback();
   };
 
@@ -81,7 +81,7 @@ const Feedback = () => {
     setError('');
     
     try {
-      await api.post('/feedbacks', { // CHANGED: from '/feedback' to '/feedbacks'
+      await api.post('/feedbacks', {
         rating: rating,
         comment: formData.feedback,
         userLocation: user?.location || 'Commuter'
@@ -108,7 +108,7 @@ const Feedback = () => {
     }
     
     try {
-      await api.post(`/feedbacks/${feedbackId}/like`); // CHANGED: from '/feedback' to '/feedbacks'
+      await api.post(`/feedbacks/${feedbackId}/like`);
       await fetchFeedbacks();
     } catch (err) {
       console.error('Error liking feedback:', err);
@@ -121,6 +121,23 @@ const Feedback = () => {
     sessionStorage.setItem('redirectAfterLogin', '/feedback');
     navigate('/login');
   };
+
+  // Load more feedbacks
+  const loadMore = () => {
+    const newVisibleCount = visibleCount + 5;
+    setVisibleCount(newVisibleCount);
+    setIsExpanded(newVisibleCount >= feedbacks.length);
+  };
+
+  // Show less feedbacks
+  const showLess = () => {
+    setVisibleCount(5);
+    setIsExpanded(false);
+  };
+
+  // Get visible feedbacks
+  const visibleFeedbacks = feedbacks.slice(0, visibleCount);
+  const hasMore = visibleCount < feedbacks.length;
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
@@ -238,10 +255,6 @@ const Feedback = () => {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <Badge className="bg-grab-green/10 text-grab-green border-grab-green/20 mb-6 px-4 py-2 rounded-full">
-              <Heart className="w-4 h-4 mr-2" />
-              WE VALUE YOUR VOICE
-            </Badge>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6">
               Share Your{' '}
               <span className="bg-gradient-to-r from-grab-green to-grab-dark bg-clip-text text-transparent">
@@ -446,59 +459,95 @@ const Feedback = () => {
                   </CardContent>
                 </Card>
               ) : (
-                <div className="grid gap-5 max-h-[700px] overflow-y-auto pr-2 custom-scrollbar">
-                  {feedbacks.map((fb, index) => (
-                    <motion.div
-                      key={fb._id}
-                      initial="hidden"
-                      whileInView="visible"
-                      viewport={{ once: true }}
-                      variants={scaleIn}
-                      transition={{ delay: index * 0.1 }}
-                    >
-                      <Card className="border border-gray-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden">
-                        <CardContent className="p-6">
-                          <div className="flex items-center gap-1 mb-3">
-                            {[...Array(5)].map((_, i) => (
-                              <Star 
-                                key={i} 
-                                size={14} 
-                                className={`${i < fb.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-200 fill-gray-100"}`}
-                              />
-                            ))}
-                            <span className="text-xs text-gray-400 ml-2">• {formatDate(fb.createdAt)}</span>
-                          </div>
-                          
-                          <p className="text-gray-700 text-base leading-relaxed mb-4">
-                            "{fb.comment}"
-                          </p>
-                          
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-grab-green to-grab-dark flex items-center justify-center font-bold text-white shadow-md">
-                                {getInitials(fb.userName)}
-                              </div>
-                              <div>
-                                <div className="font-bold text-gray-900 text-sm">{fb.userName}</div>
-                                <div className="text-xs text-gray-400 flex items-center gap-1">
-                                  <Navigation className="w-3 h-3" />
-                                  {fb.userLocation}
+                <>
+                  <div className="grid gap-5 max-h-[700px] overflow-y-auto pr-2 custom-scrollbar">
+                    {visibleFeedbacks.map((fb, index) => (
+                      <motion.div
+                        key={fb._id}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        variants={scaleIn}
+                        transition={{ delay: index * 0.1 }}
+                      >
+                        <Card className="border border-gray-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+                          <CardContent className="p-6">
+                            <div className="flex items-center gap-1 mb-3">
+                              {[...Array(5)].map((_, i) => (
+                                <Star 
+                                  key={i} 
+                                  size={14} 
+                                  className={`${i < fb.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-200 fill-gray-100"}`}
+                                />
+                              ))}
+                              <span className="text-xs text-gray-400 ml-2">• {formatDate(fb.createdAt)}</span>
+                            </div>
+                            
+                            <p className="text-gray-700 text-base leading-relaxed mb-4">
+                              "{fb.comment}"
+                            </p>
+                            
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-grab-green to-grab-dark flex items-center justify-center font-bold text-white shadow-md">
+                                  {getInitials(fb.userName)}
+                                </div>
+                                <div>
+                                  <div className="font-bold text-gray-900 text-sm">{fb.userName}</div>
+                                  <div className="text-xs text-gray-400 flex items-center gap-1">
+                                    <Navigation className="w-3 h-3" />
+                                    {fb.userLocation}
+                                  </div>
                                 </div>
                               </div>
+                              <div 
+                                className={`flex items-center gap-1 transition-colors cursor-pointer ${user ? 'hover:text-grab-green' : 'hover:text-gray-500'}`}
+                                onClick={() => handleLike(fb._id)}
+                              >
+                                <ThumbsUp className={`w-4 h-4 ${user ? 'text-gray-400' : 'text-gray-300'}`} />
+                                <span className={`text-xs font-medium ${user ? 'text-gray-600' : 'text-gray-400'}`}>{fb.likes || 0}</span>
+                              </div>
                             </div>
-                            <div 
-                              className={`flex items-center gap-1 transition-colors cursor-pointer ${user ? 'hover:text-grab-green' : 'hover:text-gray-500'}`}
-                              onClick={() => handleLike(fb._id)}
-                            >
-                              <ThumbsUp className={`w-4 h-4 ${user ? 'text-gray-400' : 'text-gray-300'}`} />
-                              <span className={`text-xs font-medium ${user ? 'text-gray-600' : 'text-gray-400'}`}>{fb.likes || 0}</span>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  ))}
-                </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {/* Load More / Show Less Buttons */}
+                  {(hasMore || isExpanded) && (
+                    <div className="mt-6 flex justify-center">
+                      {hasMore && (
+                        <Button
+                          onClick={loadMore}
+                          variant="outline"
+                          className="gap-2 bg-white hover:bg-grab-green hover:text-white transition-all duration-300 border-grab-green text-grab-green"
+                        >
+                          <ChevronDown className="w-4 h-4" />
+                          Load More ({feedbacks.length - visibleCount} remaining)
+                        </Button>
+                      )}
+                      
+                      {isExpanded && visibleCount > 5 && (
+                        <Button
+                          onClick={showLess}
+                          variant="outline"
+                          className="gap-2 bg-white hover:bg-gray-100 transition-all duration-300 ml-3"
+                        >
+                          <ChevronUp className="w-4 h-4" />
+                          Show Less
+                        </Button>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Show total count */}
+                  {feedbacks.length > 5 && (
+                    <p className="text-center text-xs text-gray-400 mt-4">
+                      Showing {visibleFeedbacks.length} of {feedbacks.length} feedbacks
+                    </p>
+                  )}
+                </>
               )}
 
               <motion.div

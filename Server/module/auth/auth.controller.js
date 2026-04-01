@@ -33,15 +33,29 @@ export const login = async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
-            maxAge: 24 * 60 * 60 * 1000 
+            maxAge: 24 * 60 * 60 * 1000
         });
 
         await Auth.updateLastLogin(user._id);
-        
-        // Remove sensitive data
-        const { password: _, ...userWithoutPassword } = user;
-        res.status(200).json({ message: "Login successful!", user: userWithoutPassword });
+
+        // IMPORTANT: Make sure to include fullName in the response
+        const userResponse = {
+            _id: user._id,
+            fullName: user.fullName, // This should exist
+            email: user.email,
+            phone: user.phone,
+            role: user.role,
+            location: user.location || 'Commuter' // Add location field if it exists
+        };
+
+        console.log('Login response user:', userResponse); // Debug log
+
+        res.status(200).json({
+            message: "Login successful!",
+            user: userResponse
+        });
     } catch (error) {
+        console.error('Login error:', error);
         res.status(500).json({ error: error.message });
     }
 };
@@ -54,9 +68,29 @@ export const logout = (req, res) => {
 export const getStatus = async (req, res) => {
     try {
         const user = await User.getById(req.user._id);
-        const { password: _, ...userWithoutPassword } = user;
-        res.status(200).json({ isAuthenticated: true, user: userWithoutPassword });
+
+        if (!user) {
+            return res.status(401).json({ isAuthenticated: false });
+        }
+
+        // IMPORTANT: Include all user data in the response
+        const userResponse = {
+            _id: user._id,
+            fullName: user.fullName,
+            email: user.email,
+            phone: user.phone,
+            role: user.role,
+            location: user.location || 'Commuter'
+        };
+
+        console.log('Status check user:', userResponse); // Debug log
+
+        res.status(200).json({
+            isAuthenticated: true,
+            user: userResponse
+        });
     } catch (error) {
+        console.error('Status check error:', error);
         res.status(401).json({ isAuthenticated: false });
     }
 };
