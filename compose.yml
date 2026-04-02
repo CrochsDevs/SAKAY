@@ -42,7 +42,7 @@ services:
       retries: 3
       start_period: 20s
 
-  # React application
+  # React application (build stage)
   sakay-client:
     build:
       context: ./Client
@@ -62,7 +62,7 @@ services:
       retries: 3
       start_period: 10s
 
-  # Nginx reverse proxy
+  # Nginx reverse proxy with SSL
   nginx-proxy:
     image: nginx:stable-alpine
     container_name: nginx-proxy
@@ -83,7 +83,7 @@ services:
     networks:
       - sakay-network
 
-  # Certbot renewal service
+  # Certbot for SSL certificate management
   certbot:
     image: certbot/certbot
     container_name: certbot
