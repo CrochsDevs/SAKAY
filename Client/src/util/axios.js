@@ -1,9 +1,36 @@
 import axios from 'axios';
 
+// Determine the base URL based on environment
+const getBaseURL = () => {
+  // In production (when deployed to sakay.online), use relative URLs
+  if (import.meta.env.PROD || window.location.hostname === 'sakay.online') {
+    return '/api';  // This will use https://sakay.online/api
+  }
+  // In development, use localhost
+  return import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
-  withCredentials: true
+  baseURL: getBaseURL(),
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
+
+// Add token to requests if it exists
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 api.interceptors.response.use(
   (response) => response,
