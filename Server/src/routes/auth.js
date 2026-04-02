@@ -4,10 +4,69 @@ import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
-// Login route
+// Register endpoint
+router.post('/register', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    
+    // Validate input
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+    
+    const db = req.db;
+    
+    // Check if user already exists
+    const existingUser = await db.collection('users').findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: 'User already exists with this email' });
+    }
+    
+    // Hash password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    
+    // Create user
+    const result = await db.collection('users').insertOne({
+      name,
+      email,
+      password: hashedPassword,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+    
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: result.insertedId, email },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+    
+    res.status(201).json({
+      message: 'User registered successfully',
+      token,
+      user: {
+        id: result.insertedId,
+        name,
+        email
+      }
+    });
+  } catch (error) {
+    console.error('Registration error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Login endpoint
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+    
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+    
     const db = req.db;
     
     // Find user
@@ -17,50 +76,65 @@ router.post('/login', async (req, res) => {
     }
     
     // Check password
-    const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword) {
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
     
-    // Generate JWT
+    // Generate JWT token
     const token = jwt.sign(
       { userId: user._id, email: user.email },
       process.env.JWT_SECRET,
-      { expiresIn: '24h' }
+      { expiresIn: '7d' }
     );
     
-    res.json({ token, user: { id: user._id, email: user.email, name: user.name } });
+    res.json({
+      message: 'Login successful',
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email
+      }
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// Register route
-router.post('/register', async (req, res) => {
+// Get user profile (protected route example)
+router.get('/profile', async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-    const db = req.db;
-    
-    // Check if user exists
-    const existingUser = await db.collection('users').findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ error: 'User already exists' });
+    // Get token from header
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ error: 'No token provided' });
     }
     
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const db = req.db;
     
-    // Create user
-    const result = await db.collection('users').insertOne({
-      name,
-      email,
-      password: hashedPassword,
-      createdAt: new Date()
-    });
+    // Get user from database
+    const user = await db.collection('users').findOne(
+      { _id: new ObjectId(decoded.userId) },
+      { projection: { password: 0 } } // Exclude password
+    );
     
-    res.status(201).json({ message: 'User created successfully', userId: result.insertedId });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    res.json({ user });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ error: 'Token expired' });
+    }
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
