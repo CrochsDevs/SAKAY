@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
-  MessageSquare, Send, Star, Navigation, Heart, ThumbsUp, Users, TrendingUp, Shield, Lock, ChevronDown, ChevronUp
+  MessageSquare, Send, Star, Navigation, Heart, ThumbsUp, Users, TrendingUp, Shield, Lock, ChevronDown, ChevronUp, CheckCircle
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../util/axios';
@@ -23,15 +23,16 @@ const Feedback = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showThankYouModal, setShowThankYouModal] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
   const [pendingFeedbackId, setPendingFeedbackId] = useState(null);
-  const [visibleCount, setVisibleCount] = useState(5); // Show first 5 feedbacks
+  const [visibleCount, setVisibleCount] = useState(5);
   const [isExpanded, setIsExpanded] = useState(false);
   
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Fetch all feedbacks - always visible to everyone
+  // Fetch all feedbacks - always visible to everyone (only approved ones)
   useEffect(() => {
     fetchFeedbacks();
   }, []);
@@ -87,11 +88,15 @@ const Feedback = () => {
         userLocation: user?.location || 'Commuter'
       });
       
-      setSuccessMessage('Thank you for your feedback! 🎉');
       setFormData({ feedback: '' });
       setRating(0);
-      await fetchFeedbacks();
-      setTimeout(() => setSuccessMessage(''), 3000);
+      setShowThankYouModal(true); // Show thank you modal
+      await fetchFeedbacks(); // Refresh to update stats
+      
+      // Auto-hide modal after 5 seconds
+      setTimeout(() => {
+        setShowThankYouModal(false);
+      }, 5000);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to submit feedback.');
     } finally {
@@ -239,11 +244,50 @@ const Feedback = () => {
     );
   };
 
+  // Thank You Modal Component
+  const ThankYouModal = () => {
+    if (!showThankYouModal) return null;
+    
+    return (
+      <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          className="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl text-center"
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"
+          >
+            <CheckCircle className="w-10 h-10 text-grab-green" />
+          </motion.div>
+          <h3 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h3>
+          <p className="text-gray-600 mb-4">
+            Your feedback has been submitted successfully!
+          </p>
+          <p className="text-sm text-gray-500 mb-6">
+            Our admin team will review your feedback. Once approved, it will be visible to the community.
+          </p>
+          <Button
+            onClick={() => setShowThankYouModal(false)}
+            className="bg-grab-green hover:bg-grab-dark text-white"
+          >
+            Got it
+          </Button>
+        </motion.div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-white overflow-x-hidden font-sans">
       <TopBar />
       
       <LoginModal />
+      <ThankYouModal />
 
       <section className="relative overflow-hidden bg-gradient-to-br from-grab-green/5 via-white to-blue-500/5">
         <div className="absolute inset-0 bg-grid-gray-100 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
@@ -455,7 +499,8 @@ const Feedback = () => {
                 <Card className="border border-gray-200">
                   <CardContent className="p-12 text-center">
                     <MessageSquare className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">No feedback yet. Be the first to share!</p>
+                    <p className="text-gray-500">No approved feedback yet. Be the first to share!</p>
+                    <p className="text-xs text-gray-400 mt-2">All feedbacks are reviewed by admin before publishing.</p>
                   </CardContent>
                 </Card>
               ) : (
@@ -544,7 +589,7 @@ const Feedback = () => {
                   {/* Show total count */}
                   {feedbacks.length > 5 && (
                     <p className="text-center text-xs text-gray-400 mt-4">
-                      Showing {visibleFeedbacks.length} of {feedbacks.length} feedbacks
+                      Showing {visibleFeedbacks.length} of {feedbacks.length} approved feedbacks
                     </p>
                   )}
                 </>
@@ -564,7 +609,7 @@ const Feedback = () => {
                       <span className="text-sm font-semibold text-gray-700">Your voice matters</span>
                     </div>
                     <p className="text-xs text-gray-500">
-                      Every feedback is read by our team and helps shape the future of SAKAY.
+                      Every feedback is reviewed by our admin team before being published.
                     </p>
                   </CardContent>
                 </Card>

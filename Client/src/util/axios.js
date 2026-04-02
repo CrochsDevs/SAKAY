@@ -1,3 +1,4 @@
+// Client/src/util/axios.js
 import axios from 'axios';
 
 // Determine the base URL based on environment
@@ -6,8 +7,8 @@ const getBaseURL = () => {
   if (import.meta.env.PROD || window.location.hostname === 'sakay.online') {
     return '/api';  // This will use https://sakay.online/api
   }
-  // In development, use localhost
-  return import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+  // In development, use localhost with /api
+  return 'http://localhost:5000/api';  // ← ADD /api HERE
 };
 
 const api = axios.create({
@@ -18,6 +19,8 @@ const api = axios.create({
   },
 });
 
+console.log('🚀 API Base URL:', getBaseURL()); 
+
 // Add token to requests if it exists
 api.interceptors.request.use(
   (config) => {
@@ -25,6 +28,7 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    console.log(`📤 ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`);
     return config;
   },
   (error) => {
@@ -33,17 +37,29 @@ api.interceptors.request.use(
 );
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log(`📥 ${response.status} ${response.config.url}`);
+    return response;
+  },
   (error) => {
+    if (error.response) {
+      console.error(`❌ ${error.response.status} ${error.config?.url}`, error.response.data);
+    } else if (error.code === 'ERR_NETWORK') {
+      console.error('❌ Network error - Cannot connect to server:', error.message);
+    } else {
+      console.error('❌ Error:', error.message);
+    }
+    
     if (error.response?.status === 401) {
       const { url, method } = error.config || {};
       
       const isPublicGetFeedback = url?.includes('/feedback') && method === 'get';
+      const isPublicGetAnnouncements = url?.includes('/announcements') && method === 'get';
+      const isPublicGetStatus = url?.includes('/auth/status') && method === 'get';
       
-      // Only redirect for protected actions (POST, PUT, DELETE on feedback)
-      const isProtectedAction = !isPublicGetFeedback;
+      const isPublicRoute = isPublicGetFeedback || isPublicGetAnnouncements || isPublicGetStatus;
       
-      if (isProtectedAction && 
+      if (!isPublicRoute && 
           !window.location.pathname.includes('/login') && 
           !window.location.pathname.includes('/signup')) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname);

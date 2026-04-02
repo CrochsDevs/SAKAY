@@ -1,12 +1,12 @@
+// server/module/feedbacks/feedback.controller.js
 import FeedbackModel from "./feedback.model.js";
 import { ObjectId } from "mongodb";
 
-// Get all feedbacks (PUBLIC - no auth needed)
+// Get all feedbacks (PUBLIC - only approved)
 export const getAllFeedbacks = async (req, res) => {
     try {
-        const feedbacks = await FeedbackModel.findAll();
+        const feedbacks = await FeedbackModel.findApproved();
         
-        // Ensure each feedback has userName and userLocation
         const formattedFeedbacks = feedbacks.map(feedback => ({
             ...feedback,
             userName: feedback.userName || 'Anonymous User',
@@ -16,6 +16,73 @@ export const getAllFeedbacks = async (req, res) => {
         res.status(200).json(formattedFeedbacks);
     } catch (error) {
         console.error('Error fetching feedbacks:', error);
+        res.status(500).json({ message: "Server error: " + error.message });
+    }
+};
+
+// Get all feedbacks for admin (includes pending)
+export const getAllFeedbacksForAdmin = async (req, res) => {
+    try {
+        // Check if user is admin
+        if (req.user.role !== 'super-admin') {
+            return res.status(403).json({ message: "Access denied. Admin only." });
+        }
+        
+        const feedbacks = await FeedbackModel.findAllForAdmin();
+        
+        const formattedFeedbacks = feedbacks.map(feedback => ({
+            ...feedback,
+            userName: feedback.userName || 'Anonymous User',
+            userLocation: feedback.userLocation || 'Commuter'
+        }));
+        
+        res.status(200).json(formattedFeedbacks);
+    } catch (error) {
+        console.error('Error fetching all feedbacks:', error);
+        res.status(500).json({ message: "Server error: " + error.message });
+    }
+};
+
+// Get pending feedbacks (admin only)
+export const getPendingFeedbacks = async (req, res) => {
+    try {
+        if (req.user.role !== 'super-admin') {
+            return res.status(403).json({ message: "Access denied. Admin only." });
+        }
+        
+        const feedbacks = await FeedbackModel.findPending();
+        
+        const formattedFeedbacks = feedbacks.map(feedback => ({
+            ...feedback,
+            userName: feedback.userName || 'Anonymous User',
+            userLocation: feedback.userLocation || 'Commuter'
+        }));
+        
+        res.status(200).json(formattedFeedbacks);
+    } catch (error) {
+        console.error('Error fetching pending feedbacks:', error);
+        res.status(500).json({ message: "Server error: " + error.message });
+    }
+};
+
+// Approve a feedback (admin only)
+export const approveFeedback = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        if (req.user.role !== 'super-admin') {
+            return res.status(403).json({ message: "Access denied. Admin only." });
+        }
+        
+        const result = await FeedbackModel.approveFeedback(id);
+        
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ message: "Feedback not found" });
+        }
+        
+        res.status(200).json({ message: "Feedback approved successfully" });
+    } catch (error) {
+        console.error('Error approving feedback:', error);
         res.status(500).json({ message: "Server error: " + error.message });
     }
 };
@@ -66,19 +133,14 @@ export const createFeedback = async (req, res) => {
         const { rating, comment, userLocation } = req.body;
         const user = req.user;
         
-        console.log('Creating feedback for user:', user); // Debug log
-        
-        // Validate rating
         if (!rating || rating < 1 || rating > 5) {
             return res.status(400).json({ message: "Rating must be between 1 and 5" });
         }
         
-        // Validate comment
         if (!comment || comment.trim().length < 5) {
             return res.status(400).json({ message: "Comment must be at least 5 characters" });
         }
         
-        // Get user's full name (try multiple possible field names)
         const userName = user.fullName || user.name || user.username || 'Anonymous User';
         
         const feedbackData = {
@@ -90,12 +152,10 @@ export const createFeedback = async (req, res) => {
             comment: comment.trim()
         };
         
-        console.log('Feedback data to save:', feedbackData); // Debug log
-        
         const newFeedback = await FeedbackModel.create(feedbackData);
         
         res.status(201).json({ 
-            message: "Feedback submitted successfully",
+            message: "Thank you for your feedback! It will be reviewed by our admin team before being published.",
             feedback: newFeedback
         });
     } catch (error) {
@@ -141,13 +201,19 @@ export const unlikeFeedback = async (req, res) => {
     }
 };
 
-// Delete feedback (PROTECTED - only owner)
+// Delete feedback (PROTECTED - only owner or admin)
 export const deleteFeedback = async (req, res) => {
     try {
         const { id } = req.params;
         const userId = req.user._id;
+        const isAdmin = req.user.role === 'super-admin';
         
-        const result = await FeedbackModel.deleteById(id, userId);
+        let result;
+        if (isAdmin) {
+            result = await FeedbackModel.adminDeleteById(id);
+        } else {
+            result = await FeedbackModel.deleteById(id, userId);
+        }
         
         if (result.deletedCount === 0) {
             return res.status(404).json({ message: "Feedback not found or you don't have permission" });

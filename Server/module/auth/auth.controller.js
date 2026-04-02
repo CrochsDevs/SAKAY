@@ -1,7 +1,9 @@
+// server/module/auth/auth.controller.js
 import User from "../users/user.model.js";
 import Auth from "./auth.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import Roles from "../../constant/roles.js";
 
 export const signup = async (req, res) => {
     const { fullName, email, phone, password } = req.body;
@@ -10,7 +12,7 @@ export const signup = async (req, res) => {
         if (userExists) return res.status(400).json({ message: "Email registered na pre!" });
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        await User.create({ fullName, email, phone }, hashedPassword);
+        await User.create({ fullName, email, phone, role: Roles.COMMUTER }, hashedPassword);
 
         res.status(201).json({ message: "Account created successfully!" });
     } catch (error) {
@@ -27,7 +29,14 @@ export const login = async (req, res) => {
         const isMatch = await Auth.compare(user._id, password);
         if (!isMatch) return res.status(401).json({ message: "Wrong password" });
 
-        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+        // IMPORTANT: Include role in JWT token
+        const userRole = user.role || Roles.COMMUTER;
+
+        const token = jwt.sign(
+            { _id: user._id, role: userRole },
+            process.env.JWT_SECRET,
+            { expiresIn: '1d' }
+        );
 
         res.cookie('token', token, {
             httpOnly: true,
@@ -38,24 +47,23 @@ export const login = async (req, res) => {
 
         await Auth.updateLastLogin(user._id);
 
-        // IMPORTANT: Make sure to include fullName in the response
         const userResponse = {
             _id: user._id,
-            fullName: user.fullName, // This should exist
+            fullName: user.fullName,
             email: user.email,
             phone: user.phone,
-            role: user.role,
-            location: user.location || 'Commuter' // Add location field if it exists
+            role: userRole,
+            location: user.location || 'Commuter'
         };
 
-        console.log('Login response user:', userResponse); // Debug log
+        console.log('✅ Login successful:', userResponse.email, 'Role:', userRole);
 
         res.status(200).json({
             message: "Login successful!",
             user: userResponse
         });
     } catch (error) {
-        console.error('Login error:', error);
+        console.error('❌ Login error:', error);
         res.status(500).json({ error: error.message });
     }
 };
@@ -67,23 +75,26 @@ export const logout = (req, res) => {
 
 export const getStatus = async (req, res) => {
     try {
+        if (!req.user || !req.user._id) {
+            return res.status(200).json({ isAuthenticated: false, user: null });
+        }
+
         const user = await User.getById(req.user._id);
 
         if (!user) {
-            return res.status(401).json({ isAuthenticated: false });
+            return res.status(200).json({ isAuthenticated: false, user: null });
         }
 
-        // IMPORTANT: Include all user data in the response
         const userResponse = {
             _id: user._id,
             fullName: user.fullName,
             email: user.email,
             phone: user.phone,
-            role: user.role,
+            role: user.role || Roles.COMMUTER,
             location: user.location || 'Commuter'
         };
 
-        console.log('Status check user:', userResponse); // Debug log
+        console.log('✅ Status check - User authenticated:', userResponse.email, 'Role:', userResponse.role);
 
         res.status(200).json({
             isAuthenticated: true,
@@ -91,6 +102,6 @@ export const getStatus = async (req, res) => {
         });
     } catch (error) {
         console.error('Status check error:', error);
-        res.status(401).json({ isAuthenticated: false });
+        res.status(200).json({ isAuthenticated: false, user: null });
     }
 };

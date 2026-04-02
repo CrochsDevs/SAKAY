@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import TopBar from '../../layout/TopBar'
 import Footer from '../../layout/Footer'
@@ -18,15 +18,38 @@ import {
   Award,
   Building2,
   CheckCircle2,
+  Megaphone,
+  AlertCircle,
+  Info,
+  Calendar,
+  ArrowRight
 } from 'lucide-react'
-
 import jeepneyImage from '../../assets/images/image.png'
+import api from '../../util/axios'
 
 const Home = () => {
   const [downloading, setDownloading] = useState(false)
+  const [announcements, setAnnouncements] = useState([])
+  const [loadingAnnouncements, setLoadingAnnouncements] = useState(true)
 
   // Actual APK link from Google Drive
   const apkUrl = 'https://drive.google.com/uc?export=download&id=1pkjCnxAA9HQLL4tsV3ptffysZijg7vTl'
+
+  // Fetch announcements
+  useEffect(() => {
+    fetchAnnouncements()
+  }, [])
+
+  const fetchAnnouncements = async () => {
+    try {
+      const response = await api.get('/announcements')
+      setAnnouncements(response.data)
+    } catch (error) {
+      console.error('Error fetching announcements:', error)
+    } finally {
+      setLoadingAnnouncements(false)
+    }
+  }
 
   const handleAndroidDownload = () => {
     setDownloading(true)
@@ -40,8 +63,37 @@ const Home = () => {
   }
 
   const handleiOSDownload = () => {
-    // Coming Soon - will be added later
     alert('iOS app is coming soon! Stay tuned for updates.')
+  }
+
+  // Get priority color and styles
+  const getPriorityStyles = (priority) => {
+    switch(priority) {
+      case 'urgent':
+        return {
+          bg: 'bg-red-50',
+          border: 'border-l-4 border-l-red-500',
+          badge: 'bg-red-100 text-red-700',
+          icon: <AlertCircle className="w-4 h-4" />,
+          gradient: 'from-red-50 to-red-100'
+        }
+      case 'high':
+        return {
+          bg: 'bg-orange-50',
+          border: 'border-l-4 border-l-orange-500',
+          badge: 'bg-orange-100 text-orange-700',
+          icon: <AlertCircle className="w-4 h-4" />,
+          gradient: 'from-orange-50 to-orange-100'
+        }
+      default:
+        return {
+          bg: 'bg-blue-50',
+          border: '',
+          badge: 'bg-blue-100 text-blue-700',
+          icon: <Info className="w-4 h-4" />,
+          gradient: 'from-blue-50 to-blue-100'
+        }
+    }
   }
 
   // Animation Variants
@@ -74,6 +126,9 @@ const Home = () => {
     hidden: { opacity: 0, scale: 0.8 },
     visible: { opacity: 1, scale: 1 }
   }
+
+  // Limit announcements to show only latest 3 on homepage
+  const latestAnnouncements = announcements.slice(0, 3)
 
   return (
     <div className="min-h-screen bg-white overflow-x-hidden font-sans">
@@ -215,6 +270,121 @@ const Home = () => {
             </motion.div>
           </div>
 
+          {/* ========== ANNOUNCEMENTS SECTION ========== */}
+          <motion.div
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6 }}
+            className="mb-24 lg:mb-32"
+          >
+            <div className="text-center mb-12">
+              <Badge className="bg-grab-green/10 border-grab-green/20 text-grab-green px-4 py-2 rounded-full mb-4">
+                <Megaphone className="w-4 h-4 mr-2" />
+                LATEST UPDATES
+              </Badge>
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 max-w-2xl mx-auto">
+                Announcements & News
+              </h2>
+              <p className="text-gray-500 mt-4 max-w-xl mx-auto">
+                Stay updated with the latest news, updates, and announcements from SAKAY
+              </p>
+            </div>
+
+            {loadingAnnouncements ? (
+              <div className="flex justify-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-grab-green"></div>
+              </div>
+            ) : announcements.length === 0 ? (
+              <Card className="border-0 shadow-lg bg-gradient-to-r from-gray-50 to-gray-100">
+                <CardContent className="p-12 text-center">
+                  <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Megaphone className="w-10 h-10 text-gray-400" />
+                  </div>
+                  <p className="text-gray-500 text-lg">No announcements yet.</p>
+                  <p className="text-gray-400 text-sm mt-1">Check back later for updates!</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {latestAnnouncements.map((announcement, index) => {
+                  const priorityStyle = getPriorityStyles(announcement.priority)
+                  return (
+                    <motion.div
+                      key={announcement._id}
+                      variants={scaleIn}
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      <Card className={`border-0 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden bg-gradient-to-br ${priorityStyle.gradient}`}>
+                        <CardContent className="p-0">
+                          {/* Priority Ribbon */}
+                          {announcement.priority === 'urgent' && (
+                            <div className="bg-red-500 text-white text-xs font-bold px-3 py-1 text-center">
+                              URGENT ANNOUNCEMENT
+                            </div>
+                          )}
+                          
+                          <div className="p-6">
+                            <div className="flex items-start gap-3 mb-4">
+                              <div className={`p-2 rounded-xl ${priorityStyle.badge}`}>
+                                {priorityStyle.icon}
+                              </div>
+                              <div className="flex-1">
+                                <h3 className="font-bold text-lg text-gray-900 line-clamp-2">
+                                  {announcement.title}
+                                </h3>
+                                <div className="flex items-center gap-2 mt-1">
+                                  <Calendar className="w-3 h-3 text-gray-400" />
+                                  <p className="text-xs text-gray-400">
+                                    {new Date(announcement.createdAt).toLocaleDateString('en-PH', {
+                                      year: 'numeric',
+                                      month: 'long',
+                                      day: 'numeric'
+                                    })}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-4">
+                              {announcement.content}
+                            </p>
+                            
+                            <div className="flex items-center justify-between mt-2">
+                              <Badge className={priorityStyle.badge}>
+                                {announcement.priority === 'urgent' ? 'Urgent' : announcement.priority === 'high' ? 'High Priority' : 'Normal'}
+                              </Badge>
+                              <button className="text-grab-green text-sm font-medium hover:text-grab-dark transition-colors flex items-center gap-1">
+                                Read more <ArrowRight className="w-3 h-3" />
+                              </button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  )
+                })}
+              </div>
+            )}
+
+            {/* View All Button */}
+            {announcements.length > 3 && (
+              <div className="text-center mt-8">
+                <Button 
+                  variant="outline" 
+                  className="border-grab-green text-grab-green hover:bg-grab-green hover:text-white transition-all duration-300"
+                  onClick={() => window.location.href = '/announcements'}
+                >
+                  View All Announcements
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </div>
+            )}
+          </motion.div>
 
           {/* How It Works Section */}
           <motion.div
@@ -306,28 +476,28 @@ const Home = () => {
                     {
                       icon: Navigation,
                       title: 'Real-time Vehicle Tracking',
-                      desc: 'Track the exact location of your jeepney and know exactly when it will arrive at your location. No more uncertain waiting times.'
+                      desc: 'Track the exact location of your jeepney and know exactly when it will arrive.'
                     },
                     {
                       icon: Clock,
                       title: 'Ride Booking System',
-                      desc: 'Reserve your seat in advance. Avoid long queues and ensure you have a ride, especially during peak hours.'
+                      desc: 'Reserve your seat in advance. Avoid long queues and ensure you have a ride.'
                     },
                     {
                       icon: MapPin,
                       title: 'Route Information',
-                      desc: 'View detailed route maps, designated stops, and estimated travel times before you ride. Plan your trip efficiently.'
+                      desc: 'View detailed route maps, designated stops, and estimated travel times before you ride.'
                     },
                     {
                       icon: Building2,
                       title: 'Multiple Routes',
-                      desc: 'Access jeepney routes across Metro Manila and nearby provinces. Know which jeepney to take and where to get off.'
+                      desc: 'Access jeepney routes across Metro Manila and nearby provinces.'
                     }
                   ].map((feature, index) => {
                     const IconComponent = feature.icon
                     return (
                       <motion.div key={index} variants={fadeInLeft} className="flex gap-4 group">
-                        <div className="w-12 h-12 bg-grab-green/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <div className="w-12 h-12 bg-grab-green/10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-grab-green/20 transition-colors">
                           <IconComponent className="w-6 h-6 text-grab-green" />
                         </div>
                         <div>
@@ -380,7 +550,7 @@ const Home = () => {
                     <div className="mt-4 pt-4 border-t border-gray-100">
                       <p className="text-xs text-gray-500 text-center">
                         <CheckCircle2 className="w-3 h-3 inline-block text-grab-green mr-1" />
-                        Live tracking available.
+                        Live tracking available. Real-time updates every 5 seconds.
                       </p>
                     </div>
                   </CardContent>
@@ -441,6 +611,7 @@ const Home = () => {
                     <motion.div variants={fadeInUp}>
                       <Button className="mt-4 bg-grab-green hover:bg-grab-green/90 text-white h-12 px-6 rounded-xl">
                         How to Apply as Driver?
+                        <ArrowRight className="w-4 h-4 ml-2" />
                       </Button>
                     </motion.div>
                   </motion.div>
@@ -476,7 +647,6 @@ const Home = () => {
                           </li>
                         </ul>
 
-                        {/* Additional Info */}
                         <div className="mt-6 pt-4 border-t border-white/10">
                           <p className="text-xs text-gray-400">
                             For inquiries: drivers@sakay.ph | (02) 1234 5679
@@ -515,7 +685,7 @@ const Home = () => {
               </Button>
               <Button
                 onClick={handleAndroidDownload}
-                className="bg-grab-green hover:bg-grab-green/90 text-white h-14 px-8 rounded-xl flex items-center gap-3 text-lg"
+                className="bg-grab-green hover:bg-grab-green/90 text-white h-14 px-8 rounded-xl flex items-center gap-3 text-lg shadow-xl shadow-grab-green/20 hover:shadow-2xl transition-all"
               >
                 <Smartphone className="w-6 h-6" />
                 <span>Download for Android</span>
@@ -544,6 +714,18 @@ const Home = () => {
         .animate-float { animation: float 4s ease-in-out infinite; }
         .animate-float-delayed { animation: float-delayed 5s ease-in-out infinite; }
         .perspective-1200 { perspective: 1200px; }
+        .line-clamp-2 {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        .line-clamp-3 {
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
         @media (max-width: 640px) {
           @keyframes float {
             0%, 100% { transform: translateY(0); }

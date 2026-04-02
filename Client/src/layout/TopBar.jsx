@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { HelpCircle, Menu, X, Shield, MessageSquare, LogOut, User, ChevronDown } from 'lucide-react'; 
+import { HelpCircle, Menu, X, Shield, MessageSquare, LogOut, User, ChevronDown, LayoutDashboard } from 'lucide-react'; 
 import HelpModal from '../modals/help.jsx';
 import SafetyTipsModal from '../modals/safetyTips.jsx';
 import { useAuth } from '../context/AuthContext';
@@ -15,7 +15,7 @@ const TopBar = () => {
   
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin } = useAuth(); // Add isAdmin here
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -45,7 +45,6 @@ const TopBar = () => {
   }, []);
 
   const handleLogout = async () => {
-    // Show SweetAlert confirmation
     const result = await Swal.fire({
       title: '<span style="color: #2E7D32">Are you sure?</span>',
       text: 'Do you want to logout from SAKAY?',
@@ -104,6 +103,17 @@ const TopBar = () => {
           {/* Right Side Buttons */}
           <div className="flex items-center gap-4">
             <div className="hidden md:flex items-center gap-4 pr-6 border-r border-gray-200">
+              {/* Admin Panel Link - Only for admins */}
+              {isAdmin && (
+                <Link 
+                  to="/admin"
+                  className="flex items-center gap-2 text-[14px] font-bold text-grab-green hover:text-grab-dark transition-colors"
+                >
+                  <LayoutDashboard size={18} strokeWidth={2.5} />
+                  <span>Admin Panel</span>
+                </Link>
+              )}
+              
               <Link 
                 to={user ? "/feedback" : "/login"}
                 className="flex items-center gap-2 text-[14px] font-bold text-gray-500 hover:text-grab-green transition-colors"
@@ -136,7 +146,6 @@ const TopBar = () => {
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className="flex items-center gap-3 focus:outline-none"
                 >
-                  {/* Avatar Circle with Initials */}
                   <div className="w-10 h-10 rounded-full bg-gradient-to-r from-grab-green to-green-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
                     {getUserInitials()}
                   </div>
@@ -162,26 +171,32 @@ const TopBar = () => {
                           <p className="text-xs text-gray-500 mt-0.5">
                             {user.email || 'user@sakay.com'}
                           </p>
+                          {/* Show Admin Badge */}
+                          {isAdmin && (
+                            <span className="inline-block mt-1 text-xs font-bold text-grab-green bg-green-100 px-2 py-0.5 rounded-full">
+                              Admin
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
 
                     {/* Menu Items */}
                     <div>
-                      {/* MY PROFILE BUTTON - COMMENTED OUT FOR NOW */}
-                      {/* <button
-                        onClick={() => {
-                          setIsDropdownOpen(false);
-                          // Optional: navigate to profile page
-                          // navigate('/profile');
-                        }}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        <User size={18} className="text-gray-500" />
-                        <span className="font-medium">My Profile</span>
-                      </button> */}
-                      
-                      {/* <div className="border-t border-gray-100 my-1"></div> */}
+                      {/* Admin Panel Link in Dropdown */}
+                      {isAdmin && (
+                        <>
+                          <Link
+                            to="/admin"
+                            onClick={() => setIsDropdownOpen(false)}
+                            className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                          >
+                            <LayoutDashboard size={18} className="text-grab-green" />
+                            <span className="font-medium">Admin Panel</span>
+                          </Link>
+                          <div className="border-t border-gray-100 my-1"></div>
+                        </>
+                      )}
                       
                       <button
                         onClick={() => {
@@ -234,6 +249,18 @@ const TopBar = () => {
             ))}
             
             <div className="border-t border-gray-100 pt-4 mt-2">
+              {/* Admin Panel Link in Mobile Menu */}
+              {isAdmin && (
+                <Link 
+                  to="/admin"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 text-[16px] font-bold text-grab-green hover:text-grab-dark py-2 transition-colors"
+                >
+                  <LayoutDashboard size={20} />
+                  <span>Admin Panel</span>
+                </Link>
+              )}
+              
               <Link 
                 to={user ? "/feedback" : "/login"}
                 onClick={() => setIsOpen(false)}
@@ -280,6 +307,11 @@ const TopBar = () => {
                     <p className="text-xs text-gray-500">
                       {user.email || 'user@sakay.com'}
                     </p>
+                    {isAdmin && (
+                      <span className="inline-block mt-1 text-xs font-bold text-grab-green bg-green-100 px-2 py-0.5 rounded-full">
+                        Admin
+                      </span>
+                    )}
                   </div>
                 </div>
                 <button 

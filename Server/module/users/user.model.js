@@ -1,5 +1,7 @@
+// server/module/users/user.model.js
 import connectDB from "../../config/db.js";
 import { ObjectId } from "mongodb";
+import Roles from "../../constant/roles.js";
 
 class User {
     static #userColl = "users";
@@ -12,10 +14,11 @@ class User {
             fullName: userData.fullName,
             email: userData.email.toLowerCase(),
             phone: userData.phone,
-            role: userData.role || 'commuter',
-            location: 'Commuter', // Default location
+            role: userData.role || Roles.COMMUTER,
+            location: userData.location || 'Commuter',
             createdAt: new Date(),
-            lastLogin: null
+            lastLogin: null,
+            updatedAt: new Date()
         };
 
         const userResult = await db.collection(this.#userColl).insertOne(userProfile);
@@ -24,6 +27,7 @@ class User {
         await db.collection(this.#authColl).insertOne({
             userId: userId,
             password: hashedPassword,
+            createdAt: new Date(),
             updatedAt: new Date()
         });
 
@@ -31,46 +35,152 @@ class User {
     }
 
     static async getById(id) {
-        const db = await connectDB();
-        const user = await db.collection(this.#userColl).findOne({ _id: new ObjectId(id) });
+        try {
+            const db = await connectDB();
+            const user = await db.collection(this.#userColl).findOne({ _id: new ObjectId(id) });
 
-        // Ensure user always has fullName and location
-        if (user) {
-            user.fullName = user.fullName || 'User';
-            user.location = user.location || 'Commuter';
+            if (user) {
+                user.fullName = user.fullName || 'User';
+                user.location = user.location || 'Commuter';
+                user.role = user.role || Roles.COMMUTER;
+            }
+
+            return user;
+        } catch (error) {
+            console.error('Error in getById:', error);
+            return null;
         }
-
-        return user;
     }
 
     static async getByEmail(email) {
-        const db = await connectDB();
-        const user = await db.collection(this.#userColl).findOne({ email: email.toLowerCase() });
+        try {
+            const db = await connectDB();
+            const user = await db.collection(this.#userColl).findOne({ email: email.toLowerCase() });
 
-        // Ensure user always has fullName and location
-        if (user) {
-            user.fullName = user.fullName || 'User';
-            user.location = user.location || 'Commuter';
+            if (user) {
+                user.fullName = user.fullName || 'User';
+                user.location = user.location || 'Commuter';
+                user.role = user.role || Roles.COMMUTER;
+            }
+
+            return user;
+        } catch (error) {
+            console.error('Error in getByEmail:', error);
+            return null;
         }
-
-        return user;
     }
 
     static async updateLastLogin(id) {
-        const db = await connectDB();
-        return await db.collection(this.#userColl).updateOne(
-            { _id: new ObjectId(id) },
-            { $set: { lastLogin: new Date() } }
-        );
+        try {
+            const db = await connectDB();
+            return await db.collection(this.#userColl).updateOne(
+                { _id: new ObjectId(id) },
+                { $set: { lastLogin: new Date(), updatedAt: new Date() } }
+            );
+        } catch (error) {
+            console.error('Error in updateLastLogin:', error);
+            return null;
+        }
     }
 
-    // Optional: Add method to update user location
     static async updateLocation(id, location) {
-        const db = await connectDB();
-        return await db.collection(this.#userColl).updateOne(
-            { _id: new ObjectId(id) },
-            { $set: { location: location } }
-        );
+        try {
+            const db = await connectDB();
+            return await db.collection(this.#userColl).updateOne(
+                { _id: new ObjectId(id) },
+                { $set: { location: location, updatedAt: new Date() } }
+            );
+        } catch (error) {
+            console.error('Error in updateLocation:', error);
+            return null;
+        }
+    }
+
+    // ========== ADMIN METHODS ==========
+    
+    // Get all users (for admin panel)
+    static async getAllUsers() {
+        try {
+            const db = await connectDB();
+            return await db.collection(this.#userColl)
+                .find({}, { projection: { password: 0 } })
+                .sort({ createdAt: -1 })
+                .toArray();
+        } catch (error) {
+            console.error('Error in getAllUsers:', error);
+            return [];
+        }
+    }
+
+    // Update user role (for admin panel)
+    static async updateRole(id, role) {
+        try {
+            const db = await connectDB();
+            // Validate role
+            if (role !== Roles.ADMIN && role !== Roles.COMMUTER) {
+                throw new Error('Invalid role');
+            }
+            
+            return await db.collection(this.#userColl).updateOne(
+                { _id: new ObjectId(id) },
+                { $set: { role: role, updatedAt: new Date() } }
+            );
+        } catch (error) {
+            console.error('Error in updateRole:', error);
+            return null;
+        }
+    }
+
+    // Get users by role
+    static async getUsersByRole(role) {
+        try {
+            const db = await connectDB();
+            return await db.collection(this.#userColl)
+                .find({ role: role })
+                .sort({ createdAt: -1 })
+                .toArray();
+        } catch (error) {
+            console.error('Error in getUsersByRole:', error);
+            return [];
+        }
+    }
+
+    // Delete user (for admin)
+    static async deleteById(id) {
+        try {
+            const db = await connectDB();
+            // Delete auth record first
+            await db.collection(this.#authColl).deleteOne({ userId: new ObjectId(id) });
+            // Then delete user
+            return await db.collection(this.#userColl).deleteOne({ _id: new ObjectId(id) });
+        } catch (error) {
+            console.error('Error in deleteById:', error);
+            return null;
+        }
+    }
+
+    // Get user count
+    static async getUserCount() {
+        try {
+            const db = await connectDB();
+            return await db.collection(this.#userColl).countDocuments();
+        } catch (error) {
+            console.error('Error in getUserCount:', error);
+            return 0;
+        }
+    }
+
+    // Get admin users
+    static async getAdmins() {
+        try {
+            const db = await connectDB();
+            return await db.collection(this.#userColl)
+                .find({ role: Roles.ADMIN })
+                .toArray();
+        } catch (error) {
+            console.error('Error in getAdmins:', error);
+            return [];
+        }
     }
 }
 

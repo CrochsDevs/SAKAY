@@ -1,10 +1,11 @@
+// server/module/feedbacks/feedback.model.js
 import connectDB from "../../config/db.js";
 import { ObjectId } from "mongodb";
 
 class FeedbackModel {
     static #collection = "feedbacks";
 
-    // Create new feedback
+    // Create new feedback (pending approval)
     static async create(feedbackData) {
         const db = await connectDB();
 
@@ -17,6 +18,7 @@ class FeedbackModel {
             comment: feedbackData.comment,
             likes: 0,
             likedBy: [],
+            isApproved: false, // NEW: Pending approval
             createdAt: new Date(),
             updatedAt: new Date()
         };
@@ -25,20 +27,39 @@ class FeedbackModel {
         return { ...newFeedback, _id: result.insertedId };
     }
 
-    // Get all feedbacks (public)
-    static async findAll() {
+    // Get all feedbacks for admin (includes pending)
+    static async findAllForAdmin() {
         const db = await connectDB();
         const feedbacks = await db.collection(this.#collection)
             .find()
             .sort({ createdAt: -1 })
             .toArray();
 
-        // Ensure all feedbacks have userName
         return feedbacks.map(fb => ({
             ...fb,
             userName: fb.userName || 'Anonymous User',
             userLocation: fb.userLocation || 'Commuter'
         }));
+    }
+
+    // Get only approved feedbacks for public
+    static async findApproved() {
+        const db = await connectDB();
+        const feedbacks = await db.collection(this.#collection)
+            .find({ isApproved: true })
+            .sort({ createdAt: -1 })
+            .toArray();
+
+        return feedbacks.map(fb => ({
+            ...fb,
+            userName: fb.userName || 'Anonymous User',
+            userLocation: fb.userLocation || 'Commuter'
+        }));
+    }
+
+    // Get all feedbacks (public - only approved)
+    static async findAll() {
+        return await this.findApproved();
     }
 
     // Get feedback by ID
@@ -69,11 +90,39 @@ class FeedbackModel {
         }));
     }
 
+    // Get pending feedbacks (for admin)
+    static async findPending() {
+        const db = await connectDB();
+        const feedbacks = await db.collection(this.#collection)
+            .find({ isApproved: false })
+            .sort({ createdAt: -1 })
+            .toArray();
+
+        return feedbacks.map(fb => ({
+            ...fb,
+            userName: fb.userName || 'Anonymous User',
+            userLocation: fb.userLocation || 'Commuter'
+        }));
+    }
+
+    // Approve a feedback (admin)
+    static async approveFeedback(feedbackId) {
+        const db = await connectDB();
+        return await db.collection(this.#collection).updateOne(
+            { _id: new ObjectId(feedbackId) },
+            { 
+                $set: { 
+                    isApproved: true, 
+                    updatedAt: new Date() 
+                } 
+            }
+        );
+    }
+
     // Like a feedback
     static async likeFeedback(feedbackId, userId) {
         const db = await connectDB();
 
-        // Check if user already liked
         const feedback = await this.findById(feedbackId);
         if (!feedback) {
             return { error: "Feedback not found" };
@@ -120,10 +169,18 @@ class FeedbackModel {
         });
     }
 
-    // Get statistics
+    // Admin delete any feedback
+    static async adminDeleteById(id) {
+        const db = await connectDB();
+        return await db.collection(this.#collection).deleteOne({
+            _id: new ObjectId(id)
+        });
+    }
+
+    // Get statistics (only approved)
     static async getStats() {
         const db = await connectDB();
-        const feedbacks = await this.findAll();
+        const feedbacks = await this.findApproved();
 
         const totalFeedbacks = feedbacks.length;
         const averageRating = totalFeedbacks > 0

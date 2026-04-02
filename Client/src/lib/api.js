@@ -5,7 +5,7 @@ const getApiUrl = () => {
     return '';  // Empty string means use same origin
   }
   // In development, use localhost
-  return import.meta.env.VITE_API_URL || 'http://localhost:3000';
+  return import.meta.env.VITE_API_URL || 'http://localhost:5000';
 };
 
 const API_BASE_URL = getApiUrl();

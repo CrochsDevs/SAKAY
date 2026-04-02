@@ -1,3 +1,4 @@
+// server/module/auth/auth.routers.js
 import { Router } from "express";
 import { login, signup, logout, getStatus } from "./auth.controller.js";
 import { verifyJWT } from "../../middlewares/verifyJWT.js";
