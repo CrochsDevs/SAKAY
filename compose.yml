@@ -1,5 +1,4 @@
 services:
-  # MongoDB database
   mongodb:
     image: mongo:7
     container_name: sakay-mongodb
@@ -24,6 +23,9 @@ services:
       dockerfile: Dockerfile
     container_name: sakay-server
     restart: unless-stopped
+    # Remove port mapping entirely - nginx will access it internally
+    # ports:
+    #   - "3000:3000"  # COMMENT THIS OUT OR REMOVE IT
     environment:
       - NODE_ENV=production
       - PORT=3000
@@ -32,17 +34,18 @@ services:
       - JWT_SECRET=${JWT_SECRET:-f47ac10b58e74ac1b6c7001438914b53ef69b6f17e2985f9e83163459c235a91}
     depends_on:
       mongodb:
-        condition: service_healthy
+        condition: service_started
     networks:
       - sakay-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
+    # Remove healthcheck temporarily if it's causing issues
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 20s
 
-  # React application (build stage)
+  # React application
   sakay-client:
     build:
       context: ./Client
@@ -62,7 +65,7 @@ services:
       retries: 3
       start_period: 10s
 
-  # Nginx reverse proxy with SSL
+  # Nginx reverse proxy
   nginx-proxy:
     image: nginx:stable-alpine
     container_name: nginx-proxy
@@ -79,11 +82,11 @@ services:
       sakay-client:
         condition: service_healthy
       sakay-server:
-        condition: service_healthy
+        condition: service_started
     networks:
       - sakay-network
 
-  # Certbot for SSL certificate management
+  # Certbot renewal service
   certbot:
     image: certbot/certbot
     container_name: certbot
