@@ -2,8 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-import { MongoClient } from 'mongodb';
-import authRoutes from './routes/auth.js';  // Add this
+import { MongoClient, ObjectId } from 'mongodb';
+import authRoutes from './routes/auth.js';
 
 dotenv.config();
 
@@ -24,13 +24,14 @@ await client.connect();
 const db = client.db(process.env.DB_NAME);
 console.log(`✅ MongoDB Connected to: ${process.env.DB_NAME}`);
 
-// Make db available to routes
+// Make db and ObjectId available to routes
 app.use((req, res, next) => {
   req.db = db;
+  req.ObjectId = ObjectId;
   next();
 });
 
-// Routes
+// Basic routes
 app.get('/health', (req, res) => {
   res.status(200).json({ 
     status: 'ok', 
@@ -40,12 +41,16 @@ app.get('/health', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.send('🚀 SAKAY API is running...');
+  res.json({ 
+    message: '🚀 SAKAY API is running...',
+    endpoints: ['/health', '/api/auth/register', '/api/auth/login', '/api/auth/profile']
+  });
 });
 
-// API Routes
-app.use('/api/auth', authRoutes);  // Add this line
+// Authentication routes
+app.use('/api/auth', authRoutes);
 
+// Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
