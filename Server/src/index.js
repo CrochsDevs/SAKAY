@@ -3,7 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import { MongoClient } from 'mongodb';
-import apiRoutes from './routes/index.js';  // Add this
+import authRoutes from './routes/auth.js';  // Add this
 
 dotenv.config();
 
@@ -11,7 +11,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ['https://sakay.online', 'http://localhost:3000', 'http://localhost'],
+  credentials: true
+}));
 app.use(cookieParser());
 app.use(express.json());
 
@@ -40,8 +43,8 @@ app.get('/', (req, res) => {
   res.send('🚀 SAKAY API is running...');
 });
 
-// Use API routes
-app.use('/api', apiRoutes);  // Add this line
+// API Routes
+app.use('/api/auth', authRoutes);  // Add this line
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
