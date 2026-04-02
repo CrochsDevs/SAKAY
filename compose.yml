@@ -1,4 +1,47 @@
 services:
+  # MongoDB database
+  mongodb:
+    image: mongo:7
+    container_name: sakay-mongodb
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_DATABASE=SakayDB
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - sakay-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # Backend server
+  sakay-server:
+    build:
+      context: ./Server
+      dockerfile: Dockerfile
+    container_name: sakay-server
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - MONGO_URI=mongodb://mongodb:27017/
+      - DB_NAME=SakayDB
+      - JWT_SECRET=${JWT_SECRET:-f47ac10b58e74ac1b6c7001438914b53ef69b6f17e2985f9e83163459c235a91}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - sakay-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
   # React application
   sakay-client:
     build:
@@ -35,6 +78,8 @@ services:
     depends_on:
       sakay-client:
         condition: service_healthy
+      sakay-server:
+        condition: service_healthy
     networks:
       - sakay-network
 
@@ -55,3 +100,4 @@ networks:
 
 volumes:
   client-build:
+  mongodb-data:
