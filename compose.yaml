@@ -8,6 +8,8 @@ services:
     restart: unless-stopped
     environment:
       - NODE_ENV=production
+    volumes:
+      - client-build:/usr/share/nginx/html
     networks:
       - sakay-network
     healthcheck:
@@ -29,6 +31,7 @@ services:
       - ./nginx/conf:/etc/nginx/conf.d:ro
       - ./certbot/www:/var/www/certbot:ro
       - ./certbot/conf:/etc/letsencrypt:ro
+      - client-build:/usr/share/nginx/html:ro
     depends_on:
       sakay-client:
         condition: service_healthy
@@ -49,3 +52,6 @@ services:
 networks:
   sakay-network:
     driver: bridge
+
+volumes:
+  client-build:
