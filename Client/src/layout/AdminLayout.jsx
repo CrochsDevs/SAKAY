@@ -1,7 +1,7 @@
 // Client/src/layout/AdminLayout.jsx
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import Sidebar from './sidebar';
+import Sidebar from './Sidebar';
 import { useAuth } from '../context/AuthContext';
 import { Menu, LogOut } from 'lucide-react';
 import Swal from 'sweetalert2';
