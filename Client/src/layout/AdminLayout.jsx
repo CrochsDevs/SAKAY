@@ -42,51 +42,24 @@ const AdminLayout = () => {
       <div className="hidden md:block">
         {/* Fixed Sidebar - already glassmorphism, works in both modes */}
         <div className="fixed inset-y-0 left-0 z-40">
-          <Sidebar
-            isCollapsed={isSidebarCollapsed}
-            onToggle={toggleSidebar}
-          />
+          <Sidebar isCollapsed={isSidebarCollapsed} onToggle={toggleSidebar} />
         </div>
 
-        {/* Main Content - shifted right for sidebar */}
-        <div
-          className={`transition-all duration-200 ease-in-out ${
-            isSidebarCollapsed ? 'ml-20' : 'ml-72'
-          }`}
-        >
+        {/* Main Content */}
+        <div className={`transition-all duration-200 ease-in-out ${isSidebarCollapsed ? 'ml-20' : 'ml-72'}`}>
           {/* Desktop Top Bar */}
-          <div className={`backdrop-blur-sm border-b sticky top-0 z-10 transition-colors duration-200 ${
-            isDark
-              ? 'bg-gray-900/80 border-gray-800'
-              : 'bg-white/80 border-gray-200'
-          }`}>
+          <div className={`backdrop-blur-sm border-b sticky top-0 z-10 transition-colors duration-200 ${isDark ? 'bg-gray-900/80 border-gray-800' : 'bg-white/80 border-gray-200'}`}>
             <div className="flex items-center justify-between px-6 py-4">
               <div className="flex items-center gap-4">
-                {/* Collapse/Expand toggle */}
-                <button
-                  onClick={toggleSidebar}
-                  className={`p-2 rounded-lg transition-colors ${
-                    isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-100'
-                  }`}
-                  title={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-                >
-                  {isSidebarCollapsed ? (
-                    <ChevronRight size={20} className={isDark ? 'text-gray-400' : 'text-gray-600'} />
-                  ) : (
-                    <ChevronLeft size={20} className={isDark ? 'text-gray-400' : 'text-gray-600'} />
-                  )}
+                <button onClick={toggleSidebar} className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-100'}`} title={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}>
+                  {isSidebarCollapsed ? <ChevronRight size={20} className={isDark ? 'text-gray-400' : 'text-gray-600'} /> : <ChevronLeft size={20} className={isDark ? 'text-gray-400' : 'text-gray-600'} />}
                 </button>
                 <div>
                   <h2 className={`text-xl font-bold transition-colors ${isDark ? 'text-white' : 'text-gray-800'}`}>Admin Dashboard</h2>
                   <p className={`text-sm transition-colors ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Welcome back, {user?.fullName}</p>
                 </div>
               </div>
-              <button
-                onClick={handleLogout}
-                className={`flex items-center gap-2 text-sm transition-colors ${
-                  isDark ? 'text-gray-400 hover:text-red-400' : 'text-gray-500 hover:text-red-500'
-                }`}
-              >
+              <button onClick={handleLogout} className={`flex items-center gap-2 text-sm transition-colors ${isDark ? 'text-gray-400 hover:text-red-400' : 'text-gray-500 hover:text-red-500'}`}>
                 <LogOut size={18} />
                 <span className="hidden sm:inline">Logout</span>
               </button>
@@ -104,41 +77,19 @@ const AdminLayout = () => {
       <div className="md:hidden">
         {/* Backdrop overlay */}
         {isMobileOpen && (
-          <div
-            className="fixed inset-0 bg-black/60 z-40"
-            onClick={() => setIsMobileOpen(false)}
-          />
+          <div className="fixed inset-0 bg-black/60 z-40" onClick={() => setIsMobileOpen(false)} />
         )}
 
         {/* Sidebar slides in from left */}
-        <div
-          className={`fixed inset-y-0 left-0 z-50 transition-transform duration-200 ease-in-out ${
-            isMobileOpen ? 'translate-x-0' : '-translate-x-full'
-          }`}
-        >
-          <Sidebar
-            isCollapsed={false}
-            isMobile={true}
-            isOpen={isMobileOpen}
-            onClose={() => setIsMobileOpen(false)}
-          />
+        <div className={`fixed inset-y-0 left-0 z-50 transition-transform duration-200 ease-in-out ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+          <Sidebar isCollapsed={false} isMobile={true} isOpen={isMobileOpen} onClose={() => setIsMobileOpen(false)} />
         </div>
 
         {/* Mobile Top Bar */}
-        <div className={`backdrop-blur-sm border-b sticky top-0 z-30 transition-colors duration-200 ${
-          isDark
-            ? 'bg-gray-900/90 border-gray-800'
-            : 'bg-white/90 border-gray-200'
-        }`}>
+        <div className={`backdrop-blur-sm border-b sticky top-0 z-30 transition-colors duration-200 ${isDark ? 'bg-gray-900/90 border-gray-800' : 'bg-white/90 border-gray-200'}`}>
           <div className="flex items-center justify-between px-4 py-3">
             <div className="flex items-center gap-3">
-              {/* Hamburger / Menu button */}
-              <button
-                onClick={() => setIsMobileOpen(true)}
-                className={`p-2 rounded-lg transition-colors ${
-                  isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-100'
-                }`}
-              >
+              <button onClick={() => setIsMobileOpen(true)} className={`p-2 rounded-lg transition-colors ${isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-100'}`}>
                 <Menu size={20} className={isDark ? 'text-gray-400' : 'text-gray-600'} />
               </button>
               <div className="flex items-center gap-2">
@@ -149,13 +100,7 @@ const AdminLayout = () => {
               </div>
             </div>
             <div className="flex items-center gap-1">
-              {/* Logout */}
-              <button
-                onClick={handleLogout}
-                className={`p-2 rounded-lg transition-colors ${
-                  isDark ? 'text-gray-400 hover:text-red-400 hover:bg-gray-800' : 'text-gray-500 hover:text-red-500 hover:bg-gray-100'
-                }`}
-              >
+              <button onClick={handleLogout} className={`p-2 rounded-lg transition-colors ${isDark ? 'text-gray-400 hover:text-red-400 hover:bg-gray-800' : 'text-gray-500 hover:text-red-500 hover:bg-gray-100'}`}>
                 <LogOut size={20} />
               </button>
             </div>
