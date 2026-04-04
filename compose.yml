@@ -99,5 +99,4 @@ networks:
     driver: bridge
 
 volumes:
-  client-build:
   mongodb-data:
