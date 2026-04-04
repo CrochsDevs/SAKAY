@@ -10,6 +10,14 @@
     --input: 235 235 235;
     --radius: 0.5rem;
   }
+
+  :root.dark {
+    --background: 18 18 18;
+    --foreground: 245 245 245;
+    --border: 40 40 40;
+    --input: 40 40 40;
+    --radius: 0.5rem;
+  }
 }
 
 @layer base {
@@ -17,9 +25,17 @@
     @apply border-border;
   }
   body {
-    @apply bg-white text-gray-900 antialiased;
+    @apply antialiased;
+    @apply bg-background text-foreground;
     font-family: 'Inter', system-ui, sans-serif;
     margin: 0;
+  }
+  /* Body bg/fg set dynamically via theme classes */
+  :root:not(.dark) body {
+    @apply bg-white text-gray-900;
+  }
+  :root.dark body {
+    @apply bg-gray-950 text-gray-100;
   }
 }
 

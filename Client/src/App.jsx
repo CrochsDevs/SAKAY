@@ -10,6 +10,7 @@ import Feedback from './pages/Users/Feedback';
 import Login from './auth/login';
 import SignUp from './auth/signup';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 
 // Admin imports - MATCHING YOUR FILE NAMES EXACTLY
 import AdminLayout from './layout/AdminLayout';
@@ -105,14 +106,16 @@ function AppRoutes() {
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <TopBar />
-        <div className="pt-20">
-          <AppRoutes />
-        </div>
-      </AuthProvider>
-    </Router>
+    <ThemeProvider>
+      <Router>
+        <AuthProvider>
+          <TopBar />
+          <div className="pt-20">
+            <AppRoutes />
+          </div>
+        </AuthProvider>
+      </Router>
+    </ThemeProvider>
   );
 }
 
