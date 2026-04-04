@@ -5,7 +5,7 @@ import Footer from '../../layout/Footer'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import useTheme from '../../context/ThemeContext'
+import { useTheme } from '../../context/ThemeContext';
 import {
   Smartphone,
   Apple,
