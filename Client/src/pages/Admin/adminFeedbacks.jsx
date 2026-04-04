@@ -88,29 +88,31 @@ const AdminFeedbacks = () => {
 
   const FeedbackCard = ({ feedback, showApprove = false }) => (
     <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow mb-4">
-      <CardContent className="p-6">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-grab-green to-green-600 flex items-center justify-center text-white font-bold">
-                {feedback.userName?.charAt(0) || '?'}
+      <CardContent className="p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-0">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-3 mb-1">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-r from-grab-green to-green-600 flex items-center justify-center text-white font-bold flex-shrink-0">
+                  {feedback.userName?.charAt(0) || '?'}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-gray-900 truncate">{feedback.userName}</p>
+                  <p className="text-xs text-gray-500 truncate">{feedback.userEmail}</p>
+                </div>
               </div>
-              <div>
-                <p className="font-semibold text-gray-900">{feedback.userName}</p>
-                <p className="text-xs text-gray-500">{feedback.userEmail}</p>
-              </div>
-              <div className="flex items-center gap-1 ml-auto">
+              <div className="flex items-center gap-1 ml-0 sm:ml-0 justify-start sm:justify-end w-full sm:w-auto">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
-                    size={16}
+                    size={14}
                     className={i < feedback.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-200"}
                   />
                 ))}
               </div>
             </div>
-            <p className="text-gray-700 mt-2">{feedback.comment}</p>
-            <div className="flex items-center gap-4 mt-3">
+            <p className="text-gray-700 mt-2 break-words">{feedback.comment}</p>
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-3">
               <span className="text-xs text-gray-400">
                 {new Date(feedback.createdAt).toLocaleDateString()}
               </span>
@@ -118,24 +120,24 @@ const AdminFeedbacks = () => {
                 <ThumbsUp className="w-3 h-3" />
                 {feedback.likes || 0} likes
               </span>
-              <Badge className="bg-gray-100 text-gray-600">
+              <Badge className="bg-gray-100 text-gray-600 text-xs">
                 {feedback.userLocation}
               </Badge>
               {!feedback.isApproved && (
-                <Badge className="bg-yellow-100 text-yellow-700 flex items-center gap-1">
+                <Badge className="bg-yellow-100 text-yellow-700 flex items-center gap-1 text-xs">
                   <Clock className="w-3 h-3" />
                   Pending
                 </Badge>
               )}
               {feedback.isApproved && (
-                <Badge className="bg-green-100 text-green-700 flex items-center gap-1">
+                <Badge className="bg-green-100 text-green-700 flex items-center gap-1 text-xs">
                   <CheckCircle className="w-3 h-3" />
                   Approved
                 </Badge>
               )}
             </div>
           </div>
-          <div className="flex gap-2 ml-4">
+          <div className="flex gap-2 sm:flex-col mt-2 sm:mt-0 sm:ml-4">
             {showApprove && (
               <Button
                 variant="ghost"
@@ -164,25 +166,27 @@ const AdminFeedbacks = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
+      <div className="flex items-center justify-center h-48 sm:h-96">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-grab-green"></div>
       </div>
     );
   }
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Feedback Management</h1>
+    <div className="px-2 sm:px-0">
+      <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Feedback Management</h1>
       
       <Tabs defaultValue="pending" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 mb-6">
-          <TabsTrigger value="pending" className="flex items-center gap-2">
+        <TabsList className="grid w-full grid-cols-2 mb-4 sm:mb-6">
+          <TabsTrigger value="pending" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
             <Clock className="w-4 h-4" />
-            Pending Approval ({pendingFeedbacks.length})
+            <span className="hidden sm:inline">Pending</span>
+            <span className="sm:hidden">Pending</span> ({pendingFeedbacks.length})
           </TabsTrigger>
-          <TabsTrigger value="approved" className="flex items-center gap-2">
+          <TabsTrigger value="approved" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
             <CheckCircle className="w-4 h-4" />
-            Approved ({approvedFeedbacks.length})
+            <span className="hidden sm:inline">Approved</span>
+            <span className="sm:hidden">Approved</span> ({approvedFeedbacks.length})
           </TabsTrigger>
         </TabsList>
 

@@ -86,19 +86,19 @@ const Announcements = () => {
   };
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Announcements</h1>
-        <Button onClick={() => setShowForm(!showForm)} className="bg-grab-green hover:bg-grab-dark">
+    <div className="px-2 sm:px-0">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Announcements</h1>
+        <Button onClick={() => setShowForm(!showForm)} className="bg-grab-green hover:bg-grab-dark self-start">
           <Plus className="w-4 h-4 mr-2" />
           New Announcement
         </Button>
       </div>
 
       {showForm && (
-        <Card className="mb-6 border-0 shadow-lg">
+        <Card className="mb-4 sm:mb-6 border-0 shadow-lg">
           <CardHeader>
-            <CardTitle>{editingId ? 'Edit Announcement' : 'Create New Announcement'}</CardTitle>
+            <CardTitle className="text-lg sm:text-xl">{editingId ? 'Edit Announcement' : 'Create New Announcement'}</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -124,7 +124,7 @@ const Announcements = () => {
                 <option value="high">High</option>
                 <option value="urgent">Urgent</option>
               </select>
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Button type="submit" className="bg-grab-green hover:bg-grab-dark">
                   {editingId ? 'Update' : 'Publish'}
                 </Button>
@@ -148,25 +148,25 @@ const Announcements = () => {
       <div className="space-y-4">
         {announcements.map((announcement) => (
           <Card key={announcement._id} className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Megaphone className="w-5 h-5 text-grab-green" />
-                    <h3 className="font-bold text-lg text-gray-900">{announcement.title}</h3>
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <Megaphone className="w-5 h-5 text-grab-green flex-shrink-0" />
+                    <h3 className="font-bold text-base sm:text-lg text-gray-900 break-words">{announcement.title}</h3>
                     {announcement.priority === 'urgent' && (
-                      <span className="bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full">Urgent</span>
+                      <span className="bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full flex-shrink-0">Urgent</span>
                     )}
                     {announcement.priority === 'high' && (
-                      <span className="bg-orange-100 text-orange-600 text-xs px-2 py-1 rounded-full">High</span>
+                      <span className="bg-orange-100 text-orange-600 text-xs px-2 py-1 rounded-full flex-shrink-0">High</span>
                     )}
                   </div>
-                  <p className="text-gray-600 mt-2">{announcement.content}</p>
+                  <p className="text-gray-600 mt-2 break-words">{announcement.content}</p>
                   <p className="text-xs text-gray-400 mt-3">
                     Posted on {new Date(announcement.createdAt).toLocaleDateString()}
                   </p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 self-end sm:self-start flex-shrink-0">
                   <Button variant="ghost" size="sm" onClick={() => handleEdit(announcement)}>
                     <Edit className="w-4 h-4" />
                   </Button>
