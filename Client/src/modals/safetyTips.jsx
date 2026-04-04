@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Shield, AlertTriangle, Car, MapPin, Phone, Bell, Users, Eye, Clock, CheckCircle2, HeartHandshake, Smartphone, UserCheck, AlertOctagon } from 'lucide-react'
+import { useTheme } from '../context/ThemeContext'
 
 const SafetyTipsModal = ({ isOpen, onClose }) => {
+  const { isDark } = useTheme()
+
   // Close modal when pressing Escape key
   useEffect(() => {
     const handleEsc = (e) => {
@@ -140,41 +143,41 @@ const SafetyTipsModal = ({ isOpen, onClose }) => {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-5xl max-h-[85vh] bg-white rounded-2xl shadow-2xl overflow-hidden"
+            className={`relative w-full max-w-5xl max-h-[85vh] rounded-2xl shadow-2xl overflow-hidden ${isDark ? 'bg-gray-800' : 'bg-white'}`}
           >
             {/* Header */}
-            <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between z-10">
+            <div className={`sticky top-0 px-6 py-4 flex items-center justify-between z-10 ${isDark ? 'bg-gray-800 border-b border-gray-700' : 'bg-white border-b border-gray-100'}`}>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-grab-green/10 rounded-xl flex items-center justify-center">
                   <Shield className="w-5 h-5 text-grab-green" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">Safety Tips</h2>
-                  <p className="text-sm text-gray-500">Your safety is our priority</p>
+                  <h2 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>Safety Tips</h2>
+                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Your safety is our priority</p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center transition-colors"
+                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}
               >
-                <X className="w-5 h-5 text-gray-500" />
+                <X className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
               </button>
             </div>
 
             {/* Content */}
             <div className="overflow-y-auto max-h-[calc(85vh-80px)] p-6 space-y-8">
-              
+
               {/* Emergency Numbers Banner */}
-              <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+              <div className={isDark ? 'bg-red-900/30 border border-red-800 rounded-xl p-4' : 'bg-red-50 border border-red-200 rounded-xl p-4'}>
                 <div className="flex items-center gap-3 mb-3">
                   <AlertTriangle className="w-6 h-6 text-red-500" />
-                  <h3 className="font-bold text-red-700">Emergency Numbers</h3>
+                  <h3 className={isDark ? 'font-bold text-red-400' : 'font-bold text-red-700'}>Emergency Numbers</h3>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {emergencyNumbers.map((item, index) => (
                     <div key={index} className="text-center">
-                      <p className="text-2xl font-bold text-red-600">{item.number}</p>
-                      <p className="text-xs text-gray-600">{item.name}</p>
+                      <p className={`text-2xl font-bold ${isDark ? 'text-red-400' : 'text-red-600'}`}>{item.number}</p>
+                      <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{item.name}</p>
                     </div>
                   ))}
                 </div>
@@ -184,18 +187,18 @@ const SafetyTipsModal = ({ isOpen, onClose }) => {
               <div>
                 <div className="flex items-center gap-2 mb-4">
                   <Users className="w-5 h-5 text-grab-green" />
-                  <h3 className="text-lg font-bold text-gray-900">For Passengers</h3>
+                  <h3 className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>For Passengers</h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {safetyTips.passengers.map((tip, index) => {
                     const IconComponent = tip.icon
                     return (
-                      <div key={index} className="bg-gray-50 rounded-xl p-4 hover:shadow-md transition-shadow">
+                      <div key={index} className={`rounded-xl p-4 hover:shadow-md transition-shadow ${isDark ? 'bg-gray-700/60' : 'bg-gray-50'}`}>
                         <div className="w-10 h-10 bg-grab-green/10 rounded-lg flex items-center justify-center mb-3">
                           <IconComponent className="w-5 h-5 text-grab-green" />
                         </div>
-                        <h4 className="font-semibold text-gray-900 mb-1">{tip.title}</h4>
-                        <p className="text-sm text-gray-500">{tip.description}</p>
+                        <h4 className={`font-semibold mb-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>{tip.title}</h4>
+                        <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{tip.description}</p>
                       </div>
                     )
                   })}
@@ -206,18 +209,18 @@ const SafetyTipsModal = ({ isOpen, onClose }) => {
               <div>
                 <div className="flex items-center gap-2 mb-4">
                   <Car className="w-5 h-5 text-grab-green" />
-                  <h3 className="text-lg font-bold text-gray-900">For Drivers</h3>
+                  <h3 className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>For Drivers</h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {safetyTips.drivers.map((tip, index) => {
                     const IconComponent = tip.icon
                     return (
-                      <div key={index} className="bg-gray-50 rounded-xl p-4 hover:shadow-md transition-shadow">
+                      <div key={index} className={`rounded-xl p-4 hover:shadow-md transition-shadow ${isDark ? 'bg-gray-700/60' : 'bg-gray-50'}`}>
                         <div className="w-10 h-10 bg-grab-green/10 rounded-lg flex items-center justify-center mb-3">
                           <IconComponent className="w-5 h-5 text-grab-green" />
                         </div>
-                        <h4 className="font-semibold text-gray-900 mb-1">{tip.title}</h4>
-                        <p className="text-sm text-gray-500">{tip.description}</p>
+                        <h4 className={`font-semibold mb-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>{tip.title}</h4>
+                        <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{tip.description}</p>
                       </div>
                     )
                   })}
@@ -228,18 +231,18 @@ const SafetyTipsModal = ({ isOpen, onClose }) => {
               <div>
                 <div className="flex items-center gap-2 mb-4">
                   <Shield className="w-5 h-5 text-grab-green" />
-                  <h3 className="text-lg font-bold text-gray-900">General Safety Tips</h3>
+                  <h3 className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>General Safety Tips</h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   {safetyTips.general.map((tip, index) => {
                     const IconComponent = tip.icon
                     return (
-                      <div key={index} className="bg-gray-50 rounded-xl p-4 hover:shadow-md transition-shadow">
+                      <div key={index} className={`rounded-xl p-4 hover:shadow-md transition-shadow ${isDark ? 'bg-gray-700/60' : 'bg-gray-50'}`}>
                         <div className="w-10 h-10 bg-grab-green/10 rounded-lg flex items-center justify-center mb-3">
                           <IconComponent className="w-5 h-5 text-grab-green" />
                         </div>
-                        <h4 className="font-semibold text-gray-900 mb-1">{tip.title}</h4>
-                        <p className="text-sm text-gray-500">{tip.description}</p>
+                        <h4 className={`font-semibold mb-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>{tip.title}</h4>
+                        <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{tip.description}</p>
                       </div>
                     )
                   })}
@@ -247,10 +250,10 @@ const SafetyTipsModal = ({ isOpen, onClose }) => {
               </div>
 
               {/* Reminder */}
-              <div className="bg-grab-green/5 border border-grab-green/20 rounded-xl p-4 text-center">
+              <div className={`rounded-xl p-4 text-center ${isDark ? 'bg-grab-green/10 border border-grab-green/30' : 'bg-grab-green/5 border border-grab-green/20'}`}>
                 <CheckCircle2 className="w-8 h-8 text-grab-green mx-auto mb-2" />
-                <p className="text-sm text-gray-700">
-                  Remember: Your safety is our priority. If you feel unsafe at any time, use the in-app 
+                <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                  Remember: Your safety is our priority. If you feel unsafe at any time, use the in-app
                   emergency button or call the emergency hotline immediately.
                 </p>
               </div>

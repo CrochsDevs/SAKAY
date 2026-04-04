@@ -3,17 +3,13 @@ import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
 import { Menu, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
-import ThemeToggle from '../components/ThemeToggle';
 import Swal from 'sweetalert2';
 
 const AdminLayout = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const { user, logout } = useAuth();
-  const { effectiveTheme, setTheme } = useTheme();
-  const isDark = effectiveTheme === 'dark';
 
   const toggleSidebar = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
@@ -38,10 +34,10 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className={`min-h-screen transition-colors duration-200 ${isDark ? 'bg-gray-950' : 'bg-gray-50'}`}>
+    <div className="min-h-screen bg-gray-50">
       {/* === DESKTOP LAYOUT (md: 768px and up) === */}
       <div className="hidden md:block">
-        {/* Fixed Glass Sidebar */}
+        {/* Fixed Sidebar */}
         <div className="fixed inset-y-0 left-0 z-40">
           <Sidebar
             isCollapsed={isSidebarCollapsed}
@@ -56,46 +52,33 @@ const AdminLayout = () => {
           }`}
         >
           {/* Desktop Top Bar */}
-          <div className={`backdrop-blur-sm border-b sticky top-0 z-10 ${
-            isDark
-              ? 'bg-gray-900/80 border-gray-800'
-              : 'bg-white/80 border-gray-200'
-          }`}>
+          <div className="backdrop-blur-sm border-b sticky top-0 z-10 bg-white/80 border-gray-200">
             <div className="flex items-center justify-between px-6 py-4">
               <div className="flex items-center gap-4">
                 {/* Collapse/Expand toggle */}
                 <button
                   onClick={toggleSidebar}
-                  className={`p-2 rounded-lg transition-colors ${
-                    isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-100'
-                  }`}
+                  className="p-2 rounded-lg transition-colors hover:bg-gray-100"
                   title={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                 >
                   {isSidebarCollapsed ? (
-                    <ChevronRight size={20} className={isDark ? 'text-gray-400' : 'text-gray-600'} />
+                    <ChevronRight size={20} className="text-gray-600" />
                   ) : (
-                    <ChevronLeft size={20} className={isDark ? 'text-gray-400' : 'text-gray-600'} />
+                    <ChevronLeft size={20} className="text-gray-600" />
                   )}
                 </button>
                 <div>
-                  <h2 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>Admin Dashboard</h2>
-                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Welcome back, {user?.fullName}</p>
+                  <h2 className="text-xl font-bold text-gray-800">Admin Dashboard</h2>
+                  <p className="text-sm text-gray-500">Welcome back, {user?.fullName}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                {/* Theme Toggle */}
-                <ThemeToggle />
-                {/* Logout */}
-                <button
-                  onClick={handleLogout}
-                  className={`flex items-center gap-2 text-sm transition-colors ${
-                    isDark ? 'text-gray-400 hover:text-red-400' : 'text-gray-500 hover:text-red-500'
-                  }`}
-                >
-                  <LogOut size={18} />
-                  <span className="hidden sm:inline">Logout</span>
-                </button>
-              </div>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 text-sm transition-colors text-gray-500 hover:text-red-500"
+              >
+                <LogOut size={18} />
+                <span className="hidden sm:inline">Logout</span>
+              </button>
             </div>
           </div>
 
@@ -108,7 +91,7 @@ const AdminLayout = () => {
 
       {/* === MOBILE LAYOUT (below md: 768px) === */}
       <div className="md:hidden">
-        {/* Backdrop overlay - darker for mobile */}
+        {/* Backdrop overlay */}
         {isMobileOpen && (
           <div
             className="fixed inset-0 bg-black/60 z-40"
@@ -130,45 +113,35 @@ const AdminLayout = () => {
           />
         </div>
 
-        {/* Mobile Top Bar - glass effect */}
-        <div className={`backdrop-blur-sm border-b sticky top-0 z-30 ${
-          isDark
-            ? 'bg-gray-900/90 border-gray-800'
-            : 'bg-white/90 border-gray-200'
-        }`}>
+        {/* Mobile Top Bar */}
+        <div className="backdrop-blur-sm border-b sticky top-0 z-30 bg-white/90 border-gray-200">
           <div className="flex items-center justify-between px-4 py-3">
             <div className="flex items-center gap-3">
               {/* Hamburger / Menu button */}
               <button
                 onClick={() => setIsMobileOpen(true)}
-                className={`p-2 rounded-lg transition-colors ${
-                  isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-100'
-                }`}
+                className="p-2 rounded-lg transition-colors hover:bg-gray-100"
               >
-                <Menu size={20} className={isDark ? 'text-gray-400' : 'text-gray-600'} />
+                <Menu size={20} className="text-gray-600" />
               </button>
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-grab-green rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-sm">S</span>
                 </div>
-                <h2 className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>SAKAY</h2>
+                <h2 className="text-lg font-bold text-gray-800">SAKAY</h2>
               </div>
             </div>
             <div className="flex items-center gap-1">
-              {/* Theme Toggle */}
-              <ThemeToggle />
               {/* Logout */}
               <button
                 onClick={handleLogout}
-                className={`p-2 rounded-lg transition-colors ${
-                  isDark ? 'text-gray-400 hover:text-red-400 hover:bg-gray-800' : 'text-gray-500 hover:text-red-500 hover:bg-gray-100'
-                }`}
+                className="p-2 rounded-lg transition-colors text-gray-500 hover:text-red-500 hover:bg-gray-100"
               >
-  <LogOut size={20} />
+                <LogOut size={20} />
               </button>
             </div>
           </div>
-          <p className={`text-xs mt-1 px-4 pb-2 ${isDark ? 'text-gray-500' : 'text-gray-400'} ml-10`}>Welcome, {user?.fullName}</p>
+          <p className="text-xs mt-1 px-4 pb-2 ml-10 text-gray-400">Welcome, {user?.fullName}</p>
         </div>
 
         {/* Mobile Page Content */}

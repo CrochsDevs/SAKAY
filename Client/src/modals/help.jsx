@@ -2,8 +2,11 @@ import React, { useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Download, Smartphone, Apple, HelpCircle, CheckCircle2, FileQuestion, MessageCircle, BookOpen, ChevronRight, ExternalLink } from 'lucide-react'
 import { Button } from "@/components/ui/button"
+import { useTheme } from '@/context/ThemeContext'
 
 const HelpModal = ({ isOpen, onClose }) => {
+  const { isDark } = useTheme()
+
   // Close modal when pressing Escape key
   useEffect(() => {
     const handleEsc = (e) => {
@@ -81,24 +84,24 @@ const HelpModal = ({ isOpen, onClose }) => {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-4xl max-h-[85vh] bg-white rounded-2xl shadow-2xl overflow-hidden"
+            className={`relative w-full max-w-4xl max-h-[85vh] rounded-2xl shadow-2xl overflow-hidden ${isDark ? 'bg-gray-900' : 'bg-white'}`}
           >
             {/* Header */}
-            <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
+            <div className={`sticky top-0 border-b px-6 py-4 flex items-center justify-between ${isDark ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-100'}`}>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-grab-green/10 rounded-xl flex items-center justify-center">
                   <HelpCircle className="w-5 h-5 text-grab-green" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">Help Center</h2>
-                  <p className="text-sm text-gray-500">How can we help you today?</p>
+                  <h2 className={`text-xl font-bold ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>Help Center</h2>
+                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>How can we help you today?</p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center transition-colors"
+                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}
               >
-                <X className="w-5 h-5 text-gray-500" />
+                <X className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
               </button>
             </div>
 
@@ -119,31 +122,31 @@ const HelpModal = ({ isOpen, onClose }) => {
                         window.location.href = '/contact'
                       }
                     }}
-                    className="flex flex-col items-center gap-2 p-4 rounded-xl border border-gray-200 hover:border-grab-green/50 hover:bg-grab-green/5 transition-all"
+                    className={`flex flex-col items-center gap-2 p-4 rounded-xl border transition-all ${isDark ? 'border-gray-700 hover:border-grab-green/50 hover:bg-grab-green/10' : 'border-gray-200 hover:border-grab-green/50 hover:bg-grab-green/5'}`}
                   >
                     <item.icon className="w-6 h-6 text-grab-green" />
-                    <span className="text-sm font-medium text-gray-700">{item.label}</span>
+                    <span className={`text-sm font-medium ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>{item.label}</span>
                   </button>
                 ))}
               </div>
 
               {/* How to Download */}
-              <div className="bg-gradient-to-r from-grab-green/5 to-blue-500/5 rounded-xl p-6">
+              <div className={`rounded-xl p-6 ${isDark ? 'bg-gradient-to-r from-grab-green/10 to-blue-900/20' : 'bg-gradient-to-r from-grab-green/5 to-blue-500/5'}`}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-grab-green/10 rounded-xl flex items-center justify-center">
                     <Download className="w-5 h-5 text-grab-green" />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900">How to Download SAKAY</h3>
+                  <h3 className={`text-lg font-bold ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>How to Download SAKAY</h3>
                 </div>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <div className="flex items-center gap-2 mb-3">
                       <Smartphone className="w-5 h-5 text-grab-green" />
-                      <span className="font-semibold text-gray-900">For Android</span>
+                      <span className={`font-semibold ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>For Android</span>
                     </div>
                     <ol className="space-y-3">
                       {helpTopics[0].steps.slice(0, 3).map((step, i) => (
-                        <li key={i} className="flex gap-2 text-sm text-gray-600">
+                        <li key={i} className={`flex gap-2 text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                           <span className="w-5 h-5 bg-grab-green/10 text-grab-green rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
                             {step.step}
                           </span>
@@ -154,13 +157,13 @@ const HelpModal = ({ isOpen, onClose }) => {
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-3">
-                      <Apple className="w-5 h-5 text-gray-900" />
-                      <span className="font-semibold text-gray-900">For iOS</span>
+                      <Apple className={`w-5 h-5 ${isDark ? 'text-gray-200' : 'text-gray-900'}`} />
+                      <span className={`font-semibold ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>For iOS</span>
                     </div>
                     <ol className="space-y-3">
                       {helpTopics[0].steps.slice(3, 6).map((step, i) => (
-                        <li key={i} className="flex gap-2 text-sm text-gray-600">
-                          <span className="w-5 h-5 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
+                        <li key={i} className={`flex gap-2 text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                          <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${isDark ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-600'}`}>
                             {step.step}
                           </span>
                           <span>{step.desc}</span>
@@ -169,7 +172,7 @@ const HelpModal = ({ isOpen, onClose }) => {
                     </ol>
                   </div>
                 </div>
-                <div className="mt-4 pt-4 border-t border-gray-200 flex justify-end">
+                <div className={`mt-4 pt-4 border-t flex justify-end ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
                   <Button
                     onClick={() => window.location.href = '/download'}
                     className="bg-grab-green hover:bg-grab-green/90 text-white"
@@ -181,12 +184,12 @@ const HelpModal = ({ isOpen, onClose }) => {
               </div>
 
               {/* How to Book a Ride */}
-              <div className="bg-gray-50 rounded-xl p-6">
+              <div className={`rounded-xl p-6 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-grab-green/10 rounded-xl flex items-center justify-center">
                     <Smartphone className="w-5 h-5 text-grab-green" />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900">How to Book a Ride</h3>
+                  <h3 className={`text-lg font-bold ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>How to Book a Ride</h3>
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
                   {helpTopics[1].steps.map((step, i) => (
@@ -194,25 +197,25 @@ const HelpModal = ({ isOpen, onClose }) => {
                       <div className="w-8 h-8 bg-grab-green/10 rounded-lg flex items-center justify-center flex-shrink-0">
                         <span className="text-sm font-bold text-grab-green">{step.step}</span>
                       </div>
-                      <p className="text-sm text-gray-600">{step.desc}</p>
+                      <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{step.desc}</p>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* FAQs */}
-              <div className="rounded-xl p-6 border border-gray-200">
+              <div className={`rounded-xl p-6 border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-grab-green/10 rounded-xl flex items-center justify-center">
                     <FileQuestion className="w-5 h-5 text-grab-green" />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900">Frequently Asked Questions</h3>
+                  <h3 className={`text-lg font-bold ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>Frequently Asked Questions</h3>
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
                   {helpTopics[2].faqs.map((faq, i) => (
-                    <div key={i} className="p-4 bg-gray-50 rounded-xl">
-                      <p className="font-semibold text-gray-900 mb-2 text-sm">{faq.q}</p>
-                      <p className="text-sm text-gray-600">{faq.a}</p>
+                    <div key={i} className={`p-4 rounded-xl ${isDark ? 'bg-gray-700' : 'bg-gray-50'}`}>
+                      <p className={`font-semibold mb-2 text-sm ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>{faq.q}</p>
+                      <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{faq.a}</p>
                     </div>
                   ))}
                 </div>
@@ -228,7 +231,7 @@ const HelpModal = ({ isOpen, onClose }) => {
                   <div className="flex gap-3">
                     <Button
                       onClick={() => window.location.href = '/contact'}
-                      className="bg-white text-grab-green hover:bg-gray-100"
+                      className={`text-grab-green ${isDark ? 'bg-white hover:bg-gray-100' : 'bg-white hover:bg-gray-100'}`}
                     >
                       <MessageCircle className="w-4 h-4 mr-2" />
                       Contact Us

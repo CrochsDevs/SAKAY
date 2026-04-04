@@ -1,23 +1,26 @@
 import React, { useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
+import {
     X,
-    Smartphone, 
-    MapPin, 
-    Calendar, 
-    Navigation, 
-    CreditCard, 
-    UserCheck, 
-    CheckCircle2, 
-    Clock, 
-    Shield, 
-    Users, 
-    Car, 
-    TrendingUp 
+    Smartphone,
+    MapPin,
+    Calendar,
+    Navigation,
+    CreditCard,
+    UserCheck,
+    CheckCircle2,
+    Clock,
+    Shield,
+    Users,
+    Car,
+    TrendingUp
 } from 'lucide-react'
 import { Button } from "@/components/ui/button"
+import { useTheme } from '../context/ThemeContext'
 
 const HowItWorks = ({ isOpen, onClose }) => {
+  const { isDark } = useTheme()
+
   // Close modal when pressing Escape key
   useEffect(() => {
     const handleEsc = (e) => {
@@ -118,35 +121,35 @@ const HowItWorks = ({ isOpen, onClose }) => {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-4xl max-h-[85vh] bg-white rounded-2xl shadow-2xl overflow-hidden"
+            className={`relative w-full max-w-4xl max-h-[85vh] rounded-2xl shadow-2xl overflow-hidden ${isDark ? 'bg-gray-800' : 'bg-white'}`}
           >
             {/* Header */}
-            <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between z-10">
+            <div className={`sticky top-0 px-6 py-4 flex items-center justify-between z-10 ${isDark ? 'bg-gray-800 border-b border-gray-700' : 'bg-white border-b border-gray-100'}`}>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-grab-green/10 rounded-xl flex items-center justify-center">
                   <Smartphone className="w-5 h-5 text-grab-green" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">How It Works</h2>
-                  <p className="text-sm text-gray-500">Get started with SAKAY in 6 easy steps</p>
+                  <h2 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>How It Works</h2>
+                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Get started with SAKAY in 6 easy steps</p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center transition-colors"
+                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}
               >
-                <X className="w-5 h-5 text-gray-500" />
+                <X className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
               </button>
             </div>
 
             {/* Content */}
             <div className="overflow-y-auto max-h-[calc(85vh-80px)] p-6 space-y-8">
-              
+
               {/* Quick Download Button */}
-              <div className="bg-grab-green/10 rounded-xl p-4 flex items-center justify-between">
+              <div className={`rounded-xl p-4 flex items-center justify-between ${isDark ? 'bg-grab-green/10' : 'bg-grab-green/10'}`}>
                 <div>
-                  <p className="font-semibold text-gray-900">Ready to start?</p>
-                  <p className="text-sm text-gray-600">Download the app now</p>
+                  <p className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Ready to start?</p>
+                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Download the app now</p>
                 </div>
                 <Button
                   onClick={handleAndroidDownload}
@@ -159,21 +162,21 @@ const HowItWorks = ({ isOpen, onClose }) => {
 
               {/* Steps */}
               <div className="space-y-4">
-                <h3 className="text-lg font-bold text-gray-900">6 Easy Steps</h3>
+                <h3 className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>6 Easy Steps</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {steps.map((step, index) => {
                     const IconComponent = step.icon
                     return (
-                      <div key={index} className="flex gap-3 p-3 bg-gray-50 rounded-xl hover:shadow-md transition-shadow">
+                      <div key={index} className={`flex gap-3 p-3 rounded-xl hover:shadow-md transition-shadow ${isDark ? 'bg-gray-700/60' : 'bg-gray-50'}`}>
                         <div className="w-10 h-10 bg-grab-green/10 rounded-lg flex items-center justify-center flex-shrink-0">
                           <span className="text-sm font-bold text-grab-green">{step.number}</span>
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
                             <IconComponent className="w-4 h-4 text-grab-green" />
-                            <h4 className="font-semibold text-gray-900 text-sm">{step.title}</h4>
+                            <h4 className={`font-semibold text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}>{step.title}</h4>
                           </div>
-                          <p className="text-xs text-gray-500">{step.description}</p>
+                          <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{step.description}</p>
                         </div>
                       </div>
                     )
@@ -184,25 +187,25 @@ const HowItWorks = ({ isOpen, onClose }) => {
               {/* Benefits for Passengers & Drivers */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* For Passengers */}
-                <div className="bg-gray-50 rounded-xl p-4">
+                <div className={`rounded-xl p-4 ${isDark ? 'bg-gray-700/60' : 'bg-gray-50'}`}>
                   <div className="flex items-center gap-2 mb-3">
                     <Users className="w-5 h-5 text-grab-green" />
-                    <h3 className="font-semibold text-gray-900">For Passengers</h3>
+                    <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>For Passengers</h3>
                   </div>
                   <ul className="space-y-2">
-                    <li className="flex items-center gap-2 text-sm text-gray-600">
+                    <li className={`flex items-center gap-2 text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                       <CheckCircle2 className="w-4 h-4 text-grab-green" />
                       Book rides in advance
                     </li>
-                    <li className="flex items-center gap-2 text-sm text-gray-600">
+                    <li className={`flex items-center gap-2 text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                       <CheckCircle2 className="w-4 h-4 text-grab-green" />
                       Real-time tracking
                     </li>
-                    <li className="flex items-center gap-2 text-sm text-gray-600">
+                    <li className={`flex items-center gap-2 text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                       <CheckCircle2 className="w-4 h-4 text-grab-green" />
                       View vehicle capacity
                     </li>
-                    <li className="flex items-center gap-2 text-sm text-gray-600">
+                    <li className={`flex items-center gap-2 text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                       <CheckCircle2 className="w-4 h-4 text-grab-green" />
                       Safe & secure rides
                     </li>
@@ -210,25 +213,25 @@ const HowItWorks = ({ isOpen, onClose }) => {
                 </div>
 
                 {/* For Drivers */}
-                <div className="bg-gray-50 rounded-xl p-4">
+                <div className={`rounded-xl p-4 ${isDark ? 'bg-gray-700/60' : 'bg-gray-50'}`}>
                   <div className="flex items-center gap-2 mb-3">
                     <Car className="w-5 h-5 text-grab-green" />
-                    <h3 className="font-semibold text-gray-900">For Drivers</h3>
+                    <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>For Drivers</h3>
                   </div>
                   <ul className="space-y-2">
-                    <li className="flex items-center gap-2 text-sm text-gray-600">
+                    <li className={`flex items-center gap-2 text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                       <CheckCircle2 className="w-4 h-4 text-grab-green" />
                       More passengers
                     </li>
-                    <li className="flex items-center gap-2 text-sm text-gray-600">
+                    <li className={`flex items-center gap-2 text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                       <CheckCircle2 className="w-4 h-4 text-grab-green" />
                       Less waiting time
                     </li>
-                    <li className="flex items-center gap-2 text-sm text-gray-600">
+                    <li className={`flex items-center gap-2 text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                       <CheckCircle2 className="w-4 h-4 text-grab-green" />
                       Higher daily earnings
                     </li>
-                    <li className="flex items-center gap-2 text-sm text-gray-600">
+                    <li className={`flex items-center gap-2 text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                       <CheckCircle2 className="w-4 h-4 text-grab-green" />
                       Smarter route planning
                     </li>
@@ -237,8 +240,8 @@ const HowItWorks = ({ isOpen, onClose }) => {
               </div>
 
               {/* Need Help */}
-              <div className="bg-grab-green/5 rounded-xl p-4 text-center">
-                <p className="text-sm text-gray-600">
+              <div className={`rounded-xl p-4 text-center ${isDark ? 'bg-grab-green/10' : 'bg-grab-green/5'}`}>
+                <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                   Need more help?{' '}
                   <button onClick={() => {
                     onClose()

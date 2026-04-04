@@ -17,7 +17,7 @@ const TopBar = () => {
   
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
-  const { user, logout, isAdmin } = useAuth(); // Add isAdmin here
+  const { user, logout, isAdmin } = useAuth();
   const { effectiveTheme } = useTheme();
   const isDark = effectiveTheme === 'dark';
 
@@ -29,7 +29,14 @@ const TopBar = () => {
     { name: 'Contact', path: '/contact' },
   ];
 
-  // Get user initials from full name
+  // Dark mode detection for Swal
+  const getSwalDarkMode = () => {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const storedTheme = localStorage.getItem('sakay-theme');
+    const effective = storedTheme !== null ? storedTheme : (prefersDark ? 'dark' : 'light');
+    return effective === 'dark';
+  };
+
   const getUserInitials = () => {
     if (!user || !user.fullName) return '?';
     const names = user.fullName.split(' ');
@@ -37,7 +44,6 @@ const TopBar = () => {
     return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -49,17 +55,19 @@ const TopBar = () => {
   }, []);
 
   const handleLogout = async () => {
+    const isUserDark = getSwalDarkMode();
     const result = await Swal.fire({
-      title: '<span style="color: #2E7D32">Are you sure?</span>',
+      title: `<span style="color: ${isUserDark ? '#4ade80' : '#2E7D32'}">Are you sure?</span>`,
       text: 'Do you want to logout from SAKAY?',
       icon: 'question',
       iconColor: '#FF4B4B',
       showCancelButton: true,
-      confirmButtonColor: '#FF4B4B',
+      confirmButtonColor: isUserDark ? '#dc2626' : '#FF4B4B',
       cancelButtonColor: '#6c757d',
       confirmButtonText: 'Yes, Logout',
       cancelButtonText: 'Cancel',
-      background: '#ffffff',
+      background: isUserDark ? '#1f2937' : '#ffffff',
+      color: isUserDark ? '#f3f4f6' : '#374151',
       backdrop: `rgba(0,0,0,0.4)`,
       customClass: {
         popup: 'rounded-3xl',
@@ -78,10 +86,10 @@ const TopBar = () => {
   return (
     <>
       <nav className={`fixed top-0 left-0 right-0 z-[100] border-b backdrop-blur-md transition-colors duration-200 ${
-    isDark
-      ? 'bg-gray-900/95 border-gray-800'
-      : 'bg-white/95 border-gray-100'
-    }`}>
+        isDark
+          ? 'bg-gray-900/95 border-gray-800'
+          : 'bg-white/95 border-gray-100'
+        }`}>
 
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           
