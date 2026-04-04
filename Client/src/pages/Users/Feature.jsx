@@ -2,6 +2,7 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import TopBar from '../../layout/TopBar'
 import Footer from '../../layout/Footer'
+import { useTheme } from '../../context/ThemeContext'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -30,6 +31,8 @@ import {
 } from 'lucide-react'
 
 const Features = () => {
+  const { effectiveTheme } = useTheme();
+  const isDark = effectiveTheme === 'dark';
   // Animation variants
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
@@ -194,12 +197,12 @@ const Features = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden font-sans">
+    <div className={`min-h-screen ${isDark ? "bg-gray-950" : "bg-white"} overflow-x-hidden font-sans`}>
       <TopBar />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-grab-green/5 via-white to-blue-500/5">
-        <div className="absolute inset-0 bg-grid-gray-100 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+      <section className={`relative overflow-hidden bg-gradient-to-br ${isDark ? "from-grab-green/10 via-gray-950 to-blue-900/10" : "from-grab-green/5 via-white to-blue-500/5"}`}>
+        <div className={`absolute inset-0 ${isDark ? "bg-grid-white/5" : "bg-grid-gray-100"} [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]`} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
           <motion.div
             initial="hidden"
@@ -208,13 +211,13 @@ const Features = () => {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6">
+            <h1 className={`text-5xl md:text-6xl lg:text-7xl font-bold ${isDark ? "text-white" : "text-gray-900"} mb-6`}>
               Everything you need for a{' '}
               <span className="bg-gradient-to-r from-grab-green to-grab-dark bg-clip-text text-transparent">
                 seamless commute
               </span>
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className={`text-xl ${isDark ? "text-gray-300" : "text-gray-600"} max-w-3xl mx-auto`}>
               From real-time tracking to advance booking, SAKAY provides all the tools you need
               for a hassle-free commuting experience across the Philippines.
             </p>
@@ -232,10 +235,10 @@ const Features = () => {
             variants={fadeInUp}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className={`text-3xl md:text-4xl font-bold ${isDark ? "text-white" : "text-gray-900"} mb-4`}>
               Core Features
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className={`text-lg ${isDark ? "text-gray-400" : "text-gray-600"} max-w-2xl mx-auto`}>
               Essential tools designed to make your daily commute efficient and stress-free
             </p>
           </motion.div>
@@ -251,13 +254,13 @@ const Features = () => {
               const IconComponent = feature.icon
               return (
                 <motion.div key={index} variants={scaleIn}>
-                  <Card className="border border-gray-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full">
+                  <Card className={`border ${isDark ? "border-gray-700 bg-gray-900" : "border-gray-200"} hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full`}>
                     <CardContent className="p-6">
                       <div className="w-12 h-12 bg-grab-green/10 rounded-xl flex items-center justify-center mb-4">
                         <IconComponent className="w-6 h-6 text-grab-green" />
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
-                      <p className="text-sm text-gray-500">{feature.description}</p>
+                      <h3 className={`text-lg font-semibold ${isDark ? "text-white" : "text-gray-900"} mb-2`}>{feature.title}</h3>
+                      <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>{feature.description}</p>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -268,7 +271,7 @@ const Features = () => {
       </section>
 
       {/* For Commuters Section */}
-      <section className="py-16 bg-gray-50">
+      <section className={`py-16 ${isDark ? "bg-gray-900" : "bg-gray-50"}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -281,10 +284,10 @@ const Features = () => {
               <Users className="w-4 h-4 mr-2" />
               FOR EVERY FILIPINO
             </Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className={`text-3xl md:text-4xl font-bold ${isDark ? "text-white" : "text-gray-900"} mb-4`}>
               Designed for every commuter
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className={`text-lg ${isDark ? "text-gray-400" : "text-gray-600"} max-w-2xl mx-auto`}>
               SAKAY helps you navigate the daily commute with confidence and convenience
             </p>
           </motion.div>
@@ -306,8 +309,8 @@ const Features = () => {
                         <IconComponent className="w-5 h-5 text-grab-green" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900">{feature.title}</h3>
-                        <p className="text-sm text-gray-600">{feature.description}</p>
+                        <h3 className={`font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>{feature.title}</h3>
+                        <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>{feature.description}</p>
                       </div>
                     </div>
                   )
@@ -323,10 +326,10 @@ const Features = () => {
               className="relative"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-grab-green/10 to-blue-500/10 rounded-3xl blur-3xl" />
-              <Card className="relative bg-white p-6 rounded-2xl shadow-2xl border-0">
+              <Card className={`relative ${isDark ? "bg-gray-900" : "bg-white"} p-6 rounded-2xl shadow-2xl border-0`}>
                 <CardContent className="p-0">
                   <div className="space-y-3">
-                    <h4 className="font-bold text-gray-900 mb-4">Commuters Benefits</h4>
+                    <h4 className={`font-bold ${isDark ? "text-white" : "text-gray-900"} mb-4`}>Commuters Benefits</h4>
                     <ul className="space-y-3">
                       {[
                         'Book rides in advance',
@@ -335,7 +338,7 @@ const Features = () => {
                         'Plan routes efficiently',
                         'Arrive on time'
                       ].map((benefit, i) => (
-                        <li key={i} className="flex items-center gap-2 text-sm text-gray-600">
+                        <li key={i} className={`flex items-center gap-2 text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>
                           <CheckCircle2 className="w-4 h-4 text-grab-green flex-shrink-0" />
                           {benefit}
                         </li>
@@ -363,10 +366,10 @@ const Features = () => {
               <Car className="w-4 h-4 mr-2" />
               FOR DRIVERS
             </Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className={`text-3xl md:text-4xl font-bold ${isDark ? "text-white" : "text-gray-900"} mb-4`}>
               Empowering jeepney drivers
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className={`text-lg ${isDark ? "text-gray-400" : "text-gray-600"} max-w-2xl mx-auto`}>
               Modern technology that makes it easier and more convenient for jeepney drivers
             </p>
           </motion.div>
@@ -382,13 +385,13 @@ const Features = () => {
               const IconComponent = feature.icon
               return (
                 <motion.div key={index} variants={scaleIn}>
-                  <Card className="border border-gray-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full">
+                  <Card className={`border ${isDark ? "border-gray-700 bg-gray-900" : "border-gray-200"} hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full`}>
                     <CardContent className="p-6">
                       <div className="w-12 h-12 bg-grab-green/10 rounded-xl flex items-center justify-center mb-4">
                         <IconComponent className="w-6 h-6 text-grab-green" />
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
-                      <p className="text-sm text-gray-500">{feature.description}</p>
+                      <h3 className={`text-lg font-semibold ${isDark ? "text-white" : "text-gray-900"} mb-2`}>{feature.title}</h3>
+                      <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>{feature.description}</p>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -414,7 +417,7 @@ const Features = () => {
                   ].map((stat, index) => (
                     <div key={index}>
                       <div className="text-3xl font-bold text-grab-green mb-2">{stat.value}</div>
-                      <p className="text-sm text-gray-600">{stat.label}</p>
+                      <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>{stat.label}</p>
                     </div>
                   ))}
                 </div>
@@ -425,7 +428,7 @@ const Features = () => {
       </section>
 
       {/* Future Enhancements Section */}
-      <section className="py-16 bg-gray-50">
+      <section className={`py-16 ${isDark ? "bg-gray-900" : "bg-gray-50"}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -438,10 +441,10 @@ const Features = () => {
               <Zap className="w-4 h-4 mr-2" />
               COMING SOON
             </Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className={`text-3xl md:text-4xl font-bold ${isDark ? "text-white" : "text-gray-900"} mb-4`}>
               Future Enhancements
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className={`text-lg ${isDark ? "text-gray-400" : "text-gray-600"} max-w-2xl mx-auto`}>
               Based on research and user feedback, we're developing these exciting features
             </p>
           </motion.div>
@@ -455,24 +458,33 @@ const Features = () => {
           >
             {futureFeatures.map((feature, index) => {
               const IconComponent = feature.icon
-              const colorClasses = {
-                purple: 'bg-purple-100 text-purple-600',
-                orange: 'bg-orange-100 text-orange-600',
-                blue: 'bg-blue-100 text-blue-600',
-                red: 'bg-red-100 text-red-600',
-                green: 'bg-green-100 text-green-600',
-                cyan: 'bg-cyan-100 text-cyan-600'
-              }
+              const colorClasses = isDark
+                ? {
+                    purple: 'bg-purple-900/30 text-purple-400',
+                    orange: 'bg-orange-900/30 text-orange-400',
+                    blue: 'bg-blue-900/30 text-blue-400',
+                    red: 'bg-red-900/30 text-red-400',
+                    green: 'bg-green-900/30 text-green-400',
+                    cyan: 'bg-cyan-900/30 text-cyan-400'
+                  }
+                : {
+                    purple: 'bg-purple-100 text-purple-600',
+                    orange: 'bg-orange-100 text-orange-600',
+                    blue: 'bg-blue-100 text-blue-600',
+                    red: 'bg-red-100 text-red-600',
+                    green: 'bg-green-100 text-green-600',
+                    cyan: 'bg-cyan-100 text-cyan-600'
+                  }
               return (
                 <motion.div key={index} variants={scaleIn}>
-                  <Card className="border border-gray-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full">
+                  <Card className={`border ${isDark ? "border-gray-700 bg-gray-900" : "border-gray-200"} hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full`}>
                     <CardContent className="p-6">
                       <div className={`w-12 h-12 ${colorClasses[feature.color]} rounded-xl flex items-center justify-center mb-4`}>
                         <IconComponent className="w-6 h-6" />
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
-                      <p className="text-sm text-gray-500">{feature.description}</p>
-                      <Badge variant="outline" className="mt-4 bg-gray-100 text-gray-600 border-0">
+                      <h3 className={`text-lg font-semibold ${isDark ? "text-white" : "text-gray-900"} mb-2`}>{feature.title}</h3>
+                      <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>{feature.description}</p>
+                      <Badge variant="outline" className={`mt-4 ${isDark ? "bg-gray-800 text-gray-300" : "bg-gray-100 text-gray-600"} border-0`}>
                         In Development
                       </Badge>
                     </CardContent>
@@ -494,10 +506,10 @@ const Features = () => {
             variants={fadeInUp}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className={`text-3xl md:text-4xl font-bold ${isDark ? "text-white" : "text-gray-900"} mb-4`}>
               Traditional vs. SAKAY
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className={`text-lg ${isDark ? "text-gray-400" : "text-gray-600"} max-w-2xl mx-auto`}>
               See how SAKAY transforms the traditional commuting experience
             </p>
           </motion.div>
@@ -508,10 +520,10 @@ const Features = () => {
             viewport={{ once: true, amount: 0.3 }}
             variants={fadeInUp}
           >
-            <Card className="border-0 shadow-xl overflow-hidden">
-              <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200">
+            <Card className={`border-0 shadow-xl overflow-hidden ${isDark ? "bg-gray-900" : "bg-white"}`}>
+              <div className={`grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x ${isDark ? "divide-gray-700" : "divide-gray-200"}`}>
                 <CardContent className="p-8">
-                  <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">Traditional Jeepney</h3>
+                  <h3 className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"} mb-6 text-center`}>Traditional Jeepney</h3>
                   <ul className="space-y-4">
                     {[
                       'Uncertain arrival times',
@@ -521,7 +533,7 @@ const Features = () => {
                       'Unpredictable schedules',
                       'No real-time information'
                     ].map((item, i) => (
-                      <li key={i} className="flex items-center gap-3 text-gray-600">
+                      <li key={i} className={`flex items-center gap-3 ${isDark ? "text-gray-400" : "text-gray-600"}`}>
                         <div className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
                           <span className="text-red-500 text-xs">✕</span>
                         </div>
@@ -530,7 +542,7 @@ const Features = () => {
                     ))}
                   </ul>
                 </CardContent>
-                <CardContent className="p-8 bg-gradient-to-br from-grab-green/5 to-white">
+                <CardContent className={`p-8 ${isDark ? "bg-gradient-to-br from-grab-green/5 to-gray-900" : "bg-gradient-to-br from-grab-green/5 to-white"}`}>
                   <h3 className="text-xl font-bold text-grab-green mb-6 text-center">SAKAY App</h3>
                   <ul className="space-y-4">
                     {[
@@ -541,7 +553,7 @@ const Features = () => {
                       'Scheduled trips',
                       'Live location updates'
                     ].map((item, i) => (
-                      <li key={i} className="flex items-center gap-3 text-gray-600">
+                      <li key={i} className={`flex items-center gap-3 ${isDark ? "text-gray-400" : "text-gray-600"}`}>
                         <CheckCircle2 className="w-5 h-5 text-grab-green flex-shrink-0" />
                         {item}
                       </li>
@@ -573,14 +585,14 @@ const Features = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Button
                 onClick={handleAndroidDownload}
-                className="bg-white text-grab-green hover:bg-gray-100 h-14 px-8 rounded-xl text-lg font-bold"
+                className={`${isDark ? "bg-gray-200 text-grab-green hover:bg-gray-300" : "bg-white text-grab-green hover:bg-gray-100"} h-14 px-8 rounded-xl text-lg font-bold`}
               >
                 <Smartphone className="w-5 h-5 mr-2" />
                 Download for Android
               </Button>
               <Button
                 onClick={handleiOSDownload}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-600 cursor-not-allowed h-14 px-8 rounded-xl text-lg font-bold"
+                className={`bg-gray-300 hover:bg-gray-400 text-gray-600 cursor-not-allowed h-14 px-8 rounded-xl text-lg font-bold`}
               >
                 <Apple className="w-5 h-5 mr-2" />
                 Coming Soon

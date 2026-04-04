@@ -6,6 +6,8 @@ import SafetyTipsModal from '../modals/safetyTips.jsx';
 import { useAuth } from '../context/AuthContext';
 import Swal from 'sweetalert2';
 import logo from '../assets/logo/logo.png';
+import ThemeToggle from '../components/ThemeToggle';
+import { useTheme } from '../context/ThemeContext';
 
 const TopBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,6 +18,8 @@ const TopBar = () => {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const { user, logout, isAdmin } = useAuth(); // Add isAdmin here
+  const { effectiveTheme } = useTheme();
+  const isDark = effectiveTheme === 'dark';
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -73,7 +77,12 @@ const TopBar = () => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-[100] border-b border-gray-100 bg-white/95 backdrop-blur-md">
+      <nav className={`fixed top-0 left-0 right-0 z-[100] border-b backdrop-blur-md transition-colors duration-200 ${
+    isDark
+      ? 'bg-gray-900/95 border-gray-800'
+      : 'bg-white/95 border-gray-100'
+    }`}>
+
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           
           {/* Logo */}
@@ -92,8 +101,9 @@ const TopBar = () => {
                 <Link 
                   key={link.name} 
                   to={link.path} 
-                  className="text-[14px] font-bold text-gray-600 hover:text-grab-green transition-colors"
-                >
+                  className={`text-[14px] font-bold transition-colors hover:text-grab-green ${
+                    isDark ? 'text-gray-300' : 'text-gray-600'
+                  }`}>
                   {link.name}
                 </Link>
               ))}
@@ -102,7 +112,8 @@ const TopBar = () => {
 
           {/* Right Side Buttons */}
           <div className="flex items-center gap-4">
-            <div className="hidden md:flex items-center gap-4 pr-6 border-r border-gray-200">
+            <div className={`hidden md:flex items-center gap-4 pr-6 border-r ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+
               {/* Admin Panel Link - Only for admins */}
               {isAdmin && (
                 <Link 
@@ -116,7 +127,7 @@ const TopBar = () => {
               
               <Link 
                 to={user ? "/feedback" : "/login"}
-                className="flex items-center gap-2 text-[14px] font-bold text-gray-500 hover:text-grab-green transition-colors"
+                className={`flex items-center gap-2 text-[14px] font-bold transition-colors hover:text-grab-green ${isDark ? 'text-gray-400 hover:text-grab-green' : 'text-gray-500 hover:text-grab-green'}`}
               >
                 <MessageSquare size={18} strokeWidth={2.5} />
                 <span>Feedback</span>
@@ -124,7 +135,7 @@ const TopBar = () => {
 
               <button 
                 onClick={() => setIsHelpModalOpen(true)}
-                className="flex items-center gap-2 text-[14px] font-bold text-gray-500 hover:text-grab-green transition-colors"
+                className={`flex items-center gap-2 text-[14px] font-bold transition-colors hover:text-grab-green ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
               >
                 <HelpCircle size={18} strokeWidth={2.5} />
                 <span>Help</span>
@@ -132,12 +143,15 @@ const TopBar = () => {
 
               <button 
                 onClick={() => setIsSafetyTipsOpen(true)}
-                className="flex items-center gap-2 text-[14px] font-bold text-gray-500 hover:text-grab-green transition-colors"
+                className={`flex items-center gap-2 text-[14px] font-bold transition-colors hover:text-grab-green ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
               >
                 <Shield size={18} strokeWidth={2.5} />
                 <span>Safety</span>
               </button>
             </div>
+
+            {/* Theme Toggle */}
+            <ThemeToggle />
 
             {/* User Avatar with Dropdown */}
             {user ? (
@@ -151,29 +165,29 @@ const TopBar = () => {
                   </div>
                   <ChevronDown 
                     size={16} 
-                    className={`text-gray-500 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
+                    className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''} ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
                   />
                 </button>
 
                 {/* Dropdown Menu */}
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-3 w-72 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className={`absolute right-0 mt-3 w-72 rounded-2xl shadow-xl border overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200 ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'}`}>
                     {/* User Info Section */}
-                    <div className="px-4 py-4 bg-gradient-to-r from-green-50 to-emerald-50 border-b border-green-100">
+                    <div className={`px-4 py-4 border-b ${isDark ? 'bg-gradient-to-r from-gray-700 to-gray-800 border-gray-600' : 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-100'}`}>
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-full bg-gradient-to-r from-grab-green to-green-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
                           {getUserInitials()}
                         </div>
                         <div className="flex-1">
-                          <p className="font-black text-gray-800 text-sm">
+                          <p className={`font-black text-sm ${isDark ? 'text-gray-100' : 'text-gray-800'}`}>
                             {user.fullName || 'User'}
                           </p>
-                          <p className="text-xs text-gray-500 mt-0.5">
+                          <p className={`text-xs mt-0.5 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                             {user.email || 'user@sakay.com'}
                           </p>
                           {/* Show Admin Badge */}
                           {isAdmin && (
-                            <span className="inline-block mt-1 text-xs font-bold text-grab-green bg-green-100 px-2 py-0.5 rounded-full">
+                            <span className={`inline-block mt-1 text-xs font-bold text-grab-green ${isDark ? 'bg-green-900/40' : 'bg-green-100'} px-2 py-0.5 rounded-full`}>
                               Admin
                             </span>
                           )}
@@ -189,12 +203,12 @@ const TopBar = () => {
                           <Link
                             to="/admin"
                             onClick={() => setIsDropdownOpen(false)}
-                            className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                            className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors ${isDark ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'}`}
                           >
                             <LayoutDashboard size={18} className="text-grab-green" />
                             <span className="font-medium">Admin Panel</span>
                           </Link>
-                          <div className="border-t border-gray-100 my-1"></div>
+                          <div className={`border-t my-1 ${isDark ? 'border-gray-700' : 'border-gray-100'}`}></div>
                         </>
                       )}
                       
@@ -203,9 +217,9 @@ const TopBar = () => {
                           setIsDropdownOpen(false);
                           handleLogout();
                         }}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors ${isDark ? 'text-red-400 hover:bg-gray-700' : 'text-red-600 hover:bg-red-50'}`}
                       >
-                        <LogOut size={18} className="text-red-500" />
+                        <LogOut size={18} className={isDark ? 'text-red-400' : 'text-red-500'} />
                         <span className="font-medium">Logout</span>
                       </button>
                     </div>
@@ -215,7 +229,7 @@ const TopBar = () => {
             ) : (
               <button 
                 onClick={() => navigate('/login')}
-                className="hidden sm:block bg-grab-green hover:bg-grab-dark text-white text-md font-black rounded-full px-8 h-12 shadow-lg shadow-green-100 transition-transform active:scale-95"
+                className={`hidden sm:block bg-grab-green hover:bg-grab-dark text-white text-md font-black rounded-full px-8 h-12 transition-transform active:scale-95 ${isDark ? '' : 'shadow-lg shadow-green-100'}`}
               >
                 Login
               </button>
@@ -224,7 +238,7 @@ const TopBar = () => {
             {/* Mobile Menu Button */}
             <button 
               onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden p-2 text-gray-600 hover:text-grab-green transition-colors"
+              className={`lg:hidden p-2 transition-colors hover:text-grab-green ${isDark ? 'text-gray-300' : 'text-gray-600'}`}
             >
               {isOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
@@ -233,7 +247,8 @@ const TopBar = () => {
 
         {/* Mobile Menu */}
         <div className={`
-          lg:hidden absolute top-20 left-0 right-0 bg-white border-b border-gray-100 shadow-xl transition-all duration-300 ease-in-out transform
+          lg:hidden absolute top-20 left-0 right-0 border-b shadow-xl transition-all duration-300 ease-in-out transform
+          ${isDark ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-100'}
           ${isOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}
         `}>
           <div className="flex flex-col p-6 gap-4">
@@ -242,13 +257,13 @@ const TopBar = () => {
                 key={link.name} 
                 to={link.path} 
                 onClick={() => setIsOpen(false)}
-                className="text-[16px] font-bold text-gray-600 hover:text-grab-green py-2 transition-colors"
+                className={`text-[16px] font-bold py-2 transition-colors hover:text-grab-green ${isDark ? 'text-gray-300' : 'text-gray-600'}`}
               >
                 {link.name}
               </Link>
             ))}
             
-            <div className="border-t border-gray-100 pt-4 mt-2">
+            <div className={`border-t pt-4 mt-2 ${isDark ? 'border-gray-700' : 'border-gray-100'}`}>
               {/* Admin Panel Link in Mobile Menu */}
               {isAdmin && (
                 <Link 
@@ -264,7 +279,7 @@ const TopBar = () => {
               <Link 
                 to={user ? "/feedback" : "/login"}
                 onClick={() => setIsOpen(false)}
-                className="flex items-center gap-3 text-[16px] font-bold text-gray-600 hover:text-grab-green py-2 transition-colors"
+                className={`flex items-center gap-3 text-[16px] font-bold py-2 transition-colors hover:text-grab-green ${isDark ? 'text-gray-300' : 'text-gray-600'}`}
               >
                 <MessageSquare size={20} />
                 <span>Feedback</span>
@@ -275,7 +290,7 @@ const TopBar = () => {
                   setIsOpen(false);
                   setIsHelpModalOpen(true);
                 }}
-                className="flex items-center gap-3 text-[16px] font-bold text-gray-600 hover:text-grab-green py-2 transition-colors w-full"
+                className={`flex items-center gap-3 text-[16px] font-bold py-2 transition-colors hover:text-grab-green w-full ${isDark ? 'text-gray-300' : 'text-gray-600'}`}
               >
                 <HelpCircle size={20} />
                 <span>Help</span>
@@ -286,7 +301,7 @@ const TopBar = () => {
                   setIsOpen(false);
                   setIsSafetyTipsOpen(true);
                 }}
-                className="flex items-center gap-3 text-[16px] font-bold text-gray-600 hover:text-grab-green py-2 transition-colors w-full"
+                className={`flex items-center gap-3 text-[16px] font-bold py-2 transition-colors hover:text-grab-green w-full ${isDark ? 'text-gray-300' : 'text-gray-600'}`}
               >
                 <Shield size={20} />
                 <span>Safety</span>
@@ -296,19 +311,19 @@ const TopBar = () => {
             {/* Mobile User Info & Logout */}
             {user && (
               <>
-                <div className="border-t border-gray-100 pt-4 mt-2 flex items-center gap-3">
+                <div className={`border-t pt-4 mt-2 flex items-center gap-3 ${isDark ? 'border-gray-700' : 'border-gray-100'}`}>
                   <div className="w-10 h-10 rounded-full bg-gradient-to-r from-grab-green to-green-600 flex items-center justify-center text-white font-bold text-sm">
                     {getUserInitials()}
                   </div>
                   <div className="flex-1">
-                    <p className="font-black text-gray-800 text-sm">
+                    <p className={`font-black text-sm ${isDark ? 'text-gray-100' : 'text-gray-800'}`}>
                       {user.fullName || 'User'}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                       {user.email || 'user@sakay.com'}
                     </p>
                     {isAdmin && (
-                      <span className="inline-block mt-1 text-xs font-bold text-grab-green bg-green-100 px-2 py-0.5 rounded-full">
+                      <span className={`inline-block mt-1 text-xs font-bold text-grab-green px-2 py-0.5 rounded-full ${isDark ? 'bg-green-900/40' : 'bg-green-100'}`}>
                         Admin
                       </span>
                     )}

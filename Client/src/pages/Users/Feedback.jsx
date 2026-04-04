@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import TopBar from '../../layout/TopBar';
 import Footer from '../../layout/Footer';
+import { useTheme } from '../../context/ThemeContext';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -14,6 +15,8 @@ import { useAuth } from '../../context/AuthContext';
 import api from '../../util/axios';
 
 const Feedback = () => {
+  const { effectiveTheme } = useTheme();
+  const isDark = effectiveTheme === 'dark';
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [formData, setFormData] = useState({ feedback: '' });
@@ -207,14 +210,14 @@ const Feedback = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl"
+          className={`${isDark ? "bg-gray-900" : "bg-white"} rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl`}
         >
           <div className="text-center">
             <div className="w-16 h-16 bg-grab-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <Lock className="w-8 h-8 text-grab-green" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Login Required</h3>
-            <p className="text-gray-600 mb-6">
+            <h3 className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"} mb-2`}>Login Required</h3>
+            <p className={`${isDark ? "text-gray-400" : "text-gray-600"} mb-6`}>
               {pendingAction === 'submit' 
                 ? 'Please login to share your feedback.' 
                 : 'Please login to like this feedback.'}
@@ -254,21 +257,21 @@ const Feedback = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl text-center"
+          className={`${isDark ? "bg-gray-900" : "bg-white"} rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl text-center`}
         >
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            className={`w-20 h-20 ${isDark ? "bg-gray-800" : "bg-green-100"} rounded-full flex items-center justify-center mx-auto mb-4`}
           >
             <CheckCircle className="w-10 h-10 text-grab-green" />
           </motion.div>
-          <h3 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h3>
-          <p className="text-gray-600 mb-4">
+          <h3 className={`text-2xl font-bold ${isDark ? "text-white" : "text-gray-900"} mb-2`}>Thank You!</h3>
+          <p className={`${isDark ? "text-gray-400" : "text-gray-600"} mb-4`}>
             Your feedback has been submitted successfully!
           </p>
-          <p className="text-sm text-gray-500 mb-6">
+          <p className={`text-sm ${isDark ? "text-gray-500" : "text-gray-500"} mb-6`}>
             Our admin team will review your feedback. Once approved, it will be visible to the community.
           </p>
           <Button
@@ -283,14 +286,14 @@ const Feedback = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden font-sans">
+    <div className={`min-h-screen ${isDark ? "bg-gray-950" : "bg-white"} overflow-x-hidden font-sans`}>
       <TopBar />
       
       <LoginModal />
       <ThankYouModal />
 
-      <section className="relative overflow-hidden bg-gradient-to-br from-grab-green/5 via-white to-blue-500/5">
-        <div className="absolute inset-0 bg-grid-gray-100 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+      <section className={`relative overflow-hidden bg-gradient-to-br ${isDark ? "from-grab-green/10 via-gray-950 to-blue-900/10" : "from-grab-green/5 via-white to-blue-500/5"}`}>
+        <div className={`absolute inset-0 ${isDark ? "bg-grid-white/5" : "bg-grid-gray-100"} [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]`} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
           <motion.div
             initial="hidden"
@@ -299,13 +302,13 @@ const Feedback = () => {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6">
+            <h1 className={`text-5xl md:text-6xl lg:text-7xl font-bold ${isDark ? "text-white" : "text-gray-900"} mb-6`}>
               Share Your{' '}
               <span className="bg-gradient-to-r from-grab-green to-grab-dark bg-clip-text text-transparent">
                 Journey
               </span>
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className={`text-xl ${isDark ? "text-gray-300" : "text-gray-600"} max-w-3xl mx-auto`}>
               Your feedback helps us create a better commuting experience for every Filipino.
             </p>
           </motion.div>
@@ -322,37 +325,37 @@ const Feedback = () => {
             className="grid grid-cols-1 md:grid-cols-3 gap-6"
           >
             <motion.div variants={scaleIn}>
-              <Card className="border border-gray-200 hover:shadow-xl transition-all duration-300">
+              <Card className={`border ${isDark ? "border-gray-700 bg-gray-900" : "border-gray-200"} hover:shadow-xl transition-all duration-300`}>
                 <CardContent className="p-6 text-center">
                   <div className="w-12 h-12 bg-grab-green/10 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <Users className="w-6 h-6 text-grab-green" />
                   </div>
                   <div className="text-3xl font-bold text-grab-green mb-2">{totalFeedbacks}+</div>
-                  <div className="text-sm text-gray-600">Community Feedback</div>
+                  <div className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>Community Feedback</div>
                 </CardContent>
               </Card>
             </motion.div>
 
             <motion.div variants={scaleIn}>
-              <Card className="border border-gray-200 hover:shadow-xl transition-all duration-300">
+              <Card className={`border ${isDark ? "border-gray-700 bg-gray-900" : "border-gray-200"} hover:shadow-xl transition-all duration-300`}>
                 <CardContent className="p-6 text-center">
                   <div className="w-12 h-12 bg-grab-green/10 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <Star className="w-6 h-6 text-grab-green" />
                   </div>
                   <div className="text-3xl font-bold text-grab-green mb-2">{averageRating}★</div>
-                  <div className="text-sm text-gray-600">Average Rating</div>
+                  <div className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>Average Rating</div>
                 </CardContent>
               </Card>
             </motion.div>
 
             <motion.div variants={scaleIn}>
-              <Card className="border border-gray-200 hover:shadow-xl transition-all duration-300">
+              <Card className={`border ${isDark ? "border-gray-700 bg-gray-900" : "border-gray-200"} hover:shadow-xl transition-all duration-300`}>
                 <CardContent className="p-6 text-center">
                   <div className="w-12 h-12 bg-grab-green/10 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <TrendingUp className="w-6 h-6 text-grab-green" />
                   </div>
                   <div className="text-3xl font-bold text-grab-green mb-2">{satisfiedPercentage}%</div>
-                  <div className="text-sm text-gray-600">Satisfied Users</div>
+                  <div className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>Satisfied Users</div>
                 </CardContent>
               </Card>
             </motion.div>
@@ -372,16 +375,16 @@ const Feedback = () => {
               variants={fadeInLeft}
               className="lg:col-span-2"
             >
-              <Card className="border border-gray-200 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden sticky top-24">
+              <Card className={`border ${isDark ? "border-gray-700 bg-gray-900" : "border-gray-200"} shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden sticky top-24`}>
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-grab-green to-grab-dark" />
                 <CardHeader className="space-y-2 text-center pt-8 pb-6">
                   <div className="mx-auto w-16 h-16 bg-gradient-to-br from-grab-green to-grab-dark rounded-2xl flex items-center justify-center mb-4 shadow-lg">
                     <MessageSquare className="text-white w-8 h-8" />
                   </div>
-                  <CardTitle className="text-2xl font-bold text-gray-900">
+                  <CardTitle className={`text-2xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>
                     Tell Us Your Story
                   </CardTitle>
-                  <CardDescription className="text-gray-500">
+                  <CardDescription className={isDark ? "text-gray-400" : "text-gray-500"}>
                     Share your experience with SAKAY
                   </CardDescription>
                 </CardHeader>
@@ -402,7 +405,7 @@ const Feedback = () => {
                   <form onSubmit={handleSubmitClick} className="space-y-5">
                     {/* Star Rating */}
                     <div className="flex flex-col items-center space-y-2">
-                      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      <span className={`text-xs font-semibold ${isDark ? "text-gray-500" : "text-gray-400"} uppercase tracking-wider`}>
                         Your Rating
                       </span>
                       <div className="flex gap-2">
@@ -421,7 +424,7 @@ const Feedback = () => {
                               className={`${
                                 (hover || rating) >= star 
                                 ? "fill-yellow-400 text-yellow-400 drop-shadow-sm" 
-                                : "text-gray-300 fill-gray-100"
+                                : `${isDark ? "text-gray-700 fill-gray-800" : "text-gray-300 fill-gray-100"}`
                               } transition-all duration-200 hover:scale-110`}
                             />
                           </button>
@@ -445,7 +448,7 @@ const Feedback = () => {
                         value={formData.feedback}
                         onChange={handleChange}
                         placeholder="Share your experience with SAKAY..."
-                        className="min-h-[120px] bg-gray-50 border-gray-200 rounded-xl p-4 focus:ring-2 focus:ring-grab-green resize-none"
+                        className={`min-h-[120px] ${isDark ? "bg-gray-800 border-gray-700" : "bg-gray-50 border-gray-200"} rounded-xl p-4 focus:ring-2 focus:ring-grab-green resize-none`}
                         required
                         disabled={submitting}
                       />
@@ -463,7 +466,7 @@ const Feedback = () => {
 
                     {/* Login reminder note */}
                     {!user && (
-                      <p className="text-center text-xs text-gray-400 mt-2">
+                      <p className={`text-center text-xs ${isDark ? "text-gray-500" : "text-gray-400"} mt-2`}>
                         You need to login to submit feedback
                       </p>
                     )}
@@ -483,7 +486,7 @@ const Feedback = () => {
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <div className="h-8 w-1 bg-gradient-to-b from-grab-green to-grab-dark rounded-full" />
-                  <h2 className="text-2xl font-bold text-gray-900">Voices of SAKAY</h2>
+                  <h2 className={`text-2xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>Voices of SAKAY</h2>
                 </div>
                 <Badge className="bg-grab-green/10 text-grab-green border-grab-green/20">
                   <ThumbsUp className="w-3 h-3 mr-1" />
@@ -496,11 +499,11 @@ const Feedback = () => {
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-grab-green"></div>
                 </div>
               ) : feedbacks.length === 0 ? (
-                <Card className="border border-gray-200">
+                <Card className={`border ${isDark ? "border-gray-700 bg-gray-900" : "border-gray-200"}`}>
                   <CardContent className="p-12 text-center">
-                    <MessageSquare className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">No approved feedback yet. Be the first to share!</p>
-                    <p className="text-xs text-gray-400 mt-2">All feedbacks are reviewed by admin before publishing.</p>
+                    <MessageSquare className={`w-16 h-16 ${isDark ? "text-gray-700" : "text-gray-300"} mx-auto mb-4`} />
+                    <p className={isDark ? "text-gray-400" : "text-gray-500"}>No approved feedback yet. Be the first to share!</p>
+                    <p className={`text-xs ${isDark ? "text-gray-500" : "text-gray-400"} mt-2`}>All feedbacks are reviewed by admin before publishing.</p>
                   </CardContent>
                 </Card>
               ) : (
@@ -515,20 +518,20 @@ const Feedback = () => {
                         variants={scaleIn}
                         transition={{ delay: index * 0.1 }}
                       >
-                        <Card className="border border-gray-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+                        <Card className={`border ${isDark ? "border-gray-700 bg-gray-900" : "border-gray-200"} hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden`}>
                           <CardContent className="p-6">
                             <div className="flex items-center gap-1 mb-3">
                               {[...Array(5)].map((_, i) => (
                                 <Star 
                                   key={i} 
                                   size={14} 
-                                  className={`${i < fb.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-200 fill-gray-100"}`}
+                                  className={`${i < fb.rating ? "fill-yellow-400 text-yellow-400" : `${isDark ? "text-gray-700 fill-gray-800" : "text-gray-200 fill-gray-100"}`}` }
                                 />
                               ))}
-                              <span className="text-xs text-gray-400 ml-2">• {formatDate(fb.createdAt)}</span>
+                              <span className={`text-xs ${isDark ? "text-gray-500" : "text-gray-400"} ml-2`}>• {formatDate(fb.createdAt)}</span>
                             </div>
                             
-                            <p className="text-gray-700 text-base leading-relaxed mb-4">
+                            <p className={`${isDark ? "text-gray-300" : "text-gray-700"} text-base leading-relaxed mb-4`}>
                               "{fb.comment}"
                             </p>
                             
@@ -538,8 +541,8 @@ const Feedback = () => {
                                   {getInitials(fb.userName)}
                                 </div>
                                 <div>
-                                  <div className="font-bold text-gray-900 text-sm">{fb.userName}</div>
-                                  <div className="text-xs text-gray-400 flex items-center gap-1">
+                                  <div className={`font-bold ${isDark ? "text-white" : "text-gray-900"} text-sm`}>{fb.userName}</div>
+                                  <div className={`text-xs ${isDark ? "text-gray-500" : "text-gray-400"} flex items-center gap-1`}>
                                     <Navigation className="w-3 h-3" />
                                     {fb.userLocation}
                                   </div>
@@ -549,8 +552,8 @@ const Feedback = () => {
                                 className={`flex items-center gap-1 transition-colors cursor-pointer ${user ? 'hover:text-grab-green' : 'hover:text-gray-500'}`}
                                 onClick={() => handleLike(fb._id)}
                               >
-                                <ThumbsUp className={`w-4 h-4 ${user ? 'text-gray-400' : 'text-gray-300'}`} />
-                                <span className={`text-xs font-medium ${user ? 'text-gray-600' : 'text-gray-400'}`}>{fb.likes || 0}</span>
+                                <ThumbsUp className={`w-4 h-4 ${user ? (isDark ? 'text-gray-500' : 'text-gray-400') : (isDark ? 'text-gray-600' : 'text-gray-300')}`} />
+                                <span className={`text-xs font-medium ${user ? (isDark ? 'text-gray-400' : 'text-gray-600') : (isDark ? 'text-gray-500' : 'text-gray-400')}`}>{fb.likes || 0}</span>
                               </div>
                             </div>
                           </CardContent>
@@ -566,7 +569,7 @@ const Feedback = () => {
                         <Button
                           onClick={loadMore}
                           variant="outline"
-                          className="gap-2 bg-white hover:bg-grab-green hover:text-white transition-all duration-300 border-grab-green text-grab-green"
+                          className={`gap-2 ${isDark ? "bg-gray-900 hover:bg-grab-green hover:text-white" : "bg-white hover:bg-grab-green hover:text-white"} transition-all duration-300 border-grab-green text-grab-green`}
                         >
                           <ChevronDown className="w-4 h-4" />
                           Load More ({feedbacks.length - visibleCount} remaining)
@@ -577,7 +580,7 @@ const Feedback = () => {
                         <Button
                           onClick={showLess}
                           variant="outline"
-                          className="gap-2 bg-white hover:bg-gray-100 transition-all duration-300 ml-3"
+                          className={`gap-2 ${isDark ? "bg-gray-900 hover:bg-gray-800" : "bg-white hover:bg-gray-100"} transition-all duration-300 ml-3`}
                         >
                           <ChevronUp className="w-4 h-4" />
                           Show Less
@@ -588,7 +591,7 @@ const Feedback = () => {
 
                   {/* Show total count */}
                   {feedbacks.length > 5 && (
-                    <p className="text-center text-xs text-gray-400 mt-4">
+                    <p className={`text-center text-xs ${isDark ? "text-gray-500" : "text-gray-400"} mt-4`}>
                       Showing {visibleFeedbacks.length} of {feedbacks.length} approved feedbacks
                     </p>
                   )}
@@ -606,9 +609,9 @@ const Feedback = () => {
                   <CardContent className="p-6 text-center">
                     <div className="flex items-center justify-center gap-2 mb-3">
                       <Shield className="w-5 h-5 text-grab-green" />
-                      <span className="text-sm font-semibold text-gray-700">Your voice matters</span>
+                      <span className={`text-sm font-semibold ${isDark ? "text-gray-300" : "text-gray-700"}`}>Your voice matters</span>
                     </div>
-                    <p className="text-xs text-gray-500">
+                    <p className={`text-xs ${isDark ? "text-gray-400" : "text-gray-500"}`}>
                       Every feedback is reviewed by our admin team before being published.
                     </p>
                   </CardContent>
@@ -626,15 +629,15 @@ const Feedback = () => {
           width: 6px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-          background: #f1f1f1;
+          background: ${isDark ? '#1f2937' : '#f1f1f1'};
           border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #cbd5e1;
+          background: ${isDark ? '#4b5563' : '#cbd5e1'};
           border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #94a3b8;
+          background: ${isDark ? '#6b7280' : '#94a3b8'};
         }
       `}</style>
     </div>

@@ -5,6 +5,7 @@ import Footer from '../../layout/Footer'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import useTheme from '../../context/ThemeContext'
 import {
   Smartphone,
   Apple,
@@ -28,6 +29,8 @@ import jeepneyImage from '../../assets/images/image.png'
 import api from '../../util/axios'
 
 const Home = () => {
+  const { effectiveTheme } = useTheme()
+  const isDark = effectiveTheme === 'dark'
   const [downloading, setDownloading] = useState(false)
   const [announcements, setAnnouncements] = useState([])
   const [loadingAnnouncements, setLoadingAnnouncements] = useState(true)
@@ -71,27 +74,27 @@ const Home = () => {
     switch(priority) {
       case 'urgent':
         return {
-          bg: 'bg-red-50',
+          bg: isDark ? 'bg-red-950/50' : 'bg-red-50',
           border: 'border-l-4 border-l-red-500',
-          badge: 'bg-red-100 text-red-700',
+          badge: isDark ? 'bg-red-900/50 text-red-300' : 'bg-red-100 text-red-700',
           icon: <AlertCircle className="w-4 h-4" />,
-          gradient: 'from-red-50 to-red-100'
+          gradient: isDark ? 'from-red-950/50 to-red-900/30' : 'from-red-50 to-red-100'
         }
       case 'high':
         return {
-          bg: 'bg-orange-50',
+          bg: isDark ? 'bg-orange-950/50' : 'bg-orange-50',
           border: 'border-l-4 border-l-orange-500',
-          badge: 'bg-orange-100 text-orange-700',
+          badge: isDark ? 'bg-orange-900/50 text-orange-300' : 'bg-orange-100 text-orange-700',
           icon: <AlertCircle className="w-4 h-4" />,
-          gradient: 'from-orange-50 to-orange-100'
+          gradient: isDark ? 'from-orange-950/50 to-orange-900/30' : 'from-orange-50 to-orange-100'
         }
       default:
         return {
-          bg: 'bg-blue-50',
+          bg: isDark ? 'bg-blue-950/50' : 'bg-blue-50',
           border: '',
-          badge: 'bg-blue-100 text-blue-700',
+          badge: isDark ? 'bg-blue-900/50 text-blue-300' : 'bg-blue-100 text-blue-700',
           icon: <Info className="w-4 h-4" />,
-          gradient: 'from-blue-50 to-blue-100'
+          gradient: isDark ? 'from-blue-950/50 to-blue-900/30' : 'from-blue-50 to-blue-100'
         }
     }
   }
@@ -131,7 +134,7 @@ const Home = () => {
   const latestAnnouncements = announcements.slice(0, 3)
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden font-sans">
+    <div className={`min-h-screen overflow-x-hidden font-sans ${isDark ? 'bg-gray-950' : 'bg-white'}`}>
       <TopBar />
 
       {/* Hero Section */}
@@ -143,7 +146,7 @@ const Home = () => {
 
         {/* Background Elements */}
         <div className="absolute inset-0 -z-10">
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-grab-green/5 blur-[120px] rounded-full" />
+          <div className={`absolute top-0 right-0 w-[600px] h-[600px] blur-[120px] rounded-full ${isDark ? 'bg-grab-green/10' : 'bg-grab-green/5'}`} />
           <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/5 blur-[100px] rounded-full" />
         </div>
 
@@ -160,7 +163,7 @@ const Home = () => {
             >
 
               {/* Main Heading */}
-              <h1 className="font-black text-gray-900 leading-[1.1]">
+              <h1 className={`font-black leading-[1.1] ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
                 <span className="block text-5xl sm:text-6xl md:text-7xl lg:text-7xl xl:text-8xl">
                   Biyaheng
                 </span>
@@ -173,7 +176,7 @@ const Home = () => {
               </h1>
 
               {/* Description */}
-              <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 max-w-xl leading-relaxed">
+              <p className={`text-lg sm:text-xl lg:text-2xl max-w-xl leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                 A transportation app designed for Filipino commuters. Book jeepneys, track arrivals in real-time, and plan your routes efficiently.
               </p>
 
@@ -181,7 +184,7 @@ const Home = () => {
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Button
                   onClick={handleiOSDownload}
-                  className="bg-gray-300 hover:bg-gray-400 text-gray-600 cursor-not-allowed h-14 sm:h-16 px-6 sm:px-8 rounded-xl sm:rounded-2xl flex items-center gap-3 w-full sm:w-auto text-base sm:text-lg"
+                  className={`h-14 sm:h-16 px-6 sm:px-8 rounded-xl sm:rounded-2xl flex items-center gap-3 w-full sm:w-auto text-base sm:text-lg ${isDark ? 'bg-gray-600 hover:bg-gray-500 text-gray-300 cursor-not-allowed' : 'bg-gray-300 hover:bg-gray-400 text-gray-600 cursor-not-allowed'}`}
                 >
                   <Apple className="w-6 h-6 sm:w-7 sm:h-7" />
                   <div className="text-left">
@@ -225,14 +228,14 @@ const Home = () => {
                   transition={{ delay: 0.8, duration: 0.5 }}
                   className="absolute -top-5 left-0 hidden sm:block"
                 >
-                  <Card className="px-3 py-2 sm:px-4 sm:py-3 shadow-xl border-0">
+                  <Card className={`px-3 py-2 sm:px-4 sm:py-3 shadow-xl border-0 ${isDark ? 'bg-gray-800' : 'bg-white'}`}>
                     <CardContent className="p-0 flex items-center gap-2 sm:gap-3">
                       <div className="w-8 h-8 sm:w-10 sm:h-10 bg-grab-green/10 rounded-xl flex items-center justify-center">
                         <Users className="w-4 h-4 sm:w-5 sm:h-5 text-grab-green" />
                       </div>
                       <div>
-                        <p className="text-[10px] sm:text-xs text-gray-500">Active Users</p>
-                        <p className="text-sm sm:text-lg font-bold text-gray-900">50k+</p>
+                        <p className={`text-[10px] sm:text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Active Users</p>
+                        <p className={`text-sm sm:text-lg font-bold ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>50k+</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -244,14 +247,14 @@ const Home = () => {
                   transition={{ delay: 1, duration: 0.5 }}
                   className="absolute top-20 -right-5 hidden md:block"
                 >
-                  <Card className="px-3 py-2 sm:px-4 sm:py-3 shadow-xl border-0">
+                  <Card className={`px-3 py-2 sm:px-4 sm:py-3 shadow-xl border-0 ${isDark ? 'bg-gray-800' : 'bg-white'}`}>
                     <CardContent className="p-0 flex items-center gap-2 sm:gap-3">
                       <div className="w-8 h-8 sm:w-10 sm:h-10 bg-orange-500/10 rounded-xl flex items-center justify-center">
                         <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" />
                       </div>
                       <div>
-                        <p className="text-[10px] sm:text-xs text-gray-500">Avg. Wait Time</p>
-                        <p className="text-sm sm:text-lg font-bold text-gray-900">3-5 mins</p>
+                        <p className={`text-[10px] sm:text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Avg. Wait Time</p>
+                        <p className={`text-sm sm:text-lg font-bold ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>3-5 mins</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -284,10 +287,10 @@ const Home = () => {
                 <Megaphone className="w-4 h-4 mr-2" />
                 LATEST UPDATES
               </Badge>
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 max-w-2xl mx-auto">
+              <h2 className={`text-3xl sm:text-4xl font-bold max-w-2xl mx-auto ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
                 Announcements & News
               </h2>
-              <p className="text-gray-500 mt-4 max-w-xl mx-auto">
+              <p className={`mt-4 max-w-xl mx-auto ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                 Stay updated with the latest news, updates, and announcements from SAKAY
               </p>
             </div>
@@ -297,13 +300,13 @@ const Home = () => {
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-grab-green"></div>
               </div>
             ) : announcements.length === 0 ? (
-              <Card className="border-0 shadow-lg bg-gradient-to-r from-gray-50 to-gray-100">
+              <Card className={`border-0 shadow-lg ${isDark ? 'bg-gradient-to-r from-gray-800 to-gray-900' : 'bg-gradient-to-r from-gray-50 to-gray-100'}`}>
                 <CardContent className="p-12 text-center">
-                  <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Megaphone className="w-10 h-10 text-gray-400" />
+                  <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}>
+                    <Megaphone className={`w-10 h-10 ${isDark ? 'text-gray-500' : 'text-gray-400'}`} />
                   </div>
-                  <p className="text-gray-500 text-lg">No announcements yet.</p>
-                  <p className="text-gray-400 text-sm mt-1">Check back later for updates!</p>
+                  <p className={`text-lg ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>No announcements yet.</p>
+                  <p className={`text-sm mt-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Check back later for updates!</p>
                 </CardContent>
               </Card>
             ) : (
@@ -334,12 +337,12 @@ const Home = () => {
                                 {priorityStyle.icon}
                               </div>
                               <div className="flex-1">
-                                <h3 className="font-bold text-lg text-gray-900 line-clamp-2">
+                                <h3 className={`font-bold text-lg line-clamp-2 ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
                                   {announcement.title}
                                 </h3>
                                 <div className="flex items-center gap-2 mt-1">
-                                  <Calendar className="w-3 h-3 text-gray-400" />
-                                  <p className="text-xs text-gray-400">
+                                  <Calendar className={`w-3 h-3 ${isDark ? 'text-gray-500' : 'text-gray-400'}`} />
+                                  <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
                                     {new Date(announcement.createdAt).toLocaleDateString('en-PH', {
                                       year: 'numeric',
                                       month: 'long',
@@ -350,7 +353,7 @@ const Home = () => {
                               </div>
                             </div>
                             
-                            <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-4">
+                            <p className={`text-sm leading-relaxed line-clamp-3 mb-4 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                               {announcement.content}
                             </p>
                             
@@ -376,7 +379,7 @@ const Home = () => {
               <div className="text-center mt-8">
                 <Button 
                   variant="outline" 
-                  className="border-grab-green text-grab-green hover:bg-grab-green hover:text-white transition-all duration-300"
+                  className={`text-grab-green transition-all duration-300 ${isDark ? 'border-grab-green hover:bg-grab-green hover:text-gray-900' : 'border-grab-green hover:bg-grab-green hover:text-white'}`}
                   onClick={() => window.location.href = '/announcements'}
                 >
                   View All Announcements
@@ -400,7 +403,7 @@ const Home = () => {
                 <Star className="w-4 h-4 mr-2" />
                 HOW IT WORKS
               </Badge>
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 max-w-2xl mx-auto">
+              <h2 className={`text-3xl sm:text-4xl font-bold max-w-2xl mx-auto ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
                 Book a jeepney in three simple steps
               </h2>
             </div>
@@ -430,11 +433,11 @@ const Home = () => {
                 }
               ].map((item, index) => (
                 <motion.div key={index} variants={scaleIn}>
-                  <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+                  <Card className={`border-0 shadow-lg hover:shadow-xl transition-shadow ${isDark ? 'bg-gray-800' : 'bg-white'}`}>
                     <CardContent className="p-6">
                       <div className="text-4xl font-bold text-grab-green/20 mb-4">{item.step}</div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
-                      <p className="text-gray-600">{item.desc}</p>
+                      <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>{item.title}</h3>
+                      <p className={isDark ? 'text-gray-400' : 'text-gray-600'}>{item.desc}</p>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -460,7 +463,7 @@ const Home = () => {
                     <Award className="w-4 h-4 mr-2" />
                     KEY FEATURES
                   </Badge>
-                  <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight">
+                  <h2 className={`text-3xl sm:text-4xl font-bold leading-tight ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
                     Everything you need for a <span className="text-grab-green">smooth</span> commute
                   </h2>
                 </div>
@@ -501,8 +504,8 @@ const Home = () => {
                           <IconComponent className="w-6 h-6 text-grab-green" />
                         </div>
                         <div>
-                          <h4 className="text-lg font-bold text-gray-900 mb-1">{feature.title}</h4>
-                          <p className="text-gray-600">{feature.desc}</p>
+                          <h4 className={`text-lg font-bold mb-1 ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>{feature.title}</h4>
+                          <p className={isDark ? 'text-gray-400' : 'text-gray-600'}>{feature.desc}</p>
                         </div>
                       </motion.div>
                     )
@@ -520,7 +523,7 @@ const Home = () => {
                 className="relative"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-grab-green/10 to-blue-500/10 rounded-3xl blur-3xl" />
-                <Card className="relative bg-white p-6 rounded-2xl shadow-2xl border-0">
+                <Card className={`relative p-6 rounded-2xl shadow-2xl border-0 ${isDark ? 'bg-gray-800' : 'bg-white'}`}>
                   <CardContent className="p-0">
                     <div className="space-y-3">
                       {[
@@ -534,21 +537,21 @@ const Home = () => {
                           whileInView={{ opacity: 1, x: 0 }}
                           transition={{ delay: index * 0.1 }}
                           viewport={{ once: true }}
-                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                          className={`flex items-center justify-between p-3 rounded-lg transition-colors ${isDark ? 'bg-gray-700 hover:bg-gray-650' : 'bg-gray-50 hover:bg-gray-100'}`}
                         >
                           <div className="flex items-center gap-3">
                             <MapPin className="w-4 h-4 text-grab-green" />
-                            <span className="text-sm font-medium">{item.location}</span>
+                            <span className={`text-sm font-medium ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>{item.location}</span>
                           </div>
                           <div className="text-right">
                             <div className="text-sm font-bold text-grab-green">{item.time}</div>
-                            <div className="text-xs text-gray-500">ETA {item.eta}</div>
+                            <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>ETA {item.eta}</div>
                           </div>
                         </motion.div>
                       ))}
                     </div>
-                    <div className="mt-4 pt-4 border-t border-gray-100">
-                      <p className="text-xs text-gray-500 text-center">
+                    <div className={`mt-4 pt-4 border-t ${isDark ? 'border-gray-700' : 'border-gray-100'}`}>
+                      <p className={`text-xs text-center ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                         <CheckCircle2 className="w-3 h-3 inline-block text-grab-green mr-1" />
                         Live tracking available. Real-time updates every 5 seconds.
                       </p>
@@ -568,7 +571,7 @@ const Home = () => {
             transition={{ duration: 0.6 }}
             className="mt-24 sm:mt-28 lg:mt-32"
           >
-            <Card className="bg-gradient-to-br from-gray-900 to-gray-800 border-0 overflow-hidden">
+            <Card className={`border-0 overflow-hidden ${isDark ? 'bg-gradient-to-br from-gray-900 to-gray-950' : 'bg-gradient-to-br from-gray-900 to-gray-800'}`}>
               <CardContent className="p-8 md:p-12">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                   <motion.div
@@ -603,7 +606,7 @@ const Home = () => {
                       ].map((stat, index) => (
                         <motion.div key={index} variants={scaleIn}>
                           <div className="text-2xl font-bold text-grab-green">{stat.value}</div>
-                          <p className="text-sm text-gray-400">{stat.label}</p>
+                          <p className={`text-sm ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{stat.label}</p>
                         </motion.div>
                       ))}
                     </motion.div>
@@ -625,30 +628,30 @@ const Home = () => {
                     className="relative"
                   >
                     <div className="absolute inset-0 bg-grab-green/10 blur-3xl rounded-full" />
-                    <Card className="relative bg-white/5 backdrop-blur-sm border-white/10">
+                    <Card className={`relative backdrop-blur-sm border ${isDark ? 'bg-white/5 border-white/10' : 'bg-white/5 border-white/10'}`}>
                       <CardContent className="p-6">
                         <h3 className="text-white font-bold mb-4">Driver Requirements</h3>
-                        <ul className="space-y-3 text-gray-300 text-sm">
-                          <li className="flex items-center gap-2">
+                        <ul className="space-y-3 text-sm">
+                          <li className="flex items-center gap-2 text-gray-300">
                             <CheckCircle2 className="w-4 h-4 text-grab-green" />
                             Valid driver's license (Professional)
                           </li>
-                          <li className="flex items-center gap-2">
+                          <li className="flex items-center gap-2 text-gray-300">
                             <CheckCircle2 className="w-4 h-4 text-grab-green" />
                             LTFRB franchise / permit
                           </li>
-                          <li className="flex items-center gap-2">
+                          <li className="flex items-center gap-2 text-gray-300">
                             <CheckCircle2 className="w-4 h-4 text-grab-green" />
                             Government-issued ID
                           </li>
-                          <li className="flex items-center gap-2">
+                          <li className="flex items-center gap-2 text-gray-300">
                             <CheckCircle2 className="w-4 h-4 text-grab-green" />
                             Smartphone with data plan
                           </li>
                         </ul>
 
                         <div className="mt-6 pt-4 border-t border-white/10">
-                          <p className="text-xs text-gray-400">
+                          <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
                             For inquiries: drivers@sakay.ph | (02) 1234 5679
                           </p>
                         </div>
@@ -669,16 +672,16 @@ const Home = () => {
             transition={{ duration: 0.6 }}
             className="mt-24 sm:mt-28 lg:mt-32 text-center"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight mb-6">
+            <h2 className={`text-3xl md:text-4xl font-bold max-w-3xl mx-auto leading-tight mb-6 ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
               Ready to try SAKAY?
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+            <p className={`text-lg max-w-2xl mx-auto mb-8 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
               Download the app and experience a more convenient way to commute.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 onClick={handleiOSDownload}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-600 cursor-not-allowed h-14 px-8 rounded-xl flex items-center gap-3 text-lg"
+                className={`h-14 px-8 rounded-xl flex items-center gap-3 text-lg ${isDark ? 'bg-gray-600 hover:bg-gray-500 text-gray-300 cursor-not-allowed' : 'bg-gray-300 hover:bg-gray-400 text-gray-600 cursor-not-allowed'}`}
               >
                 <Apple className="w-6 h-6" />
                 <span>Coming Soon</span>

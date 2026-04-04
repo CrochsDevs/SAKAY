@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import TopBar from '../../layout/TopBar'
 import Footer from '../../layout/Footer'
+import { useTheme } from '../../context/ThemeContext'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -14,6 +15,8 @@ import {
 } from 'lucide-react'
 
 const Contact = () => {
+  const { effectiveTheme } = useTheme();
+  const isDark = effectiveTheme === 'dark';
   // Animation variants
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
@@ -81,12 +84,12 @@ const Contact = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden font-sans">
+    <div className={`min-h-screen ${isDark ? "bg-gray-950" : "bg-white"} overflow-x-hidden font-sans`}>
       <TopBar />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-grab-green/5 via-white to-blue-500/5">
-        <div className="absolute inset-0 bg-grid-gray-100 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+      <section className={`relative overflow-hidden bg-gradient-to-br ${isDark ? "from-grab-green/10 via-gray-950 to-blue-900/10" : "from-grab-green/5 via-white to-blue-500/5"}`}>
+        <div className={`absolute inset-0 ${isDark ? "bg-grid-white/5" : "bg-grid-gray-100"} [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]`} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
           <motion.div
             initial="hidden"
@@ -95,13 +98,13 @@ const Contact = () => {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6">
+            <h1 className={`text-5xl md:text-6xl lg:text-7xl font-bold ${isDark ? "text-white" : "text-gray-900"} mb-6`}>
               Contact{' '}
               <span className="bg-gradient-to-r from-grab-green to-grab-dark bg-clip-text text-transparent">
                 SAKAY
               </span>
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className={`text-xl ${isDark ? "text-gray-300" : "text-gray-600"} max-w-3xl mx-auto`}>
               Have questions, feedback, or want to partner with us? We'd love to hear from you!
             </p>
           </motion.div>
@@ -122,14 +125,14 @@ const Contact = () => {
               const IconComponent = info.icon
               return (
                 <motion.div key={index} variants={scaleIn}>
-                  <Card className="border border-gray-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full">
+                  <Card className={`border ${isDark ? "border-gray-700 bg-gray-900" : "border-gray-200"} hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full`}>
                     <CardContent className="p-6 text-center">
                       <div className="w-12 h-12 bg-grab-green/10 rounded-xl flex items-center justify-center mx-auto mb-4">
                         <IconComponent className="w-6 h-6 text-grab-green" />
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">{info.title}</h3>
-                      <p className="text-sm text-gray-600">{info.details}</p>
-                      <p className="text-sm text-gray-500 mt-1">{info.subDetails}</p>
+                      <h3 className={`text-lg font-semibold ${isDark ? "text-white" : "text-gray-900"} mb-2`}>{info.title}</h3>
+                      <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>{info.details}</p>
+                      <p className={`text-sm ${isDark ? "text-gray-500" : "text-gray-500"} mt-1`}>{info.subDetails}</p>
                       {info.action && (
                         <Button
                           variant="link"
@@ -162,10 +165,10 @@ const Contact = () => {
               <Headphones className="w-4 h-4 mr-2" />
               FREQUENTLY ASKED QUESTIONS
             </Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className={`text-3xl md:text-4xl font-bold ${isDark ? "text-white" : "text-gray-900"} mb-4`}>
               Got questions? We've got answers
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className={`text-lg ${isDark ? "text-gray-400" : "text-gray-600"} max-w-2xl mx-auto`}>
               Find quick answers to common questions about SAKAY
             </p>
           </motion.div>
@@ -179,10 +182,10 @@ const Contact = () => {
           >
             {faqs.map((faq, index) => (
               <motion.div key={index} variants={scaleIn}>
-                <Card className="border border-gray-200 hover:shadow-lg transition-all duration-300 h-full">
+                <Card className={`border ${isDark ? "border-gray-700 bg-gray-900" : "border-gray-200"} hover:shadow-lg transition-all duration-300 h-full`}>
                   <CardContent className="p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{faq.question}</h3>
-                    <p className="text-sm text-gray-600 leading-relaxed">{faq.answer}</p>
+                    <h3 className={`text-lg font-semibold ${isDark ? "text-white" : "text-gray-900"} mb-2`}>{faq.question}</h3>
+                    <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"} leading-relaxed`}>{faq.answer}</p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -196,7 +199,7 @@ const Contact = () => {
             variants={fadeInUp}
             className="text-center mt-8"
           >
-            <p className="text-gray-500">
+            <p className={isDark ? "text-gray-400" : "text-gray-500"}>
               Still have questions?{" "}
               <a href="mailto:support@sakay.ph" className="text-grab-green hover:underline font-medium">
                 Email our support team
@@ -226,14 +229,14 @@ const Contact = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Button 
                 onClick={() => window.location.href = '/download'}
-                className="bg-white text-grab-green hover:bg-gray-100 h-14 px-8 rounded-xl text-lg font-bold"
+                className={`${isDark ? "bg-gray-200 text-grab-green hover:bg-gray-300" : "bg-white text-grab-green hover:bg-gray-100"} h-14 px-8 rounded-xl text-lg font-bold`}
               >
                 <Mail className="w-5 h-5 mr-2" />
                 Download the App
               </Button>
               <Button 
                 onClick={() => window.location.href = '/features'}
-                className="bg-black text-white hover:bg-gray-800 h-14 px-8 rounded-xl text-lg font-bold"
+                className={`${isDark ? "bg-gray-700 text-white hover:bg-gray-600" : "bg-black text-white hover:bg-gray-800"} h-14 px-8 rounded-xl text-lg font-bold`}
               >
                 <Sparkles className="w-5 h-5 mr-2" />
                 Explore Features

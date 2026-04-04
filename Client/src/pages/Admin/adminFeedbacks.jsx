@@ -7,8 +7,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Star, Trash2, ThumbsUp, CheckCircle, Clock } from 'lucide-react';
 import api from '../../util/axios';
 import Swal from 'sweetalert2';
+import { useTheme } from '../../context/ThemeContext';
 
 const AdminFeedbacks = () => {
+  const { effectiveTheme } = useTheme();
+  const isDark = effectiveTheme === 'dark';
   const [pendingFeedbacks, setPendingFeedbacks] = useState([]);
   const [approvedFeedbacks, setApprovedFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -87,7 +90,7 @@ const AdminFeedbacks = () => {
   };
 
   const FeedbackCard = ({ feedback, showApprove = false }) => (
-    <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow mb-4">
+    <Card className={`border-0 shadow-lg hover:shadow-xl transition-shadow mb-4 ${isDark ? 'bg-gray-800 border-gray-700' : ''}`}>
       <CardContent className="p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-0">
           <div className="flex-1 min-w-0">
@@ -97,8 +100,8 @@ const AdminFeedbacks = () => {
                   {feedback.userName?.charAt(0) || '?'}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="font-semibold text-gray-900 truncate">{feedback.userName}</p>
-                  <p className="text-xs text-gray-500 truncate">{feedback.userEmail}</p>
+                  <p className={`font-semibold truncate ${isDark ? 'text-white' : 'text-gray-900'}`}>{feedback.userName}</p>
+                  <p className={`text-xs truncate ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{feedback.userEmail}</p>
                 </div>
               </div>
               <div className="flex items-center gap-1 ml-0 sm:ml-0 justify-start sm:justify-end w-full sm:w-auto">
@@ -106,31 +109,31 @@ const AdminFeedbacks = () => {
                   <Star
                     key={i}
                     size={14}
-                    className={i < feedback.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-200"}
+                    className={i < feedback.rating ? "fill-yellow-400 text-yellow-400" : (isDark ? "text-gray-600" : "text-gray-200")}
                   />
                 ))}
               </div>
             </div>
-            <p className="text-gray-700 mt-2 break-words">{feedback.comment}</p>
+            <p className={`mt-2 break-words ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>{feedback.comment}</p>
             <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-3">
-              <span className="text-xs text-gray-400">
+              <span className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
                 {new Date(feedback.createdAt).toLocaleDateString()}
               </span>
-              <span className="text-xs text-gray-400 flex items-center gap-1">
+              <span className={`text-xs flex items-center gap-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
                 <ThumbsUp className="w-3 h-3" />
                 {feedback.likes || 0} likes
               </span>
-              <Badge className="bg-gray-100 text-gray-600 text-xs">
+              <Badge className={`text-xs ${isDark ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-600'}`}>
                 {feedback.userLocation}
               </Badge>
               {!feedback.isApproved && (
-                <Badge className="bg-yellow-100 text-yellow-700 flex items-center gap-1 text-xs">
+                <Badge className={`flex items-center gap-1 text-xs ${isDark ? 'bg-yellow-900 text-yellow-300' : 'bg-yellow-100 text-yellow-700'}`}>
                   <Clock className="w-3 h-3" />
                   Pending
                 </Badge>
               )}
               {feedback.isApproved && (
-                <Badge className="bg-green-100 text-green-700 flex items-center gap-1 text-xs">
+                <Badge className={`flex items-center gap-1 text-xs ${isDark ? 'bg-green-900 text-green-300' : 'bg-green-100 text-green-700'}`}>
                   <CheckCircle className="w-3 h-3" />
                   Approved
                 </Badge>
@@ -143,7 +146,7 @@ const AdminFeedbacks = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => handleApprove(feedback._id)}
-                className="text-green-500 hover:text-green-700 hover:bg-green-50"
+                className={`hover:bg-green-50 ${isDark ? 'text-green-400 hover:text-green-300 dark:hover:bg-gray-700' : 'text-green-500 hover:text-green-700'}`}
                 title="Approve"
               >
                 <CheckCircle className="w-4 h-4" />
@@ -153,7 +156,7 @@ const AdminFeedbacks = () => {
               variant="ghost"
               size="sm"
               onClick={() => handleDelete(feedback._id)}
-              className="text-red-500 hover:text-red-700 hover:bg-red-50"
+              className={`hover:bg-red-50 ${isDark ? 'text-red-400 hover:text-red-300 dark:hover:bg-gray-700' : 'text-red-500 hover:text-red-700'}`}
               title="Delete"
             >
               <Trash2 className="w-4 h-4" />
@@ -166,7 +169,7 @@ const AdminFeedbacks = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-48 sm:h-96">
+      <div className={`flex items-center justify-center h-48 sm:h-96 ${isDark ? 'bg-gray-900' : ''}`}>
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-grab-green"></div>
       </div>
     );
@@ -174,10 +177,10 @@ const AdminFeedbacks = () => {
 
   return (
     <div className="px-2 sm:px-0">
-      <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Feedback Management</h1>
+      <h1 className={`text-xl sm:text-2xl font-bold mb-4 sm:mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>Feedback Management</h1>
       
       <Tabs defaultValue="pending" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 mb-4 sm:mb-6">
+        <TabsList className={`grid w-full grid-cols-2 mb-4 sm:mb-6 ${isDark ? 'bg-gray-800' : ''}`}>
           <TabsTrigger value="pending" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
             <Clock className="w-4 h-4" />
             <span className="hidden sm:inline">Pending</span>
@@ -192,11 +195,11 @@ const AdminFeedbacks = () => {
 
         <TabsContent value="pending">
           {pendingFeedbacks.length === 0 ? (
-            <Card>
+            <Card className={isDark ? 'bg-gray-800 border-gray-700' : ''}>
               <CardContent className="p-12 text-center">
-                <CheckCircle className="w-16 h-16 text-green-300 mx-auto mb-4" />
-                <p className="text-gray-500">No pending feedbacks!</p>
-                <p className="text-sm text-gray-400 mt-1">All feedbacks have been reviewed.</p>
+                <CheckCircle className={`w-16 h-16 mx-auto mb-4 ${isDark ? 'text-gray-600' : 'text-green-300'}`} />
+                <p className={isDark ? 'text-gray-400' : 'text-gray-500'}>No pending feedbacks!</p>
+                <p className={`text-sm mt-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>All feedbacks have been reviewed.</p>
               </CardContent>
             </Card>
           ) : (
@@ -208,11 +211,11 @@ const AdminFeedbacks = () => {
 
         <TabsContent value="approved">
           {approvedFeedbacks.length === 0 ? (
-            <Card>
+            <Card className={isDark ? 'bg-gray-800 border-gray-700' : ''}>
               <CardContent className="p-12 text-center">
-                <Star className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">No approved feedbacks yet</p>
-                <p className="text-sm text-gray-400 mt-1">Approve pending feedbacks to see them here.</p>
+                <Star className={`w-16 h-16 mx-auto mb-4 ${isDark ? 'text-gray-600' : 'text-gray-300'}`} />
+                <p className={isDark ? 'text-gray-400' : 'text-gray-500'}>No approved feedbacks yet</p>
+                <p className={`text-sm mt-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Approve pending feedbacks to see them here.</p>
               </CardContent>
             </Card>
           ) : (

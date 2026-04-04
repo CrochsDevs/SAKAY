@@ -6,8 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { Users as UsersIcon, Shield, User, Mail, Phone } from 'lucide-react';
 import api from '../../util/axios';
 import Swal from 'sweetalert2';
+import { useTheme } from '../../context/ThemeContext';
 
 const Users = () => {
+  const { effectiveTheme } = useTheme();
+  const isDark = effectiveTheme === 'dark';
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -59,10 +62,10 @@ const Users = () => {
 
   return (
     <div className="px-2 sm:px-0">
-      <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">User Management</h1>
+      <h1 className={`text-xl sm:text-2xl font-bold mb-4 sm:mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>User Management</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {users.map((user) => (
-          <Card key={user._id} className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+          <Card key={user._id} className={`border-0 shadow-lg hover:shadow-xl transition-shadow ${isDark ? 'bg-gray-800' : ''}`}>
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -70,8 +73,8 @@ const Users = () => {
                     {user.fullName?.charAt(0) || '?'}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="font-bold text-gray-900 truncate">{user.fullName}</p>
-                    <Badge className={user.role === 'super-admin' ? 'bg-grab-green text-white mt-1' : 'bg-gray-200 text-gray-700 mt-1'}>
+                    <p className={`font-bold truncate ${isDark ? 'text-white' : 'text-gray-900'}`}>{user.fullName}</p>
+                    <Badge className={user.role === 'super-admin' ? 'bg-grab-green text-white mt-1' : (isDark ? 'bg-gray-700 text-gray-300 mt-1' : 'bg-gray-200 text-gray-700 mt-1')}>
                       {user.role === 'super-admin' ? (
                         <><Shield className="w-3 h-3 mr-1" /> Admin</>
                       ) : (
@@ -83,11 +86,11 @@ const Users = () => {
               </div>
               
               <div className="space-y-2 mt-4">
-                <div className="flex items-center gap-2 text-sm text-gray-600 min-w-0">
+                <div className={`flex items-center gap-2 text-sm min-w-0 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                   <Mail className="w-4 h-4 flex-shrink-0" />
                   <span className="truncate">{user.email}</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600 min-w-0">
+                <div className={`flex items-center gap-2 text-sm min-w-0 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                   <Phone className="w-4 h-4 flex-shrink-0" />
                   <span className="truncate">{user.phone || 'No phone number'}</span>
                 </div>
@@ -105,6 +108,15 @@ const Users = () => {
             </CardContent>
           </Card>
         ))}
+        {users.length === 0 && (
+          <Card className={`col-span-full ${isDark ? 'bg-gray-800 border-gray-700' : ''}`}>
+            <CardContent className="p-12 text-center">
+              <UsersIcon className={`w-16 h-16 mx-auto mb-4 ${isDark ? 'text-gray-600' : 'text-gray-300'}`} />
+              <p className={isDark ? 'text-gray-400' : 'text-gray-500'}>No users found</p>
+              <p className={`text-sm mt-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>User accounts will appear here.</p>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
