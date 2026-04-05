@@ -19,6 +19,10 @@ app.get('/', (req, res) => {
     res.send('🚀 SAKAY API is running...');
 });
 
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', uptime: process.uptime() });
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/feedbacks', feedbackRoutes);
