@@ -1,4 +1,3 @@
-// server/module/users/user.model.js
 import connectDB from "../../config/db.js";
 import { ObjectId } from "mongodb";
 import Roles from "../../constant/roles.js";
@@ -13,7 +12,6 @@ class User {
         const userProfile = {
             fullName: userData.fullName,
             email: userData.email.toLowerCase(),
-            phone: userData.phone,
             role: userData.role || Roles.COMMUTER,
             location: userData.location || 'Commuter',
             createdAt: new Date(),
@@ -97,7 +95,7 @@ class User {
     }
 
     // ========== ADMIN METHODS ==========
-    
+
     // Get all users (for admin panel)
     static async getAllUsers() {
         try {
@@ -120,7 +118,7 @@ class User {
             if (role !== Roles.ADMIN && role !== Roles.COMMUTER) {
                 throw new Error('Invalid role');
             }
-            
+
             return await db.collection(this.#userColl).updateOne(
                 { _id: new ObjectId(id) },
                 { $set: { role: role, updatedAt: new Date() } }
